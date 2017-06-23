@@ -78,6 +78,9 @@ public class RequestsController {
     @Autowired
     private DistributorsDetailBanksService distributorsDetailBanksService;
 
+    @Autowired
+    private PayRequestsHistoryService payRequestsHistoryService;
+
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session)
             throws Exception{
@@ -145,7 +148,7 @@ public class RequestsController {
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByFolio(@RequestParam(name = "folio", required = true) String folio) throws IOException{
         Requests requests = requestsService.findByFolio(folio);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests),HttpStatus.OK
+        return new ResponseEntity<>( mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests),HttpStatus.OK
         );
     }
 
@@ -241,8 +244,9 @@ public class RequestsController {
     }
 
     @RequestMapping(value = "/pay-selected", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> payRequests(@RequestBody String data) throws IOException{
+    public ResponseEntity<String> payRequests(@RequestBody String data, HttpSession session) throws IOException {
         JsonNode node = mapper.readTree(data);
+        Users user = (Users) session.getAttribute("user");
         List<Requests> requestsList = new ArrayList<>();
         for(JsonNode jsonNode : node.get("requestsSelected")){
             requestsList.add(requestsService.payRequest(jsonNode.get("idRequest").asInt()));
@@ -251,6 +255,8 @@ public class RequestsController {
             distributorsDetailBanks.setAmount(resta);
             distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
         }
+        PayRequestsHistory payRequestsHistory = payRequestsHistoryService.saveData(data, user);
+
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
     }
 

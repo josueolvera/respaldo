@@ -144,7 +144,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
             }
         }
 
-        return  criteria.add(disjunction).add(Restrictions.eq("idRequestStatus", 3)).list();
+        return  criteria.add(disjunction).add(Restrictions.eq("idRequestStatus", 8)).list();
     }
 
     @Override

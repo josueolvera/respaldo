@@ -56,8 +56,6 @@
                 this.obtainDetailBanks();
             },
             data: {
-                <%--requestCategory: ${cat},--%>
-                <%--idRequest: ${idRequest},--%>
                 startDate: '',
                 endDate: '',
                 total: 0.00,
@@ -68,20 +66,13 @@
                 bussinessLine: {
                     acronyms: ''
                 },
-                costCenters: {},
-                //costCenter: '',
-                employeesPD: [],
                 requestsPD: [],
                 detailBanks: [],
                 requestsDates: [],
                 banks:[],
-                pD: {
-                    employeesSelected: []
-                },
                 pD2:{
                   requestsSelected: []
                 },
-                search: '',
                 folio: '',
                 arregloPd: [],
                 application: '',
@@ -95,7 +86,8 @@
                       idBank: 0
                   }
                 },
-                objectBanks: []
+                objectBanks: [],
+                distributor: ''
             },
             methods: {
                 getDistributors: function () {
@@ -111,6 +103,7 @@
                 },
                 obtainCurrentRequests: function (idDistributor) {
                     this.requestsPD = [];
+                    this.distributor = idDistributor;
                     this.$http.get(ROOT_URL + "/requests/distributor/" + idDistributor).success(function (data) {
                       var jsonObjectIndex = {};
                       var self = this;
@@ -138,15 +131,14 @@
                   this.$http.post(ROOT_URL + "/requests/pay-selected", JSON.stringify(this.pD2)).success(function (data) {
                       this.arregloPd = data;
                       var self = this;
-                      /*this.pD2.forEach(function (element) {
-                          document.write(element.amount);
-                          self.total - element.amount;
-                      });*/
                       showAlert("Se pagaron con exito las solicitudes!");
                       $("#modalPagar").modal("hide");
-                      this.obtainCurrentRequests(this.distributors.idDistributor);
+                      this.obtainCurrentRequests(this.distributor);
                       this.total = 0;
                       this.obtainDetailBanks();
+                      this.totalParcial = 0;
+                      this.pD2.requestsSelected = [];
+                      this.distributor = '';
                   }).error(function () {
                       showAlert("Error en la solicitud, vuelva a intentarlo", {type: 3});
                   });
@@ -180,14 +172,20 @@
                             if(element.bank != null && element.bank != ''){
                                 self.objectBanks.push(element);
                             }
+                            this.distributor =element.bank.idDistributor;
                         });
 
                         if(this.pD2.requestsSelected.length == this.objectBanks.length){
-                            $("#modalPagar").modal("show");
+                            this.pD2.requestsSelected.forEach(function (element) {
+                                if(element.bank.amount >= element.purchaseInvoices.amountWithIva){
+                                    $("#modalPagar").modal("show");
+                                }else{
+                                    showAlert("No hay suficiente dinero para pagar", {type: 3});
+                                }
+                            });
                         }else {
                             showAlert("Debes seleccionar un banco por cada solicitud", {type: 3});
                         }
-
                   }
                 },
                 getUserInSession: function () {
@@ -281,7 +279,7 @@
                             this.arregloPd = data;
                             showAlert("Reprogramacion exitosa");
                             $("#modalReprogramar").modal("hide");
-                            this.obtainCurrentRequests(this.distributors.idDistributor);
+                            this.obtainCurrentRequests(this.distributor);
                         }).error(function () {
                             showAlert("Error al generar la solicitud", {type: 3});
                         });
@@ -455,17 +453,16 @@
         </div>
 
         <!--EMPIEZA COLPASO DE EMPRESAS-->
-        <div v-for="(index, bussinessLine) in distributors">
-            <div id="accordion-{{index}}" role="tablist" aria-multiselectable="true">
+        <div id="accordion" role="tablist" aria-multiselectable="true">
+            <div v-for="(index, bussinessLine) in distributors">
                 <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingONE-{{index}}">
-                            <div class="panel-heading" style="background-color: #aaaaaa" @click="obtainCurrentRequests(index)">
-                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{index}}"
-                                   href="#collapseONE-{{index}}"
+                            <div class="panel-heading" style="background-color: #aaaaaa" @click="obtainCurrentRequests(bussinessLine.idDistributor)">
+                                <a class="collapsed" data-toggle="collapse" data-target="#collapseONE-{{index}}" href="#collapseONE-{{index}}"
                                    aria-expanded="false" aria-controls="collapseONE-{{index}}">
                                     <div class="col-md-4">
-                                        <p><b style="color: black">{{bussinessLine.acronyms}}</b></p>
+                                        <p><b style="color: black">{{bussinessLine.distributorName}}</b></p>
                                     </div>
                                     <div class="col-md-4 text-right">
                                         <label style="color: darkgreen">Saldo en cuenta: </label>
@@ -477,8 +474,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div id="collapseONE-{{index}}" class="collapse" role="tabpanel"
-                             aria-labelledby="headingONE-{{index}}">
+                        <div id="collapseONE-{{index}}" class="panel-collapse collapse" aria-labelledby="headingONE-{{index}}">
                             <div class="card-block">
                                 <div class="panel-body">
                                     <div class="col-md-12">
@@ -500,7 +496,7 @@
                                         </div>
                                         <br>
                                         <div class="table-body flex-row flex-content-{{index}}">
-                                            <div class="row table-row" v-for="(index2, pd) in requestsPD | orderBy 'requestsDates.scheduledDateFormats'">
+                                            <div class="row table-row" v-for="(index2, pd) in requestsPD | orderBy 'requestsDates.scheduledDateFormats.dateNumber'">
 
                                                 <div class="col-xs-1">{{pd.folio}}</div>
                                                 <div class="col-xs-2">{{pd.distributorCostCenter.distributors.acronyms}}</div>
@@ -523,7 +519,7 @@
                                                     <button class="btn btn-default btn-sm"
                                                             data-toggle="tooltip" data-placement="top" title="Reprogramar"
                                                             @click="getRescheduleData(pd)">
-                                                        <span class="glyphicon glyphicon-time"></span>
+                                                            <span class="glyphicon glyphicon-time"></span>
                                                     </button>
                                                 </div>
 
@@ -623,7 +619,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" @click="payRequestsSelected">Pagar</button>
+                        <button type="button" id="boton-pagar" class="btn btn-success" @click="payRequestsSelected()">Pagar</button>
                     </div>
                 </div>
             </div>
