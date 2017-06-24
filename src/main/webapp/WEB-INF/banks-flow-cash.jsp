@@ -61,8 +61,8 @@
                     this.getUserInSession();
                     this.activateDateTimePickerStart();
                     this.getBussinessLines();
-                    this.obtainDetailBanks();
                     this.obtainCurrencies();
+                    this.getDistributors();
                 },
                 data: {
                     startDate: '',
@@ -86,14 +86,18 @@
                         rate: '',
                         file: ''
                     },
+                    updateAmount: {
+                        accountNumber: '',
+                        amount: ''
+                    },
                     bussinessLines: [],
                     bussinessLine: {
-                        idBank: '',
-                        idCurrency: '',
                         idDistributor: '',
-                        idaccountbanktype: '',
-                        accountnumber: '',
+                        idBank: '',
                         accountclabe: '',
+                        accountnumber: '',
+                        idCurrency: '',
+//                        idaccountbanktype: '',
                         amount: ''
                     },
                     requestBody: {
@@ -116,9 +120,23 @@
                         budgetSubcategory: null,
                         product: null
                     },
-                    newEstimationFormActive: false
+                    newEstimationFormActive: false,
+                    distributors: []
                 },
                 methods: {
+                    updateAmount: function () {
+                        this.$http.update(ROOT_URL + "/distributors-detail-banks/account-number" , JSON.stringify(this.updateAmount)).success(function (data) {
+                            this.updateAmount = [];
+                            showAlert("Registro guardado con exito");
+                        }).error(function () {
+                            showAlert("Error en la solicitud", {type: 3});
+                        });
+                    },
+                    getDistributors: function () {
+                        this.$http.get(ROOT_URL + "/distributors").success(function (data) {
+                            this.distributors = data;
+                        })
+                    },
                     obtainCurrencies: function () {
                         this.$http.get(ROOT_URL + "/currencies").success(function (data) {
                             this.currencies = data;
@@ -130,16 +148,6 @@
                         }
                         return -1;
                     },
-                    obtainDetailBanks: function () {
-                        var self = this;
-                        this.$http.get(ROOT_URL + "/distributors-detail-banks").success(function (data) {
-                            this.detailBanks = data;
-                            var self = this;
-                            this.detailBanks.forEach(function (element) {
-                                self.total += element.amount;
-                            });
-                        });
-                    },
                     getUserInSession: function () {
                         this.$http.get(ROOT_URL + "/user")
                             .success(function (data) {
@@ -150,18 +158,22 @@
                             });
                     },
                     getBussinessLines: function () {
+                        var self = this;
                         this.$http.get(ROOT_URL + "/distributors-detail-banks").success(function (data) {
                             this.bussinessLines = data;
+                            this.bussinessLines.forEach(function (element) {
+                               self.total += element.amount;
+                            });
                         })
                     },
 
                     showModalAlta: function () {
-                        this.bussinessLine.idBank = '';
-                        this.bussinessLine.idCurrency = '';
                         this.bussinessLine.idDistributor = '';
-                        this.bussinessLine.idaccountbanktype = '';
-                        this.bussinessLine.accountnumber = '';
+                        this.bussinessLine.idBank = '';
                         this.bussinessLine.accountclabe = '';
+                        this.bussinessLine.accountnumber = '';
+                        this.bussinessLine.idCurrency = '';
+//                        this.bussinessLine.idaccountbanktype = '';
                         this.bussinessLine.amount = '';
                         $("#agregarcuentabancaria").modal("show");
                     },
@@ -301,6 +313,22 @@
               startTime();
           }
       </script>
+
+          <script>
+              function valida(e){
+                  tecla = (document.all) ? e.keyCode : e.which;
+
+                  //Tecla de retroceso para borrar, siempre la permite
+                  if (tecla==8){
+                      return true;
+                  }
+
+                  // Patron de entrada, en este caso solo acepta numeros
+                  patron =/[0-9]/;
+                  tecla_final = String.fromCharCode(tecla);
+                  return patron.test(tecla_final);
+              }
+          </script>
     </jsp:attribute>
     <jsp:attribute name="styles">
 
@@ -441,17 +469,19 @@
                                                     <label><h6><b style="color: black">Empresa</b></h6></label>
                                                     <select v-model="bussinessLine.idDistributor" class="form-control">
                                                         <option></option>
-                                                        <option v-for="distributor in bussinessLines" :value="distributor.idDistributor">
-                                                            {{distributor.distributors.acronyms}}
+                                                        <option v-for="distributor in distributors" :value="distributor.idDistributor">
+                                                            {{distributor.acronyms}}
                                                         </option>
                                                     </select><br>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label><h6><b style="color: black">Banco</b></h6></label>
-                                                    <select v-model="bussinessLine.idBank" class="form-control">
+                                                    <select v-model="updateAmount.accountNumber" class="form-control">
                                                         <option></option>
-                                                        <option  v-for="bank in bussinessLines" :value="bank.banks.idBank">
-                                                            {{bank.banks.acronyms}}
+                                                        <option  v-for="bank in bussinessLines"
+                                                                 v-if="bank.idDistributor == bussinessLine.idDistributor"
+                                                                 :value="bank.accountNumber">
+                                                            {{bank.banks.acronyms}} : Cuenta: {{bank.accountNumber}}
                                                         </option>
                                                     </select><br>
                                                 </div>
@@ -462,7 +492,11 @@
                                                     <div class="col-md-10">
                                                         <div class="input-group">
                                                             <span class="input-group-addon">$</span>
-                                                            <input type="text" class="form-control" v-model="bussinessLine.amount">
+                                                            <input type="text" name="numpiso"
+                                                                   onkeypress="return valida(event)"
+                                                                   class="form-control"
+                                                                   onpaste="alert('Acceso Denegado');return false"
+                                                                   v-model="updateAmount.amount">
                                                             <br>
                                                         </div>
                                                     </div>
@@ -471,7 +505,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-success" data-dismiss="modal" @click="saveBussinessLine()">
+                                        <button type="button" class="btn btn-success" data-dismiss="modal" @click="updateAmount()">
                                             Guardar
                                         </button>
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar
@@ -500,7 +534,7 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <label><h6><b style="color: black">Empresa</b></h6></label>
                                                     <select v-model="bussinessLine.idDistributor" class="form-control">
                                                         <option></option>
@@ -509,7 +543,7 @@
                                                         </option>
                                                     </select><br>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <label><h6><b style="color: black">Banco</b></h6></label>
                                                     <select v-model="bussinessLine.idBank" class="form-control">
                                                         <option></option>
@@ -518,34 +552,29 @@
                                                         </option>
                                                     </select><br>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <form>
-                                                        <label><h6><b style="color: black">Cuenta Clabe</b></h6>
+                                                        <label><h6><b style="color: black">CLABE</b></h6>
                                                         </label>
-                                                        <input type="text" class="form-control"
-                                                               v-model="bussinessLine.accountclabe">
+                                                        <input type="text" name="numpiso" onkeypress="return valida(event)" class="form-control"
+                                                               v-model="bussinessLine.accountclabe"
+                                                               onpaste="alert('Acceso Denegado');return false">
                                                     </form>
                                                     <br>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <form>
-                                                        <label><h6><b style="color: black">Cuenta Bancaria</b></h6></label>
-                                                        <input type="text" class="form-control"
-                                                               v-model="bussinessLine.idaccountbanktype">
-                                                    </form>
-                                                    <br><br>
                                                 </div>
                                                 <br>
                                                 <br>
                                                 <div class="col-md-4">
                                                     <form>
-                                                        <label><h6><b style="color: black">Clabe interbancaria</b></h6>
+                                                        <label><h6><b style="color: black">Numero de cuenta</b></h6>
                                                         </label>
-                                                        <input type="text" class="form-control" v-model="bussinessLine.accountnumber">
+                                                        <input type="text" name="numpiso" onkeypress="return valida(event)"
+                                                               class="form-control" v-model="bussinessLine.accountnumber"
+                                                               onpaste="alert('Acceso Denegado');return false">
                                                     </form>
                                                     <br><br><br>
                                                 </div>
-                                                <div class="col-md-3">
+                                                <div class="col-md-4">
                                                     <label><h6><b style="color: black">Tipo de moneda</b></h6></label>
                                                     <select v-model="bussinessLine.idCurrency" class="form-control">
                                                         <option></option>
@@ -557,7 +586,9 @@
                                                 <div class="col-md-4">
                                                     <form>
                                                         <label><h6><b style="color: black">Monto</b></h6></label>
-                                                        <input type="text" class="form-control" v-model="bussinessLine.amount">
+                                                        <input type="text" name="numpiso" onkeypress="return valida(event)"
+                                                               class="form-control" v-model="bussinessLine.amount"
+                                                               onpaste="alert('Acceso Denegado');return false">
                                                     </form>
                                                     <br><br><br>
                                                 </div>
@@ -580,7 +611,7 @@
 
             <!--EMPIEZA COLPASO DE EMPRESAS-->
             <section>
-                <div v-for="(index, bussinessLine) in bussinessLines">
+                <div v-for="(index, distributor) in distributors">
                     <div id="accordion-{{index}}" role="tablist" aria-multiselectable="true">
                         <div class="panel panel-default">
                             <div class="card">
@@ -590,11 +621,11 @@
                                            href="#collapseONE-{{index}}"
                                            aria-expanded="false" aria-controls="collapseONE-{{index}}">
                                             <div class="col-md-10">
-                                                <span><b style="color: black">{{bussinessLine.distributors.distributorName}}</b></span>
+                                                <span><b style="color: black">{{distributor.distributorName}}</b></span>
                                             </div>
                                         </a>
                                         <div class="col-md-2 text-right">
-                                            <label style="color: black">{{bussinessLine.amount &nbsp  |&nbsp currency}}</label>
+                                            <label style="color: black">{{distributor.amount &nbsp  |&nbsp currency}}</label>
                                         </div>
                                         <br>
                                     </div>
@@ -614,7 +645,7 @@
                                                         </tr>
                                                         </thead>
                                                         <tbody>
-                                                        <tr>
+                                                        <tr v-for="(index, bussinessLine) in bussinessLines" v-if="bussinessLine.idDistributor == distributor.idDistributor" >
                                                             <td class="col-md-4" style="text-align: center">{{bussinessLine.banks.bankName}}</td>
                                                             <td class="col-md-4" style="text-align: center">{{bussinessLine.accountNumber}}</td>
                                                             <td class="col-md-4" style="text-align: center">{{bussinessLine.amount | currency}}</td>
