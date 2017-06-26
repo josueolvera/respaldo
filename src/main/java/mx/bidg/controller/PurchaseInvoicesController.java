@@ -43,9 +43,6 @@ public class PurchaseInvoicesController {
     private PurchaseInvoicesService purchaseInvoicesService;
 
     @Autowired
-    private RequestsDatesService requestsDatesService;
-
-    @Autowired
     private PurchaseInvoicesFilesService purchaseInvoicesFilesService;
 
     @Autowired
@@ -74,7 +71,7 @@ public class PurchaseInvoicesController {
             Integer limitDay = jsonNode.get("provider").get("creditDays").asInt();
             LocalDateTime requestDate = LocalDateTime.parse(jsonNode.get("request").get("creationDateFormats").get("iso").asText(),
                     DateTimeFormatter.ISO_DATE_TIME);
-            LocalDateTime limit = (requestDate.plusDays(limitDay));
+            LocalDateTime limit = (requestDate.plusDays(limitDay)) ;
             purchase.setLimitDay(limit);
             invoicesList.add(purchase);
         }
@@ -262,38 +259,5 @@ public class PurchaseInvoicesController {
         boolean status = purchaseInvoicesService.delete(purchaseInvoices);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(status), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/countupdate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findIdRequestsDates()throws IOException{
-
-        List<PurchaseInvoices> pInvoicesAll = purchaseInvoicesService.findAll();
-        List<RequestsDates> requestsDates = requestsDatesService.findAll();
-        List<PurchaseInvoices> rdatesCount = new ArrayList<>();
-
-        JsonNode node = mapper.readTree(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(pInvoicesAll));
-        JsonNode noderd = mapper.readTree(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsDates));
-
-        for (JsonNode jsonNodes : node){
-            PurchaseInvoices purchase = purchaseInvoicesService.findByIdRequest(jsonNodes.get("idRequest").asInt());
-            for (JsonNode jsonNoderd : noderd){
-                Integer purcheIdReq = jsonNodes.get("idRequest").asInt();
-                Integer reqIdReq = jsonNoderd.get("idRequest").asInt();
-                Integer limitDay = jsonNodes.get("provider").get("creditDays").asInt();
-                LocalDateTime requestDate = LocalDateTime.parse(jsonNodes.get("request").get("creationDateFormats").get("iso").asText(),
-                        DateTimeFormatter.ISO_DATE_TIME);
-
-                if (purcheIdReq == reqIdReq){
-                    LocalDateTime limitDate = (requestDate.plusDays(limitDay));
-                    Integer count = jsonNoderd.get("countUpdate").asInt();
-                    purchase.setLimitDay(limitDate);
-                    purchase.setCountUpdates(count);
-
-                    rdatesCount.add(purchase);
-                }
-            }
-        }
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(rdatesCount),
-                HttpStatus.OK);
     }
 }
