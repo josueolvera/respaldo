@@ -114,6 +114,10 @@ public class PurchaseInvoices implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime limitDay;
 
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private Integer countUpdates;
+
     public PurchaseInvoices() {
     }
 
@@ -265,12 +269,28 @@ public class PurchaseInvoices implements Serializable {
         this.limitDay = limitDay;
     }
 
+    public Integer getCountUpdates() {
+        return countUpdates;
+    }
+
+    public void setCountUpdates(Integer countUpdates) {
+        this.countUpdates = countUpdates;
+    }
+
     public DateFormatsPojo getPaydayLimitFormats() {
         if (limitDay == null) {
             return null;
         }
         return new DateFormatsPojo(limitDay);
     }
+
+    public Integer getCountUpdatesRequest() {
+        if (countUpdates == null) {
+            return null;
+        }
+        return new Integer(countUpdates);
+    }
+
 
     @Override
     public boolean equals(Object o) {
