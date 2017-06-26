@@ -265,8 +265,8 @@
                     setYears: function () {
                         var now = new Date(this.now);
                         this.selected.year = now.getFullYear();
-                        this.minYear = this.selected.year - 2;
-                        this.maxYear = this.selected.year + 0;
+                        this.minYear = this.selected.year - 0;
+                        this.maxYear = this.selected.year + 1;
                         for (var i = this.minYear; i <= this.maxYear; i++) {
                             this.years.push(i)
                         }
@@ -865,8 +865,8 @@
                 </div>
                 <div class="col-md-2">
                     <label>Año</label>
-                    <select v-model="selectedOptions.year" @change="onChangeFilter" class="form-control" required>
-                        <option v-for="year in years" :value="year" selected>
+                    <select v-model="selectedOptions.year" class="form-control" @change="onChangeFilter" required>
+                        <option v-for="year in years" :value="year">
                             {{year}}
                         </option>
                     </select>
