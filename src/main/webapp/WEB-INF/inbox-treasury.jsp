@@ -52,8 +52,9 @@
             ready: function () {
                 this.getUserInSession();
                 this.activateDateTimePickerStart();
-                this.getDistributors();
+                //this.getDistributors();
                 this.obtainDetailBanks();
+                this.obtainCurrentRequests();
             },
             data: {
                 startDate: '',
@@ -101,10 +102,10 @@
                         this.requestsPD = data;
                     })
                 },
-                obtainCurrentRequests: function (idDistributor) {
+                obtainCurrentRequests: function () {
                     this.requestsPD = [];
-                    this.distributor = idDistributor;
-                    this.$http.get(ROOT_URL + "/requests/distributor/" + idDistributor).success(function (data) {
+                    //this.distributor = idDistributor;
+                    this.$http.get(ROOT_URL + "/requests/all-status-eight").success(function (data) {
                       var jsonObjectIndex = {};
                       var self = this;
                       data.forEach(function (pD2) {
@@ -120,6 +121,16 @@
                          }else{
                              pD2.requestCategory = jsonObjectIndex[pD2.requestCategory];
                          }
+                      });
+                      data.forEach(function (request) {
+                          this.distributors.forEach(function (element) {
+                              if(this.distributors == []) {
+                                  this.distributors.push(request.distributorCostCenter.distributors);
+                              }else{
+                                  if (request.distributorCostCenter.idDistributor != element.idDistributor)
+                                      this.distributors.push(request.distributorCostCenter.distributors);
+                              }
+                          });
                       });
                       this.requestsPD = data;
                   }).error(function () {
@@ -172,7 +183,7 @@
                             if(element.bank != null && element.bank != ''){
                                 self.objectBanks.push(element);
                             }
-                            this.distributor =element.bank.idDistributor;
+                            //this.distributor =element.bank.idDistributor;
                         });
 
                         if(this.pD2.requestsSelected.length == this.objectBanks.length){
@@ -453,13 +464,14 @@
         </div>
 
         <!--EMPIEZA COLPASO DE EMPRESAS-->
-        <div id="accordion" role="tablist" aria-multiselectable="true">
-            <div v-for="(index, bussinessLine) in distributors">
+        <div v-for="pd in requestsPD">
+            <div v-for="(index, bussinessLine) in distributors" v-if="pd.distributorCostCenter.idDistributor == bussinessLine.idDistributor">
+                <div id="accordion-{{index}}" role="tablist" aria-multiselectable="true">
                 <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingONE-{{index}}">
-                            <div class="panel-heading" style="background-color: #aaaaaa" @click="obtainCurrentRequests(bussinessLine.idDistributor)">
-                                <a class="collapsed" data-toggle="collapse" data-target="#collapseONE-{{index}}" href="#collapseONE-{{index}}"
+                            <div class="panel-heading" style="background-color: #aaaaaa">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{index}}" href="#collapseONE-{{index}}"
                                    aria-expanded="false" aria-controls="collapseONE-{{index}}">
                                     <div class="col-md-4">
                                         <p><b style="color: black">{{bussinessLine.distributorName}}</b></p>
@@ -474,7 +486,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div id="collapseONE-{{index}}" class="panel-collapse collapse" aria-labelledby="headingONE-{{index}}">
+                        <div id="collapseONE-{{index}}" class="collapse" role="tabpanel" aria-labelledby="headingONE-{{index}}">
                             <div class="card-block">
                                 <div class="panel-body">
                                     <div class="col-md-12">
@@ -495,8 +507,8 @@
                                             </div>
                                         </div>
                                         <br>
-                                        <div class="table-body flex-row flex-content-{{index}}">
-                                            <div class="row table-row" v-for="(index2, pd) in requestsPD | orderBy 'requestsDates.scheduledDateFormats.dateNumber'">
+                                        <div class="table-body flex-row flex-content">
+                                            <div class="row table-row">
 
                                                 <div class="col-xs-1">{{pd.folio}}</div>
                                                 <div class="col-xs-2">{{pd.distributorCostCenter.distributors.acronyms}}</div>
@@ -535,6 +547,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>
