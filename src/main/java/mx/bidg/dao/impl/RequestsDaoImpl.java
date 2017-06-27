@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestsDao;
@@ -156,6 +157,16 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     public List<Requests> findByStatus(Integer idRequestStatus) {
         return createEntityCriteria()
                 .add(Restrictions.eq("idRequestStatus", idRequestStatus))
+                .add(Restrictions.eq("idRequestCategory", 1))
+                .add(Restrictions.eq("idRequestType", 1))
+                .list();
+    }
+
+    @Override
+    public List<Requests> findByTotalExpended(BigDecimal authorizedAmount) {
+        return createEntityCriteria()
+                .add(Restrictions.le("totalExpended", authorizedAmount))
+                .add(Restrictions.eq("idRequestStatus", 5))
                 .add(Restrictions.eq("idRequestCategory", 1))
                 .add(Restrictions.eq("idRequestType", 1))
                 .list();

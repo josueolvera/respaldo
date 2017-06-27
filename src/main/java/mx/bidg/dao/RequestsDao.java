@@ -7,6 +7,7 @@ package mx.bidg.dao;
 
 import mx.bidg.model.Requests;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,4 +29,5 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     List<Requests> findAll();
     List<Requests> findListByFolio(String folio);
     List<Requests> findByStatus(Integer idRequestStatus);
+    List<Requests> findByTotalExpended(BigDecimal authorizedAmount);
 }
