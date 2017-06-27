@@ -16,9 +16,7 @@ import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.pojos.FilePojo;
-import mx.bidg.service.PriceEstimationsService;
-import mx.bidg.service.RealBudgetSpendingService;
-import mx.bidg.service.RequestHistoryService;
+import mx.bidg.service.*;
 import mx.bidg.utils.BudgetHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +82,12 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Autowired
     private UsersDao usersDao;
+    
+    @Autowired
+    private EmailDeliveryService emailDeliveryService;
+    
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
 
     @Override
     public PriceEstimations saveData(String data, Integer idRequest, Users user) throws Exception {
@@ -273,7 +277,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public boolean authorizePriceEstimations(Integer idRequest, Integer idPriceEstimations, String reasonResponsible,  Users user) {
+    public boolean authorizePriceEstimations(Integer idRequest, Integer idPriceEstimations, String reasonResponsible,  Users user, Integer option) {
         List<PriceEstimations> priceEstimations = priceEstimationsDao.findEstimationsNotSelectedByRequest(idRequest, idPriceEstimations);
 
         PriceEstimations priceEstimation = priceEstimationsDao.findByIdFetchRequestStatus(idPriceEstimations);
@@ -283,41 +287,89 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         boolean outBudget = false;
 
         if (request != null){
-            if (request.getIdDistributorCostCenter() != null){
-                List<Budgets> budgetsList = budgetsDao.findByIdDistributor(request.getIdDistributorCostCenter());
-                if (!budgetsList.isEmpty()){
-                    BigDecimal budgetAmount = realBudgetSpendingService.getAmountBudget(budgetsList);
-                    if (budgetAmount != null){
-                        if (priceEstimation.getAmount().doubleValue() >= budgetAmount.doubleValue()){
-                            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_VALIDACION_POR_PLANEACION);
-                            request.setTotalExpended(priceEstimation.getAmount());
-                            request.setReasonResponsible(reasonResponsible);
-                            request = requestsDao.update(request);
-                            requestHistoryService.saveRequest(request, user);
-                            outBudget = true;
+            if(option == 1){
+                if (request.getEmployees() != null){
+                    DwEmployees dwEmployee = dwEmployeesDao.findByIdEmployee(request.getEmployees().getIdEmployee());
 
-                        }else {
-                            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_COMPRA);
-                            request.setTotalExpended(priceEstimation.getAmount());
-                            request.setReasonResponsible(reasonResponsible);
-                            request = requestsDao.update(request);
-                            requestHistoryService.saveRequest(request, user);
-                            outBudget = false;
+                    DistributorAreaRol distributorAreaRol = distributorAreaRolDao.findByCombination(dwEmployee.getDwEnterprise().getIdDistributor(), dwEmployee.getDwEnterprise().getIdArea(), dwEmployee.getIdRole());
+
+                    if (distributorAreaRol != null){
+                        int aux;
+
+                        aux = distributorAreaRol.getLevelRequest() - 1;
+
+                        if (aux == 3){
+                            aux = aux - 1;
                         }
 
-                        if (!priceEstimations.isEmpty()){
-                            for (PriceEstimations estimation : priceEstimations){
-                                estimation.setcEstimationStatus(CEstimationStatus.RECHAZADA);
-                                priceEstimationsDao.update(estimation);
+                        while (true){
+                            DistributorAreaRol dis = distributorAreaRolDao.findByLevel(aux);
+                            if(dis.getAmountRequest().doubleValue() >= priceEstimation.getAmount().doubleValue()){
+                                break;
+                            }else {
+                                aux--;
                             }
                         }
 
-                        if (priceEstimation != null){
-                            priceEstimation.setcEstimationStatus(CEstimationStatus.APROBADA);
-                            priceEstimationsDao.update(priceEstimation);
+                        DistributorAreaRol levelWithAuthorization = distributorAreaRolDao.findByLevel(aux);
+
+                        EmployeesHistory employeesHistory = employeesHistoryDao.findByDistributorAreaRolLastRegister(levelWithAuthorization.getIdDistributor(), levelWithAuthorization.getIdArea(), levelWithAuthorization.getIdRole());
+
+                        if (employeesHistory != null){
+
+                            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_VALIDACION);
+                            request.setTotalExpended(priceEstimation.getAmount());
+                            request.setReasonResponsible(reasonResponsible);
+                            request = requestsDao.update(request);
+                            requestHistoryService.saveRequest(request, user);
+
+                            Users user1 = usersDao.findByDwEmpployee(employeesHistory.getIdDwEmployee());
+
+                            EmailTemplates emailTemplates = emailTemplatesService.findByName("amount_authorized_notification");
+                            emailTemplates.addProperty("request", request);
+                            emailDeliveryService.deliverEmailWithUser(emailTemplates, user1);
+
+                            outBudget = true;
                         }
                     }
                 }
+            }else if (option == 2){
+                if (request.getIdDistributorCostCenter() != null){
+
+                    request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_VALIDACION_POR_PLANEACION);
+                    request.setTotalExpended(priceEstimation.getAmount());
+                    request.setReasonResponsible(reasonResponsible);
+                    request = requestsDao.update(request);
+                    requestHistoryService.saveRequest(request, user);
+
+                    EmailTemplates emailTemplates = emailTemplatesService.findByName("financial_p_autorization_notification");
+                    emailTemplates.addProperty("request", request);
+                    emailDeliveryService.deliverEmail(emailTemplates);
+
+                    outBudget = true;
+                }
+            }else if (option == 3){
+
+                request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_COMPRA);
+                request.setTotalExpended(priceEstimation.getAmount());
+                request.setReasonResponsible(reasonResponsible);
+                request = requestsDao.update(request);
+                requestHistoryService.saveRequest(request, user);
+
+                outBudget = true;
+            }
+
+
+            if (!priceEstimations.isEmpty()){
+                for (PriceEstimations estimation : priceEstimations){
+                    estimation.setcEstimationStatus(CEstimationStatus.RECHAZADA);
+                    priceEstimationsDao.update(estimation);
+                }
+            }
+
+            if (priceEstimation != null){
+                priceEstimation.setcEstimationStatus(CEstimationStatus.APROBADA);
+                priceEstimationsDao.update(priceEstimation);
             }
         }
 
@@ -394,7 +446,14 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         return outBudget;
     }
 
+    @Override
+    public int validateByRequest(Integer idRequest) {
+        Requests request = requestsDao.findById(idRequest);
+        PriceEstimations priceEstimation = priceEstimationsDao.findAuthorized(idRequest);
 
+        int outBudget = validateBudget(request, priceEstimation);
+        return outBudget;
+    }
 
 
     public int validateBudget(Requests request, PriceEstimations priceEstimation){
@@ -423,7 +482,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getJanuaryAmount() != null){
                             if(requestBudgetSpending.getJanuarySpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getJanuaryAmount().add(requestBudgetSpending.getJanuarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getJanuaryAmount().subtract(requestBudgetSpending.getJanuarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -452,7 +511,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getFebruaryAmount() != null){
                             if(requestBudgetSpending.getFebruarySpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getFebruaryAmount().add(requestBudgetSpending.getFebruarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getFebruaryAmount().subtract(requestBudgetSpending.getFebruarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -481,7 +540,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getMarchAmount() != null){
                             if(requestBudgetSpending.getMarchSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getMarchAmount().add(requestBudgetSpending.getMarchSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getMarchAmount().subtract(requestBudgetSpending.getMarchSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -510,7 +569,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getAprilAmount() != null){
                             if(requestBudgetSpending.getAprilSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getAprilAmount().add(requestBudgetSpending.getAprilSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getAprilAmount().subtract(requestBudgetSpending.getAprilSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -539,7 +598,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getMayAmount() != null){
                             if(requestBudgetSpending.getMaySpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getMayAmount().add(requestBudgetSpending.getMaySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getMayAmount().subtract(requestBudgetSpending.getMaySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -568,7 +627,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getJuneAmount() != null){
                             if(requestBudgetSpending.getJuneSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getJuneAmount().add(requestBudgetSpending.getJuneSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getJuneAmount().subtract(requestBudgetSpending.getJuneSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -601,7 +660,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getJulyAmount() != null){
                             if(requestBudgetSpending.getJulySpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getJulyAmount().add(requestBudgetSpending.getJulySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getJulyAmount().subtract(requestBudgetSpending.getJulySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -630,7 +689,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getAugustAmount() != null){
                             if(requestBudgetSpending.getAugustSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getAugustAmount().add(requestBudgetSpending.getAugustSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getAugustAmount().subtract(requestBudgetSpending.getAugustSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -659,7 +718,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getSeptemberAmount() != null){
                             if(requestBudgetSpending.getSeptemberSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getSeptemberAmount().add(requestBudgetSpending.getSeptemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getSeptemberAmount().subtract(requestBudgetSpending.getSeptemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -688,7 +747,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getOctoberAmount() != null){
                             if(requestBudgetSpending.getOctoberSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getOctoberAmount().add(requestBudgetSpending.getOctoberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getOctoberAmount().subtract(requestBudgetSpending.getOctoberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -717,7 +776,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getNovemberAmount() != null){
                             if(requestBudgetSpending.getNovemberSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getNovemberAmount().add(requestBudgetSpending.getNovemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getNovemberAmount().subtract(requestBudgetSpending.getNovemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -746,7 +805,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (requestBudgetSpending.getDecemberAmount() != null){
                             if(requestBudgetSpending.getDecemberSpended() != null){
-                                BigDecimal totalAmount = requestBudgetSpending.getDecemberAmount().add(requestBudgetSpending.getDecemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = requestBudgetSpending.getDecemberAmount().subtract(requestBudgetSpending.getDecemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -789,7 +848,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getJanuaryAmount() != null){
                             if(rBudgetSpending.getJanuarySpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getJanuaryAmount().add(rBudgetSpending.getJanuarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getJanuaryAmount().subtract(rBudgetSpending.getJanuarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -818,7 +877,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getFebruaryAmount() != null){
                             if(rBudgetSpending.getFebruarySpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getFebruaryAmount().add(rBudgetSpending.getFebruarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getFebruaryAmount().subtract(rBudgetSpending.getFebruarySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -847,7 +906,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getMarchAmount() != null){
                             if(rBudgetSpending.getMarchSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getMarchAmount().add(rBudgetSpending.getMarchSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getMarchAmount().subtract(rBudgetSpending.getMarchSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -876,7 +935,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getAprilAmount() != null){
                             if(rBudgetSpending.getAprilSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getAprilAmount().add(rBudgetSpending.getAprilSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getAprilAmount().subtract(rBudgetSpending.getAprilSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -905,7 +964,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getMayAmount() != null){
                             if(rBudgetSpending.getMaySpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getMayAmount().add(rBudgetSpending.getMaySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getMayAmount().subtract(rBudgetSpending.getMaySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -934,7 +993,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getJuneAmount() != null){
                             if(rBudgetSpending.getJuneSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getJuneAmount().add(rBudgetSpending.getJuneSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getJuneAmount().subtract(rBudgetSpending.getJuneSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -967,7 +1026,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getJulyAmount() != null){
                             if(rBudgetSpending.getJulySpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getJulyAmount().add(rBudgetSpending.getJulySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getJulyAmount().subtract(rBudgetSpending.getJulySpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -996,7 +1055,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getAugustAmount() != null){
                             if(rBudgetSpending.getAugustSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getAugustAmount().add(rBudgetSpending.getAugustSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getAugustAmount().subtract(rBudgetSpending.getAugustSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -1025,7 +1084,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getSeptemberAmount() != null){
                             if(rBudgetSpending.getSeptemberSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getSeptemberAmount().add(rBudgetSpending.getSeptemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getSeptemberAmount().subtract(rBudgetSpending.getSeptemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -1054,7 +1113,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getOctoberAmount() != null){
                             if(rBudgetSpending.getOctoberSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getOctoberAmount().add(rBudgetSpending.getOctoberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getOctoberAmount().subtract(rBudgetSpending.getOctoberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -1083,7 +1142,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getNovemberAmount() != null){
                             if(rBudgetSpending.getNovemberSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getNovemberAmount().add(rBudgetSpending.getNovemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getNovemberAmount().subtract(rBudgetSpending.getNovemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
@@ -1112,7 +1171,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                         if (rBudgetSpending.getDecemberAmount() != null){
                             if(rBudgetSpending.getDecemberSpended() != null){
-                                BigDecimal totalAmount = rBudgetSpending.getDecemberAmount().add(rBudgetSpending.getDecemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                BigDecimal totalAmount = rBudgetSpending.getDecemberAmount().subtract(rBudgetSpending.getDecemberSpended()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                                 if (priceEstimation.getAmount().doubleValue() >= totalAmount.doubleValue()){
                                     outBudget = 2;
