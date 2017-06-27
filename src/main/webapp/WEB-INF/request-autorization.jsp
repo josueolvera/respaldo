@@ -239,7 +239,7 @@
                     <button class="btn btn-info" @click="openModalFindByFolio()">Buscar por folio</button>
                 </div>
                 <div class="col-md-4 text-right" style="margin-top: 20px">
-                    <label>Solicitante</label>
+                    <label>Nombre de Usuario</label>
                     <p>
                         <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
                     </p>
