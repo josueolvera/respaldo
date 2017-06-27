@@ -153,6 +153,13 @@ public class EmailDeliveryServiceImpl implements EmailDeliveryService {
                     new InternetAddress(users.getMail(), users.getUsername())
             );
 
+            for (EmailRecipients recipient : emailTemplate.getEmailRecipientsList()) {
+                message.addRecipient(
+                        getRecipientType(recipient.getRecipientType()),
+                        new InternetAddress(recipient.getEmailAddress(), recipient.getRecipientName())
+                );
+            }
+
             message.addRecipient(Message.RecipientType.BCC, new InternetAddress("gmorales@bidg.mx", "Gustavo Morales"));
             message.setSentDate(new Date());
 
