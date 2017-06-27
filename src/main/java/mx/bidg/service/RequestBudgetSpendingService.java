@@ -15,4 +15,5 @@ public interface RequestBudgetSpendingService {
     List<RequestBudgetSpending> findAll();
     boolean delete(RequestBudgetSpending requestBudgetSpending);
     BigDecimal getAmountDistributorCostCenter(Integer idDistributorCostCenter);
+    BigDecimal getAmountSpendedDistributorCostCenter(Integer idDistributorCostCenter);
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -47,7 +48,17 @@ public class RequestBudgetSpendingServiceImpl implements RequestBudgetSpendingSe
 
     @Override
     public BigDecimal getAmountDistributorCostCenter(Integer idDistributorCostCenter) {
+        Calendar date = Calendar.getInstance();
+        int año = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH) + 1;
+        return requestBudgetSpendingDao.getAmountDistributorCostCenter(idDistributorCostCenter, month, año);
+    }
 
-        return null;
+    @Override
+    public BigDecimal getAmountSpendedDistributorCostCenter(Integer idDistributorCostCenter) {
+        Calendar date = Calendar.getInstance();
+        int año = date.get(Calendar.YEAR);
+        int month = date.get(Calendar.MONTH) + 1;
+        return requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(idDistributorCostCenter, month, año);
     }
 }
