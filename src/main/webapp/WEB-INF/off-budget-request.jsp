@@ -79,7 +79,14 @@
             idRequest: ${idRequest},
             request: {},
             requestBoxUrl: ROOT_URL + "/siad/request-pending-autorization",
-            downloadUrl: ROOT_URL + '/estimations/attachment/download/'
+            downloadUrl: ROOT_URL + '/estimations/attachment/download/',
+            selectedEstimation: {
+                idEstimation: '',
+                idRequest: '',
+                justify: '',
+                rejectJustify: ''
+            },
+            amount: 0
         },
         methods: {
             arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -101,10 +108,47 @@
                 this.$http.get(ROOT_URL + "/requests/" + this.idRequest)
                     .success(function (data) {
                         this.request = data;
+                        this.getAmountByDCC(this.request.idDistributorCostCenter);
                     })
                     .error(function (data) {
 
                     });
+            },
+            getAmountByDCC: function (idDistributorCostCenter) {
+                this.$http.get(ROOT_URL + "/request-budget-spending/total-amount-month/" + idDistributorCostCenter).success(function (data) {
+                    this.amount = data;
+                }).error(function () {
+                   showAlert("Error al obtener el monto de presupuestado", {type: 3});
+                });
+            },
+            rejectRequest: function () {
+                this.selectedEstimation.idRequest = this.idRequest;
+                if (this.selectedEstimation.rejectJustify.length > 0) {
+                    this.$http.post(ROOT_URL + "/requests/reject", JSON.stringify(this.selectedEstimation)).success(function (data) {
+                        $("#justificarrechazo").modal("hide");
+                        showAlert("Solicitud rechazada con exito");
+                        this.getRequestInformation();
+                    }).error(function () {
+                        showAlert("Error al generar la solicitud", {type: 3});
+                    })
+
+                } else {
+                    showAlert("Es necesario llenar la justificación del rechazo", {type: 3});
+                }
+            },
+            sendToBuyManagement: function () {
+                this.$http.get(ROOT_URL + "/requests/send-to-buy-management/" + this.idRequest)
+                    .success(function (data) {
+                        $("#botonenviar").modal("hide");
+                        showAlert("Solicitud autorizada correctamente");
+                        this.getRequestInformation();
+                    }).error(function (data) {
+                        showAlert("Error al enviar al administrador de compras", {type: 3});
+                    });
+            },
+            openModalRechazar: function () {
+                this.selectedEstimation.rejectJustify = "";
+                $("#justificarrechazo").modal("show");
             }
         },
         filters: {
@@ -307,7 +351,7 @@
                                                              style="color: #EE0909; font-size: 100%"></span></h3>
                 </div>
                 <div class="col-md-4 text-right" >
-                    <h3>Presupuesto mensual: $$$</h3>
+                    <h3>Presupuesto mensual: {{amount | currency}}</h3>
                 </div>
             </div>
 
@@ -463,14 +507,14 @@
                 <div class="col-md-12">
                     <div class="col-md-9"></div>
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-success btn-sm"
+                        <button type="button" class="btn btn-success btn-sm" v-if="request.idRequestStatus == 4"
                                 data-toggle="modal" data-target="#botonenviar">
                             Aceptar
                         </button>
                     </div>
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-danger btn-sm"
-                                data-toggle="modal" data-target="#justificarrechazo">Rechazar
+                        <button type="button" class="btn btn-danger btn-sm" v-if="request.idRequestStatus == 4"
+                               @click="openModalRechazar()">Rechazar
                         </button>
                     </div>
                     <div class="col-md-1">
@@ -529,7 +573,7 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="sendToPaymanagment()">Aceptar</button>
+                            <button type="button" class="btn btn-success" @click="sendToBuyManagement()">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
