@@ -65,6 +65,26 @@ public class CDistributors implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Boolean saemFlag;
 
+    @Column(name = "ADDRESS")
+    @Size(max = 150)
+    @JsonView(JsonViews.Root.class)
+    private String address;
+
+    @Column(name = "CITY")
+    @Size(max = 100)
+    @JsonView(JsonViews.Root.class)
+    private String city;
+
+    @Column(name = "RFC")
+    @Size(max = 15)
+    @JsonView(JsonViews.Root.class)
+    private String rfc;
+
+    @Column(name = "POSTCODE")
+    @Size(max = 6)
+    @JsonView(JsonViews.Root.class)
+    private String postcode;
+
     @Column(name = "USERNAME")
     @Size(max = 70)
     @JsonView(JsonViews.Root.class)
@@ -161,6 +181,38 @@ public class CDistributors implements Serializable {
 
     public DateFormatsPojo creationDateFormats (){
         return new DateFormatsPojo(creationDate);
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getRfc() {
+        return rfc;
+    }
+
+    public void setRfc(String rfc) {
+        this.rfc = rfc;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
     }
 
     @JsonProperty("nameSql")
