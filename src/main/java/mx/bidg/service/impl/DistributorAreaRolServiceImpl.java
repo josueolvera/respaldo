@@ -53,4 +53,9 @@ public class DistributorAreaRolServiceImpl implements DistributorAreaRolService 
     public List<DistributorAreaRol> findRolByArea(Integer idArea) {
         return distributorAreaRolDao.findRolByArea(idArea);
     }
+
+    @Override
+    public DistributorAreaRol findByCombination(Integer idDistributor, Integer idArea, Integer idRole) {
+        return distributorAreaRolDao.findByCombination(idDistributor, idArea, idRole);
+    }
 }

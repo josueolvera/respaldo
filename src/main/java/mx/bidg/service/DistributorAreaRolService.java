@@ -1,6 +1,7 @@
 package mx.bidg.service;
 
 import mx.bidg.model.DistributorAreaRol;
+import mx.bidg.pojos.Distributor;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface DistributorAreaRolService {
     Boolean delete(DistributorAreaRol distributorAreaRol);
     List<DistributorAreaRol> findRolByDistributorArea(Integer idDistributor, Integer idArea);
     List<DistributorAreaRol> findRolByArea(Integer idArea);
+    DistributorAreaRol findByCombination(Integer idDistributor, Integer idArea, Integer idRole);
 }
