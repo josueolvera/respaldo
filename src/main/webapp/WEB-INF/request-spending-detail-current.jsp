@@ -259,31 +259,25 @@
                             $("#modalSelectEstimation").modal("hide");
                             $("#modalSendValidationFinantialPlaning").modal("show");
                         }else if(data == 3){
-                            $("#modalSelectEstimation").modal("hide");
-                            showAlert("Entro directo a compras");
+                            this.autorizeEstimation(data);
                         }
-                        //                        if (data == 2) {
-//
-//                            $("#modalSelectEstimation").modal("hide");
-//                            $("#modalSendValidationFinantialPlaning").modal("show");
-//
-//                        } else {
-//
-//                            this.$http.post(ROOT_URL + "/estimations/authorize-estimation", JSON.stringify(this.selectedEstimation)).success(function (data) {
-//                                showAlert("Solicitud autorizada");
-//                                $("#modalSelectEstimation").modal("hide");
-//                                this.getRequestInformation();
-//                            }).error(function () {
-//                                showAlert("Error al generar la solicitud", {type: 3});
-//                            });
-//
-//                        }
                     }).error(function () {
                         showAlert("Error al generar la solicitud", {type: 3});
                     })
                 } else {
                     showAlert("Es necesario llenar una justificacion", {type: 3});
                 }
+            },
+            autorizeEstimation: function (option) {
+                this.$http.post(ROOT_URL + "/estimations/authorize-estimation/"+option, JSON.stringify(this.selectedEstimation)).success(function (data) {
+                                showAlert("Solicitud autorizada");
+                                $("#modalSelectEstimation").modal("hide");
+                                $("#modalSendValidationLevel").modal("hide");
+                                $("#modalSendValidationFinantialPlaning").modal("hide");
+                                this.getRequestInformation();
+                            }).error(function () {
+                                showAlert("Error al generar la solicitud", {type: 3});
+                            });
             },
             rejectReuquestModal: function () {
                 this.selectedEstimation.idRequest = this.idRequest;
@@ -1018,7 +1012,7 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="history in requestHistory">
-                                    <td class="col-md-4">{{history.employee.fullName}}</td>
+                                    <td class="col-md-4">{{history.userResponsible.dwEmployee.employee.fullName}}</td>
                                     <td class="col-md-1">{{history.creationDateFormats.dateNumber}}</td>
                                     <td class="col-md-1">
                                         <span class="glyphicon glyphicon-triangle-bottom"
@@ -1312,7 +1306,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" data-toggle="collapse"
-                                    @click="selectedEstimations()">
+                                    @click="autorizeEstimation(2)">
                                 Aceptar
                             </button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -1344,7 +1338,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" data-toggle="collapse"
-                                    @click="selectedEstimations()">
+                                    @click="autorizeEstimation(1)">
                                 Aceptar
                             </button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -1445,7 +1439,7 @@
                                                         <label>Dirección:</label>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        {{distributor.acronyms}}
+                                                        {{distributor.address}}
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label>Dirección:</label>
@@ -1459,7 +1453,7 @@
                                                         <label>Ciudad:</label>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        {{distributor.acronyms}}
+                                                        {{distributor.city}}
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label>Ciudad:</label>
@@ -1473,7 +1467,7 @@
                                                         <label>Código postal:</label>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        {{distributor.acronyms}}
+                                                        {{distributor.postcode}}
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label>Código postal:</label>
@@ -1487,7 +1481,7 @@
                                                         <label>RFC:</label>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        {{distributor.acronyms}}
+                                                        {{distributor.rfc}}
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label>RFC:</label>
