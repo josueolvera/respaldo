@@ -380,7 +380,7 @@
                                     <td class="col-md-4"><b>Estado</b></td>
                                 </tr>
                                 <tr v-for="history in requestHistoy">
-                                    <td class="col-md-4">{{history.employee.fullName}}</td>
+                                    <td class="col-md-4">{{history.userResponsible.dwEmployee.employee.fullName}}</td>
                                     <td class="col-md-1">{{history.creationDateFormats.dateNumber}}</td>
                                     <td class="col-md-1">
                                         <span class="glyphicon glyphicon-triangle-bottom"
