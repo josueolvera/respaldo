@@ -52,6 +52,9 @@ public class RequestsController {
     private EmailTemplatesService emailTemplatesService;
 
     @Autowired
+    private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
     private ObjectMapper mapper;
 
     @Autowired
@@ -80,6 +83,9 @@ public class RequestsController {
 
     @Autowired
     private PayRequestsHistoryService payRequestsHistoryService;
+
+    @Autowired
+    private UsersService usersService;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session)
@@ -198,6 +204,14 @@ public class RequestsController {
         Users user = (Users) session.getAttribute("user");
         JsonNode node = mapper.readTree(data);
         Requests request = requestsService.rejectRequest(node.get("idRequest").asInt(), node.get("rejectJustify").asText(), user);
+
+        EmailTemplates emailTemplates = emailTemplatesService.findByName("reject_requests");
+        emailTemplates.addProperty("request", request);
+        emailTemplates.addProperty("usuario", user);
+
+        Users userRequest = usersService.findByUserName(request.getUserName());
+        emailDeliveryService.deliverEmailWithUser(emailTemplates, userRequest);
+
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
     }
 
@@ -211,6 +225,11 @@ public class RequestsController {
             request = requestsService.update(request);
 
             RequestHistory requestHistory = requestHistoryService.saveRequest(request, user);
+
+            EmailTemplates emailTemplates = emailTemplatesService.findByName("send_payment_notification");
+            emailTemplates.addProperty("request", request);
+            emailTemplates.addProperty("usuario", user);
+            emailDeliveryService.deliverEmail(emailTemplates);
         }
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
@@ -264,5 +283,32 @@ public class RequestsController {
     public ResponseEntity<String> findListByFolio(@RequestParam(name = "folio", required = false) String folio) throws IOException{
         List<Requests> requestsList = requestsService.findListByFolio(folio);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/send-to-buy-management/{idRequest}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> sendToBuyManagement(@PathVariable Integer idRequest, HttpSession session) throws IOException {
+        Users user = (Users) session.getAttribute("user");
+
+        Requests request = requestsService.sendToBuyMAnagementRequest(idRequest, user);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/authorized-amount-status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findBySatusAndAuthorizedAmount(HttpSession session)throws IOException{
+        Users user = (Users) session.getAttribute("user");
+
+        List<Requests> requests = requestsService.findByAuthorizedAmounAndStatus(user);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/send-to-financial-planing/{idRequest}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> sendToFinancialPlaning(@PathVariable Integer idRequest, HttpSession session) throws IOException {
+        Users user = (Users) session.getAttribute("user");
+
+        Requests request = requestsService.sendToFinancialPlaningRequest(idRequest, user);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
     }
 }
