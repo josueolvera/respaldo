@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -84,6 +85,15 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Autowired
     private RequestOrderDetailDao requestOrderDetailDao;
+
+    @Autowired
+    private PriceEstimationsDao getPriceEstimationsDao;
+
+    @Autowired
+    private RequestBudgetSpendingDao requestBudgetSpendingDao;
+
+    @Autowired
+    private DistributorAreaRolDao distributorAreaRolDao;
 
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
@@ -189,6 +199,14 @@ public class RequestsServiceImpl implements RequestsService {
 
         request.setRequestProductsList(requestProducts);
         request = requestsDao.save(request);
+
+        EmailTemplates emailTemplates = emailTemplatesService.findByName("new_request_notification");
+        emailTemplates.addProperty("request", request);
+        emailDeliveryService.deliverEmailWithUser(emailTemplates, user);
+
+        EmailTemplates emailTemplates1 = emailTemplatesService.findByName("request_autorization_notification");
+        emailTemplates1.addProperty("request", request);
+        emailDeliveryService.deliverEmail(emailTemplates1);
 
         requestHistoryService.saveRequest(request, user);
 
@@ -413,5 +431,199 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public List<Requests> findByStatus(Integer idRequestStatus) {
         return requestsDao.findByStatus(idRequestStatus);
+    }
+
+    @Override
+    public Requests sendToBuyMAnagementRequest(Integer idRequest, Users user) {
+        Requests request = requestsDao.findById(idRequest);
+
+        if(request != null){
+            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_COMPRA);
+            request = requestsDao.update(request);
+
+            requestHistoryService.saveRequest(request, user);
+
+
+
+            PriceEstimations priceEstimation = priceEstimationsDao.findAuthorized(request.getIdRequest());
+
+            Calendar calendar = Calendar.getInstance();
+            int año = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+
+            RequestBudgetSpending requestBudgetSpending = requestBudgetSpendingDao.findByIdDistributorCostCenterYear(request.getIdDistributorCostCenter(), año);
+
+            if (requestBudgetSpending != null){
+                switch (month){
+                    case 1:
+                        BigDecimal spendedAmount = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended = null;
+                        if (spendedAmount != null){
+                            totalSpended = spendedAmount.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setJanuarySpended(totalSpended);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 2:
+                        BigDecimal spendedAmount2 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended2 = null;
+                        if (spendedAmount2 != null){
+                            totalSpended2 = spendedAmount2.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended2 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setFebruarySpended(totalSpended2);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 3:
+                        BigDecimal spendedAmount3 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended3 = null;
+                        if (spendedAmount3 != null){
+                            totalSpended3 = spendedAmount3.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended3 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setMarchSpended(totalSpended3);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 4:
+                        BigDecimal spendedAmount4 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended4 = null;
+                        if (spendedAmount4 != null){
+                            totalSpended4 = spendedAmount4.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended4 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setAprilSpended(totalSpended4);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 5:
+                        BigDecimal spendedAmount5 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended5 = null;
+                        if (spendedAmount5 != null){
+                            totalSpended5 = spendedAmount5.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended5 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setMaySpended(totalSpended5);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 6:
+                        BigDecimal spendedAmount6 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended6 = null;
+                        if (spendedAmount6 != null){
+                            totalSpended6 = spendedAmount6.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended6 = priceEstimation.getAmount();
+                        }
+
+                        requestBudgetSpending.setJuneSpended(totalSpended6);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 7:
+                        BigDecimal spendedAmount7 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended7 = null;
+                        if (spendedAmount7 != null){
+                            totalSpended7 = spendedAmount7.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended7 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setJulySpended(totalSpended7);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 8:
+                        BigDecimal spendedAmount8 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended8 = null;
+                        if (spendedAmount8 != null){
+                            totalSpended8 = spendedAmount8.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended8 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setAugustSpended(totalSpended8);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 9:
+                        BigDecimal spendedAmount9 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended9 = null;
+                        if (spendedAmount9 != null){
+                            totalSpended9 = spendedAmount9.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended9 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setSeptemberSpended(totalSpended9);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 10:
+                        BigDecimal spendedAmount10 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended10 = null;
+                        if (spendedAmount10 != null){
+                            totalSpended10 = spendedAmount10.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended10 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setOctoberSpended(totalSpended10);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 11:
+                        BigDecimal spendedAmount11 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended11 = null;
+                        if (spendedAmount11 != null){
+                            totalSpended11 = spendedAmount11.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended11 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setNovemberSpended(totalSpended11);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+                    case 12:
+                        BigDecimal spendedAmount12 = requestBudgetSpendingDao.getAmountExpendedDistributorCostCenter(request.getIdDistributorCostCenter(), month, año);
+                        BigDecimal totalSpended12 = null;
+                        if (spendedAmount12 != null){
+                            totalSpended12 = spendedAmount12.add(priceEstimation.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        }else{
+                            totalSpended12 = priceEstimation.getAmount();
+                        }
+                        requestBudgetSpending.setDecemberSpended(totalSpended12);
+                        requestBudgetSpendingDao.update(requestBudgetSpending);
+                        break;
+
+                }
+            }
+
+        }
+        return request;
+    }
+
+    @Override
+    public List<Requests> findByAuthorizedAmounAndStatus(Users user) {
+
+        List<Requests> requests = null;
+        if(user != null){
+            if (user.getDwEmployee() != null){
+                DistributorAreaRol distributorAreaRol = distributorAreaRolDao.findByCombination(user.getDwEmployee().getDwEnterprise().getDistributor().getIdDistributor(), user.getDwEmployee().getDwEnterprise().getArea().getIdArea(), user.getDwEmployee().getRole().getIdRole());
+                requests = requestsDao.findByTotalExpended(distributorAreaRol.getAmountRequest());
+            }
+        }
+
+        return requests;
+    }
+
+    @Override
+    public Requests sendToFinancialPlaningRequest(Integer idRequest, Users user) {
+        Requests request = requestsDao.findById(idRequest);
+
+        if (request != null){
+            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_VALIDACION_POR_PLANEACION);
+            request = requestsDao.update(request);
+
+            requestHistoryService.saveRequest(request, user);
+
+            EmailTemplates emailTemplates = emailTemplatesService.findByName("financial_p_autorization_notification");
+            emailTemplates.addProperty("request", request);
+            emailDeliveryService.deliverEmail(emailTemplates);
+        }
+        return request;
     }
 }

@@ -53,4 +53,7 @@ public interface RequestsService {
     Requests payRequest(Integer idRequest);
     List<Requests> findListByFolio(String folio);
     List<Requests> findByStatus(Integer idRequestStatus);
+    Requests sendToBuyMAnagementRequest(Integer idRequest, Users user);
+    List<Requests> findByAuthorizedAmounAndStatus(Users user);
+    Requests sendToFinancialPlaningRequest(Integer idRequest, Users user);
 }
