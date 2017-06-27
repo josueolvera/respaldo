@@ -212,13 +212,13 @@ public class PriceEstimationsController {
         }
     }
 
-    @RequestMapping(value = "/authorize-estimation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> modify(@RequestBody String data, HttpSession seesion) throws Exception {
+    @RequestMapping(value = "/authorize-estimation/{option}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> authorizeEstimation(@PathVariable Integer option, @RequestBody String data, HttpSession seesion) throws Exception {
         Users user = (Users) seesion.getAttribute("user");
 
         JsonNode node = mapper.readTree(data);
 
-        boolean outBudget = estimationsService.authorizePriceEstimations(node.get("idRequest").asInt(), node.get("idEstimation").asInt(), node.get("justify").asText(), user);
+        boolean outBudget = estimationsService.authorizePriceEstimations(node.get("idRequest").asInt(), node.get("idEstimation").asInt(), node.get("justify").asText(), user, option);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outBudget),
                 HttpStatus.OK
@@ -235,6 +235,12 @@ public class PriceEstimationsController {
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outBudget),
                 HttpStatus.OK
         );
+    }
+
+    @RequestMapping(value = "/validate-by-request/{idRequest}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> vslidateByRequests(@PathVariable Integer idRequest)throws IOException{
+        int outBudget = estimationsService.validateByRequest(idRequest);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outBudget), HttpStatus.OK);
     }
 
 }
