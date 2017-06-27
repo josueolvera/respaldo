@@ -391,6 +391,21 @@ public class SIADController {
         model.setViewName("accounts-payables-detail");
         return model;
     }
+
+    @RequestMapping(value = "/requests-level-authorization", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadRequestLevelAutorization() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("requests-level-authorization");
+        return model;
+    }
+
+    @RequestMapping(value = "/authorization-level-request", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView requestLevelAuthorization(@RequestParam(name = "idRequest") Integer idRequest) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.setViewName("authorization-level-request");
+        return model;
+    }
 }
 
 
