@@ -13,6 +13,7 @@ import mx.bidg.model.Requests;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.*;
+import org.springframework.expression.spel.ast.*;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -151,7 +152,9 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     @Override
     public List<Requests> findListByFolio(String folio) {
         Criteria criteria = createEntityCriteria();
-        return criteria.add(Restrictions.ilike("folio", folio, MatchMode.ANYWHERE)).list();
+        return criteria
+                .add(Restrictions.eq("idRequestStatus", 8))
+                .add(Restrictions.ilike("folio", folio, MatchMode.ANYWHERE)).list();
     }
     @Override
     public List<Requests> findByStatus(Integer idRequestStatus) {
@@ -172,4 +175,37 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
                 .list();
     }
 
+    @Override
+    public List<Requests> findAllWithStatusEight(){
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRequestStatus", 8))
+                .list();
+    }
+
+    @Override
+    public List<Integer> findAllIdRequestsWithStatusEight() {
+        return createEntityCriteria().setProjection(Projections.distinct(Projections.property("idDistributorCostCenter")))
+                .add(Restrictions.eq("idRequestStatus", 8))
+                .list();
+    }
+
+    @Override
+    public List countByDistributor(Integer idDistributor) {
+
+        return  createEntityCriteria()
+                .setProjection(Projections.projectionList()
+                        .add(Projections.countDistinct("idRequest"))
+                        .add(Projections.sum("totalExpended")))
+                .add(Restrictions.eq("idRequestStatus", 8))
+                .createCriteria("distributorCostCenter")
+                .add(Restrictions.eq("idDistributor", idDistributor)).list();
+    }
+
+    @Override
+    public List<Requests> findByDistributor(Integer idDistributor) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRequestStatus", 8))
+                .createCriteria("distributorCostCenter")
+                .add(Restrictions.eq("idDistributor", idDistributor)).list();
+    }
 }

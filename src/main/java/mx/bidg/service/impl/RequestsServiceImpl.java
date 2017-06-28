@@ -13,6 +13,7 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
+import mx.bidg.pojos.Distributor;
 import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -94,6 +95,12 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Autowired
     private DistributorAreaRolDao distributorAreaRolDao;
+
+    @Autowired
+    private CDistributorsDao cDistributorsDao;
+
+    @Autowired
+    private DistributorsDetailBanksDao distributorsDetailBanksDao;
 
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
@@ -625,5 +632,50 @@ public class RequestsServiceImpl implements RequestsService {
             emailDeliveryService.deliverEmail(emailTemplates);
         }
         return request;
+    }
+
+    @Override
+    public List<Requests> findAllWithStatusEight(){
+        return requestsDao.findAllWithStatusEight();
+    }
+
+    @Override
+    public List<CDistributors> findRequestNumberByDistributor() {
+
+        List<Integer> idsDCCs = requestsDao.findAllIdRequestsWithStatusEight();
+
+        List<Integer> idDistributors = distributorCostCenterDao.idDistributors(idsDCCs);
+
+        List<CDistributors> distributors = new ArrayList<>();
+
+        if(!idDistributors.isEmpty()){
+            for (Integer idDistributor : idDistributors){
+                CDistributors cDistributor = cDistributorsDao.findById(idDistributor);
+
+                if (cDistributor != null){
+                    List requests = requestsDao.countByDistributor(cDistributor.getIdDistributor());
+                    BigDecimal amountBank = distributorsDetailBanksDao.sumByDistributor(cDistributor.getIdDistributor());
+                    if (!requests.isEmpty()){
+                        Object[] projection = (Object[]) requests.get(0);
+                        if (projection != null){
+                            Long count = (Long) projection[0];
+                            BigDecimal amount = (BigDecimal) projection[1];
+
+                            cDistributor.setRequestNumber(count);
+                            cDistributor.setAmountExpended(amount);
+                            cDistributor.setAccountBalance(amountBank);
+                            distributors.add(cDistributor);
+                        }
+                    }
+                }
+            }
+        }
+
+        return distributors;
+    }
+
+    @Override
+    public List<Requests> findByDistributor(Integer idDistributors) {
+        return requestsDao.findByDistributor(idDistributors);
     }
 }

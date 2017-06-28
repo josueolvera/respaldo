@@ -30,4 +30,8 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     List<Requests> findListByFolio(String folio);
     List<Requests> findByStatus(Integer idRequestStatus);
     List<Requests> findByTotalExpended(BigDecimal authorizedAmount);
+    List<Requests> findAllWithStatusEight();
+    List<Integer> findAllIdRequestsWithStatusEight();
+    List countByDistributor(Integer idDistributor);
+    List<Requests> findByDistributor(Integer idDistributor);
 }

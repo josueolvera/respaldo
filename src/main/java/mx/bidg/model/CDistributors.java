@@ -3,6 +3,7 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -94,6 +95,18 @@ public class CDistributors implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private Long requestNumber;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private BigDecimal amountExpended;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private  BigDecimal accountBalance;
 
     public CDistributors() {
     }
@@ -213,6 +226,30 @@ public class CDistributors implements Serializable {
 
     public void setPostcode(String postcode) {
         this.postcode = postcode;
+    }
+
+    public Long getRequestNumber() {
+        return requestNumber;
+    }
+
+    public void setRequestNumber(Long requestNumber) {
+        this.requestNumber = requestNumber;
+    }
+
+    public BigDecimal getAmountExpended() {
+        return amountExpended;
+    }
+
+    public void setAmountExpended(BigDecimal amountExpended) {
+        this.amountExpended = amountExpended;
+    }
+
+    public BigDecimal getAccountBalance() {
+        return accountBalance;
+    }
+
+    public void setAccountBalance(BigDecimal accountBalance) {
+        this.accountBalance = accountBalance;
     }
 
     @JsonProperty("nameSql")

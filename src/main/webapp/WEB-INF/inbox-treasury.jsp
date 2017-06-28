@@ -52,9 +52,9 @@
             ready: function () {
                 this.getUserInSession();
                 this.activateDateTimePickerStart();
-                //this.getDistributors();
+                this.getDistributors();
                 this.obtainDetailBanks();
-                this.obtainCurrentRequests();
+                this.obtainDistributorsWithRequests();
             },
             data: {
                 startDate: '',
@@ -64,15 +64,17 @@
                 userInSession: {},
                 userActive: '',
                 distributors: [],
+                distributorsWithRequests: [],
                 bussinessLine: {
                     acronyms: ''
                 },
                 requestsPD: [],
+                distributorSelected: '',
                 detailBanks: [],
                 requestsDates: [],
                 banks:[],
                 pD2:{
-                  requestsSelected: []
+                    requestsSelected: []
                 },
                 folio: '',
                 arregloPd: [],
@@ -83,9 +85,9 @@
                     applicationDate: ''
                 },
                 selectedOptions:{
-                  bank: {
-                      idBank: 0
-                  }
+                    bank: {
+                        idBank: 0
+                    }
                 },
                 objectBanks: [],
                 distributor: ''
@@ -97,7 +99,7 @@
                     })
                 },
                 findByFolio: function () {
-                    this.requestsPD = null;
+                    this.requestsPD = [];
                     this.$http.get(ROOT_URL + "/requests/folios?folio=" + this.folio).success(function (data) {
                         this.requestsPD = data;
                     })
@@ -105,54 +107,52 @@
                 obtainCurrentRequests: function () {
                     this.requestsPD = [];
                     //this.distributor = idDistributor;
-                    this.$http.get(ROOT_URL + "/requests/all-status-eight").success(function (data) {
-                      var jsonObjectIndex = {};
-                      var self = this;
-                      data.forEach(function (pD2) {
-                          if(isNaN(pD2.distributorCostCenter)){
-                              jsonObjectIndex[pD2.distributorCostCenter._id] = pD2.distributorCostCenter;
-                          }else{
-                              pD2.distributorCostCenter = jsonObjectIndex[pD2.distributorCostCenter];
-                          }
-                      });
-                      data.forEach(function (pD2) {
-                         if (isNaN(pD2.requestCategory)){
-                             jsonObjectIndex[pD2.requestCategory._id] = pD2.requestCategory;
-                         }else{
-                             pD2.requestCategory = jsonObjectIndex[pD2.requestCategory];
-                         }
-                      });
-                      data.forEach(function (request) {
-                          this.distributors.forEach(function (element) {
-                              if(this.distributors == []) {
-                                  this.distributors.push(request.distributorCostCenter.distributors);
-                              }else{
-                                  if (request.distributorCostCenter.idDistributor != element.idDistributor)
-                                      this.distributors.push(request.distributorCostCenter.distributors);
-                              }
-                          });
-                      });
-                      this.requestsPD = data;
-                  }).error(function () {
-                      showAlert("Error al obtener información de Requests", {type: 3});
-                  });
+                    this.$http.get(ROOT_URL + "/requests/distributor/" + this.distributorSelected).success(function (data) {
+                        var jsonObjectIndex = {};
+                        var self = this;
+                        data.forEach(function (pD2) {
+                            if(isNaN(pD2.distributorCostCenter)){
+                                jsonObjectIndex[pD2.distributorCostCenter._id] = pD2.distributorCostCenter;
+                            }else{
+                                pD2.distributorCostCenter = jsonObjectIndex[pD2.distributorCostCenter];
+                            }
+                        });
+                        data.forEach(function (pD2) {
+                            if (isNaN(pD2.requestCategory)){
+                                jsonObjectIndex[pD2.requestCategory._id] = pD2.requestCategory;
+                            }else{
+                                pD2.requestCategory = jsonObjectIndex[pD2.requestCategory];
+                            }
+                        });
+                        this.requestsPD = data;
+                    }).error(function () {
+                        showAlert("Error al obtener información de Requests", {type: 3});
+                    });
+                },
+                obtainDistributorsWithRequests: function () {
+                    this.distributorsWithRequests = [];
+                    this.$http.get(ROOT_URL + "/requests/distributors-with-requests").success(function (data) {
+                        this.distributorsWithRequests = data;
+                    }).error(function () {
+                       showAlert("Error al obtener la información.", {type: 3})
+                    });
                 },
                 payRequestsSelected: function () {
                     this.requestsPD = [];
-                  this.$http.post(ROOT_URL + "/requests/pay-selected", JSON.stringify(this.pD2)).success(function (data) {
-                      this.arregloPd = data;
-                      var self = this;
-                      showAlert("Se pagaron con exito las solicitudes!");
-                      $("#modalPagar").modal("hide");
-                      this.obtainCurrentRequests(this.distributor);
-                      this.total = 0;
-                      this.obtainDetailBanks();
-                      this.totalParcial = 0;
-                      this.pD2.requestsSelected = [];
-                      this.distributor = '';
-                  }).error(function () {
-                      showAlert("Error en la solicitud, vuelva a intentarlo", {type: 3});
-                  });
+                    this.$http.post(ROOT_URL + "/requests/pay-selected", JSON.stringify(this.pD2)).success(function (data) {
+                        this.arregloPd = data;
+                        var self = this;
+                        showAlert("Se pagaron con exito las solicitudes!");
+                        $("#modalPagar").modal("hide");
+                        this.obtainCurrentRequests(this.distributorSelected);
+                        this.total = 0;
+                        this.obtainDetailBanks();
+                        this.totalParcial = 0;
+                        this.pD2.requestsSelected = [];
+                        this.obtainDistributorsWithRequests();
+                    }).error(function () {
+                        showAlert("Error en la solicitud, vuelva a intentarlo", {type: 3});
+                    });
                 },
                 obtainDetailBanks: function () {
                     var self = this;
@@ -197,7 +197,7 @@
                         }else {
                             showAlert("Debes seleccionar un banco por cada solicitud", {type: 3});
                         }
-                  }
+                    }
                 },
                 getUserInSession: function () {
                     this.$http.get(ROOT_URL + "/user")
@@ -298,7 +298,7 @@
                         showAlert("Debes ingresar la fecha de aplicaciòn", {type: 3});
                     }
                 }
-        },
+            },
 
             filters: {
                 separate: function (value) {
@@ -320,112 +320,112 @@
     </script>
 
     <script type="text/javascript">
-       function mueveReloj(){
-           momentoActual = new Date()
-           dia = momentoActual.getDate()
-           if(dia < 10)
-               dia = "0" + dia;
-           mes = momentoActual.getMonth()+1
-           if(mes < 10)
-               mes = "0" + mes;
-           anio = momentoActual.getFullYear()
+        function mueveReloj(){
+            momentoActual = new Date()
+            dia = momentoActual.getDate()
+            if(dia < 10)
+                dia = "0" + dia;
+            mes = momentoActual.getMonth()+1
+            if(mes < 10)
+                mes = "0" + mes;
+            anio = momentoActual.getFullYear()
 
-           hora = momentoActual.getHours()
-           if(hora < 10)
-               hora = "0" + hora
-           minuto = momentoActual.getMinutes()
-           if(minuto < 10)
-               minuto = "0" + minuto;
-           segundo = momentoActual.getSeconds()
-           if(segundo < 10)
-               segundo = "0" + segundo;
+            hora = momentoActual.getHours()
+            if(hora < 10)
+                hora = "0" + hora
+            minuto = momentoActual.getMinutes()
+            if(minuto < 10)
+                minuto = "0" + minuto;
+            segundo = momentoActual.getSeconds()
+            if(segundo < 10)
+                segundo = "0" + segundo;
 
-           horaImprimible = dia + " / " + mes + " / " + anio + "           " + hora + ":" + minuto + ":" + segundo
+            horaImprimible = dia + " / " + mes + " / " + anio + "           " + hora + ":" + minuto + ":" + segundo
 
-           document.form_reloj.reloj.value = horaImprimible
+            document.form_reloj.reloj.value = horaImprimible
 
-           setTimeout("mueveReloj()",1000)
-       }
+            setTimeout("mueveReloj()",1000)
+        }
     </script>
     </jsp:attribute>
 
     <jsp:body>
         <div id="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-4">
-                    <h1>Tesorería</h1>
-                </div>
-
-                <div class="col-md-3" >
-                    <form>
-                        <div class="col-md-12" style="margin-top: 10px">
-                            <label>Búsqueda por folio</label>
-                            <input class="form-control" v-model="folio">
-                        </div>
-
-                    </form>
-                </div>
-                <div class="col-md-2">
-                    <button style="margin-top: 20%" class="btn btn-info" @click="findByFolio()">Buscar</button>
-                </div>
-                <div class="col-md-3 text-right" style="margin-top: 10px">
-                    <label>Solicitante</label>
-                    <p>
-                        <span class="label label-default">{{userActive}}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <br>
-        <div class="panel panel-default" style="background-color: #F2F2F2">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="col-md-12" style="background-color: #aaaaaa">
-                        <h5 style="text-align: center"><b style="color: black">TOTAL DE FLUJO DE EFECTIVO</b></h5>
+                    <div class="col-md-4">
+                        <h1>Tesorería</h1>
                     </div>
-                    <table class="table table-striped">
-                        <thead>
-                        <th class="col-md-12 text-center">
+
+                    <div class="col-md-3" >
+                        <form>
+                            <div class="col-md-12" style="margin-top: 10px">
+                                <label>Búsqueda por folio</label>
+                                <input class="form-control" v-model="folio">
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="col-md-2">
+                        <button style="margin-top: 20%" class="btn btn-info" @click="findByFolio()">Buscar</button>
+                    </div>
+                    <div class="col-md-3 text-right" style="margin-top: 10px">
+                        <label>Solicitante</label>
+                        <p>
+                            <span class="label label-default">{{userActive}}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="panel panel-default" style="background-color: #F2F2F2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="background-color: #aaaaaa">
+                            <h5 style="text-align: center"><b style="color: black">TOTAL DE FLUJO DE EFECTIVO</b></h5>
+                        </div>
+                        <table class="table table-striped">
+                            <thead>
+                            <th class="col-md-12 text-center">
                                 <body onload="mueveReloj()">
                                 <form name="form_reloj">
                                     <input type="text" name="reloj"
                                            style="background-color:transparent; border-width:0; text-align: center" size="30">
                                 </form>
                                 </body>
-                        </th>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="col-md-12" style="text-align: center"><b>TOTAL: </b>{{total | currency}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                            </th>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="col-md-12" style="text-align: center"><b>TOTAL: </b>{{total | currency}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!--CUENTAS-->
-        <div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="col-md-12" style="background-color: #aaaaaa">
-                            <h5><b style="color: black">CUENTAS</b></h5>
-                        </div>
-                        <div class="panel-body">
-                            <div class="col-md-12">
-                                <div class="col-md-3">
-                                    <label>Selecciona tipo de Cuentas</label>
-                                    <select v-model="selectedOptions.distributor" class="form-control"
-                                            required @change="distributorChanged">
-                                        <option v-for="distributor in distributors"
-                                                :value="distributor">
-                                            {{ distributor.distributorName }}
-                                        </option>
-                                    </select>
-                                </div>
+            <!--CUENTAS-->
+            <div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="col-md-12" style="background-color: #aaaaaa">
+                                <h5><b style="color: black">CUENTAS</b></h5>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        <label>Selecciona tipo de Cuentas</label>
+                                        <select v-model="selectedOptions.distributor" class="form-control"
+                                                required @change="distributorChanged">
+                                            <option v-for="distributor in distributors"
+                                                    :value="distributor">
+                                                {{ distributor.distributorName }}
+                                            </option>
+                                        </select>
+                                    </div>
 
-                                <div class="col-md-3 text-left" style="padding-left: 0">
+                                    <div class="col-md-3 text-left" style="padding-left: 0">
                                         <label>De:</label>
                                         <div class="form-group">
                                             <div class="input-group date" id="startDate">
@@ -436,9 +436,9 @@
                                                 </span>
                                             </div>
                                         </div>
-                                </div>
+                                    </div>
 
-                                <div class="col-md-3 text-left">
+                                    <div class="col-md-3 text-left">
                                         <label>A:</label>
                                         <div class="form-group">
                                             <div class="input-group date" id="endDate">
@@ -449,11 +449,12 @@
                                                 </span>
                                             </div>
                                         </div>
-                                </div>
+                                    </div>
 
-                                <div class="col-md-3 text-left">
-                                    <div>
-                                        <button style="margin-top: 10%" type="button" class="btn btn-success">Generar</button>
+                                    <div class="col-md-3 text-left">
+                                        <div>
+                                            <button style="margin-top: 10%" type="button" class="btn btn-success">Generar</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -461,32 +462,82 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!--EMPIEZA COLPASO DE EMPRESAS-->
-        <div v-for="pd in requestsPD">
-            <div v-for="(index, bussinessLine) in distributors" v-if="pd.distributorCostCenter.idDistributor == bussinessLine.idDistributor">
-                <div id="accordion-{{index}}" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="card">
-                        <div class="card-header" role="tab" id="headingONE-{{index}}">
-                            <div class="panel-heading" style="background-color: #aaaaaa">
-                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{index}}" href="#collapseONE-{{index}}"
-                                   aria-expanded="false" aria-controls="collapseONE-{{index}}">
-                                    <div class="col-md-4">
-                                        <p><b style="color: black">{{bussinessLine.distributorName}}</b></p>
-                                    </div>
-                                    <div class="col-md-4 text-right">
-                                        <label style="color: darkgreen">Saldo en cuenta: </label>
-                                    </div>
-                                    <div class="col-md-4 text-right">
-                                        <label style="color: darkred">Total a pagar: {{totalParcial | currency}}</label>
+            <div class="col-md-12">
+                <div class="col-md-4">
+                    <label>Seleccione un distribuidor</label>
+                    <select class="form-control" v-model="distributorSelected" @change="obtainCurrentRequests()">
+                        <option></option>
+                        <option v-for="distributor in distributors" :value="distributor.idDistributor">
+                            {{distributor.idDistributor}} - {{distributor.distributorName}}
+                        </option>
+                    </select>
+                </div>
+                <br>
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="card">
+                            <div class="card-header" role="tab" id="headingOne">
+                                <div class="panel-heading" style="background-color: #6ccd51">
+                                    <a class="collapsed" data-toggle="collapse" data-parent="#collapseOne" href="#collapseOne"
+                                       aria-expanded="false" aria-controls="collapseOne">
+                                        <div class="col-md-11 text-center">
+                                            <b style="color: black">Buzon de solicitudes</b>
+                                        </div>
+                                    </a>
+                                    <div class="col-md-1 text-right">
+                                        <label class="circleyel"></label>
                                     </div>
                                     <br>
-                                </a>
+                                </div>
+                            </div>
+                            <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="card-block">
+                                    <div class="panel-body">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <table class="table table-striped">
+                                                    <tr>
+                                                        <td class="col-md-3 text-center"><b>Distribuidor</b></td>
+                                                        <td class="col-md-3 text-center"><b>Saldo en cuenta</b></td>
+                                                        <td class="col-md-3 text-center"><b>Total a pagar</b></td>
+                                                        <td class="col-md-3 text-center"><b>Numero de solicitudes</b></td>
+                                                    </tr>
+                                                    <tr v-for="DWR in distributorsWithRequests">
+                                                        <td class="col-md-3 text-center">{{DWR.idDistributor}} - {{DWR.distributorName}}</td>
+                                                        <td class="col-md-3 text-center">{{DWR.accountBalance | currency}}</td>
+                                                        <td class="col-md-3 text-center">{{DWR.amountExpended | currency}}</td>
+                                                        <td class="col-md-3 text-center">{{DWR.requestNumber}}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div id="collapseONE-{{index}}" class="collapse" role="tabpanel" aria-labelledby="headingONE-{{index}}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12" v-if="requestsPD.length > 0">
+                <div class="panel panel-default">
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingThree">
+                            <div class="panel-heading" style="background-color: #7AC5CD">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThree"
+                                   aria-expanded="false" aria-controls="collapseThree">
+                                    <div class="col-md-11 text-center">
+                                        <b style="color: black">Pago de solicitudes</b>
+                                    </div>
+                                </a>
+                                <div class="col-md-1 text-right">
+                                    <label class="circleyel"></label>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
                             <div class="card-block">
                                 <div class="panel-body">
                                     <div class="col-md-12">
@@ -507,11 +558,11 @@
                                             </div>
                                         </div>
                                         <br>
-                                        <div class="table-body flex-row flex-content">
-                                            <div class="row table-row">
+                                        <div class="table-body flex-row flex-content-{{index}}">
+                                            <div class="row table-row" v-for="(index2, pd) in requestsPD | orderBy 'requestsDates.scheduledDateFormats.dateNumber'">
 
-                                                <div class="col-xs-1">{{pd.folio}}</div>
-                                                <div class="col-xs-2">{{pd.distributorCostCenter.distributors.acronyms}}</div>
+                                                <div class="col-xs-1 text-center">{{pd.folio}}</div>
+                                                <div class="col-xs-2 text-center">{{pd.distributorCostCenter.distributors.acronyms}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</div>
@@ -531,7 +582,7 @@
                                                     <button class="btn btn-default btn-sm"
                                                             data-toggle="tooltip" data-placement="top" title="Reprogramar"
                                                             @click="getRescheduleData(pd)">
-                                                            <span class="glyphicon glyphicon-time"></span>
+                                                        <span class="glyphicon glyphicon-time"></span>
                                                     </button>
                                                 </div>
 
@@ -548,97 +599,93 @@
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
-        </div>
-        <!--TERMINA COLAPSO DE EMPRESAS-->
 
-
-        <%-- Modal para re-programar --%>
-        <div class="modal fade" id="modalReprogramar" tabindex="-1" role="dialog" aria-labelledby=""
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Reprogramar</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <label>Fecha para reprogramar</label>
-                                <div class='input-group date' id='dateApplication'>
-                                    <input type='text' class="form-control" v-model="application">
-                                    <span class="input-group-addon" @click="activarTimePickerApplicationDate()">
+                <%-- Modal para re-programar --%>
+            <div class="modal fade" id="modalReprogramar" tabindex="-1" role="dialog" aria-labelledby=""
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Reprogramar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <label>Fecha para reprogramar</label>
+                                    <div class='input-group date' id='dateApplication'>
+                                        <input type='text' class="form-control" v-model="application">
+                                        <span class="input-group-addon" @click="activarTimePickerApplicationDate()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" @click="reschedulePD">Reprogramar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <%-- Modal para pagar --%>
+            <div class="modal fade" id="modalPagar" tabindex="-1" role="dialog" aria-labelledby=""
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Comprobante de pago de solicitudes</h4>
+                        </div>
+                        <div class="modal-body" style="overflow:scroll;">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <th class="col-xs-1 text-center"><b>Folio</b></th>
+                                        <th class="col-xs-1 text-center"><b>Centro de Costos</b></th>
+                                        <th class="col-xs-1 text-center"><b>Tipo de Solicitud</b></th>
+                                        <th class="col-xs-1 text-center"><b>Beneficiario</b></th>
+                                        <th class="col-xs-1 text-center"><b>Banco</b></th>
+                                        <th class="col-xs-1 text-center"><b>Cuenta</b></th>
+                                        <th class="col-xs-1 text-center"><b>CLABE</b></th>
+                                        <th class="col-xs-1 text-center"><b>Núm. Factura</b></th>
+                                        <th class="col-xs-1 text-center"><b>Monto con IVA</b></th>
+                                        <th class="col-xs-2 text-center"><b>Fecha de pago</b></th>
+                                        <th class="col-xs-1 text-center"><b>Banco</b></th>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="pd in pD2.requestsSelected">
+                                            <td class="col-xs-1 text-center">{{pd.folio}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.distributorCostCenter.distributors.acronyms}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.bank.acronyms}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountNumber}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountClabe}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva | currency}}</td>
+                                            <td class="col-xs-2 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.bank.banks.acronyms}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        <br>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" @click="reschedulePD">Reprogramar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                <%-- Modal para pagar --%>
-        <div class="modal fade" id="modalPagar" tabindex="-1" role="dialog" aria-labelledby=""
-             aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Comprobante de pago de solicitudes</h4>
-                    </div>
-                    <div class="modal-body" style="overflow:scroll;">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-striped">
-                                    <thead>
-                                    <th class="col-xs-1 text-center"><b>Folio</b></th>
-                                    <th class="col-xs-1 text-center"><b>Centro de Costos</b></th>
-                                    <th class="col-xs-1 text-center"><b>Tipo de Solicitud</b></th>
-                                    <th class="col-xs-1 text-center"><b>Beneficiario</b></th>
-                                    <th class="col-xs-1 text-center"><b>Banco</b></th>
-                                    <th class="col-xs-1 text-center"><b>Cuenta</b></th>
-                                    <th class="col-xs-1 text-center"><b>CLABE</b></th>
-                                    <th class="col-xs-1 text-center"><b>Núm. Factura</b></th>
-                                    <th class="col-xs-1 text-center"><b>Monto con IVA</b></th>
-                                    <th class="col-xs-2 text-center"><b>Fecha de pago</b></th>
-                                    <th class="col-xs-1 text-center"><b>Banco</b></th>
-                                    </thead>
-                                    <tbody>
-                                    <tr v-for="pd in pD2.requestsSelected">
-                                        <td class="col-xs-1 text-center">{{pd.folio}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.distributorCostCenter.distributors.acronyms}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.bank.acronyms}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountNumber}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountClabe}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva | currency}}</td>
-                                        <td class="col-xs-2 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.bank.banks.acronyms}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="boton-pagar" class="btn btn-success" @click="payRequestsSelected()">Pagar</button>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        <button type="button" id="boton-pagar" class="btn btn-success" @click="payRequestsSelected()">Pagar</button>
-                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
         <%--termina archivos de cotizacion--%>
     </jsp:body>
 </t:template>

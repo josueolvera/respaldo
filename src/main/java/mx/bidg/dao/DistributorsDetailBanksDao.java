@@ -2,6 +2,7 @@ package mx.bidg.dao;
 
 import mx.bidg.model.DistributorsDetailBanks;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -12,4 +13,5 @@ public interface DistributorsDetailBanksDao extends InterfaceDao<DistributorsDet
     List<DistributorsDetailBanks> findAll();
     List<DistributorsDetailBanks> getByDistributor(int id);
     DistributorsDetailBanks findByAccountNumber(String accountNumber);
+    BigDecimal sumByDistributor(Integer idDistributor);
 }

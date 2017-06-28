@@ -46,10 +46,6 @@ public class DistributorsDetailBanks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idDistributor;
 
-    @Column(name = "ID_ACCOUNT_BANK_TYPE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccountBankType;
-
     @Size(max = 15)
     @Column(name = "ACCOUNT_NUMBER")
     @JsonView(JsonViews.Root.class)
@@ -58,7 +54,7 @@ public class DistributorsDetailBanks implements Serializable {
     @Size(max = 20)
     @Column(name = "ACCOUNT_CLABE")
     @JsonView(JsonViews.Root.class)
-    private String accountclabe;
+    private String accountClabe;
 
     @Basic(optional = false)
     @NotNull
@@ -94,11 +90,6 @@ public class DistributorsDetailBanks implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CDistributors distributors;
-
-    @JoinColumn(name = "ID_ACCOUNT_BANK_TYPE", referencedColumnName = "ID_ACCOUNT_BANK_TYPE")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CAccountBanksType accountBanksType;
 
     //CONSTRUNCTORES ZARCO
 
@@ -148,14 +139,6 @@ public class DistributorsDetailBanks implements Serializable {
         this.idDistributor = idDistributor;
     }
 
-    public Integer getIdAccountBankType() {
-        return idAccountBankType;
-    }
-
-    public void setIdAccountBankType(Integer idAccountBankType) {
-        this.idAccountBankType = idAccountBankType;
-    }
-
     public String getAccountNumber() {
         return accountNumber;
     }
@@ -164,12 +147,12 @@ public class DistributorsDetailBanks implements Serializable {
         this.accountNumber = accountNumber;
     }
 
-    public String getAccountclabe() {
-        return accountclabe;
+    public String getAccountClabe() {
+        return accountClabe;
     }
 
-    public void setAccountclabe(String accountclabe) {
-        this.accountclabe = accountclabe;
+    public void setAccountClabe(String accountClabe) {
+        this.accountClabe = accountClabe;
     }
 
     public BigDecimal getAmount() {
@@ -220,33 +203,41 @@ public class DistributorsDetailBanks implements Serializable {
         this.distributors = distributors;
     }
 
-    public CAccountBanksType getAccountBanksType() {
-        return accountBanksType;
-    }
-
-    public void setAccountBanksType(CAccountBanksType accountBanksType) {
-        this.accountBanksType = accountBanksType;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof DistributorsDetailBanks)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         DistributorsDetailBanks that = (DistributorsDetailBanks) o;
 
-        if (getIdDistributorDetailBank() != null ? !getIdDistributorDetailBank().equals(that.getIdDistributorDetailBank()) : that.getIdDistributorDetailBank() != null)
+        if (idBank != null ? !idBank.equals(that.idBank) : that.idBank != null) return false;
+        if (idCurrency != null ? !idCurrency.equals(that.idCurrency) : that.idCurrency != null) return false;
+        if (idDistributor != null ? !idDistributor.equals(that.idDistributor) : that.idDistributor != null)
             return false;
-        if (getDistributors() != null ? !getDistributors().equals(that.getDistributors()) : that.getDistributors() != null)
+        if (accountNumber != null ? !accountNumber.equals(that.accountNumber) : that.accountNumber != null)
             return false;
-        return getAccountBanksType() != null ? getAccountBanksType().equals(that.getAccountBanksType()) : that.getAccountBanksType() == null;
+        if (accountClabe != null ? !accountClabe.equals(that.accountClabe) : that.accountClabe != null) return false;
+        if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
+        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (banks != null ? !banks.equals(that.banks) : that.banks != null) return false;
+        if (currencies != null ? !currencies.equals(that.currencies) : that.currencies != null) return false;
+        return distributors != null ? distributors.equals(that.distributors) : that.distributors == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getIdDistributorDetailBank() != null ? getIdDistributorDetailBank().hashCode() : 0;
-        result = 31 * result + (getDistributors() != null ? getDistributors().hashCode() : 0);
-        result = 31 * result + (getAccountBanksType() != null ? getAccountBanksType().hashCode() : 0);
+        int result = idBank != null ? idBank.hashCode() : 0;
+        result = 31 * result + (idCurrency != null ? idCurrency.hashCode() : 0);
+        result = 31 * result + (idDistributor != null ? idDistributor.hashCode() : 0);
+        result = 31 * result + (accountNumber != null ? accountNumber.hashCode() : 0);
+        result = 31 * result + (accountClabe != null ? accountClabe.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (banks != null ? banks.hashCode() : 0);
+        result = 31 * result + (currencies != null ? currencies.hashCode() : 0);
+        result = 31 * result + (distributors != null ? distributors.hashCode() : 0);
         return result;
     }
 
@@ -257,16 +248,14 @@ public class DistributorsDetailBanks implements Serializable {
                 ", idBank=" + idBank +
                 ", idCurrency=" + idCurrency +
                 ", idDistributor=" + idDistributor +
-                ", idAccountBankType=" + idAccountBankType +
                 ", accountNumber='" + accountNumber + '\'' +
-                ", accountclabe='" + accountclabe + '\'' +
+                ", accountClabe='" + accountClabe + '\'' +
                 ", amount=" + amount +
                 ", creationDate=" + creationDate +
                 ", username='" + username + '\'' +
                 ", banks=" + banks +
                 ", currencies=" + currencies +
                 ", distributors=" + distributors +
-                ", accountBanksType=" + accountBanksType +
                 '}';
     }
 }

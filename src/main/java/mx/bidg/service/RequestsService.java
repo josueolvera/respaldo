@@ -8,6 +8,7 @@ package mx.bidg.service;
 import java.util.HashMap;
 import java.util.List;
 
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.EmailTemplates;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
@@ -56,4 +57,7 @@ public interface RequestsService {
     Requests sendToBuyMAnagementRequest(Integer idRequest, Users user);
     List<Requests> findByAuthorizedAmounAndStatus(Users user);
     Requests sendToFinancialPlaningRequest(Integer idRequest, Users user);
+    List<Requests> findAllWithStatusEight();
+    List<CDistributors> findRequestNumberByDistributor();
+    List<Requests> findByDistributor(Integer idDistributors);
 }

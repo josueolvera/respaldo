@@ -250,11 +250,9 @@ public class RequestsController {
 
     @RequestMapping(value = "/distributor/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByDistributor(@PathVariable Integer idDistributor) throws IOException{
-        List<Integer> idsDistributorsCostCenter = distributorCostCenterService.getIdsDCCByDistributor(idDistributor);
-        List<Requests> requestsList = new ArrayList<>();
-        if (idsDistributorsCostCenter != null) {
-            requestsList = requestsService.findByDCC(idsDistributorsCostCenter);
-            for (Requests request : requestsList) {
+        List<Requests> requestsList = requestsService.findByDistributor(idDistributor);
+        if (!requestsList.isEmpty()){
+            for (Requests request : requestsList){
                 request.setPurchaseInvoices(purchaseInvoicesService.findByIdRequest(request.getIdRequest()));
                 request.setRequestsDates(requestsDatesService.getByRequest(request.getIdRequest()));
             }
@@ -282,6 +280,12 @@ public class RequestsController {
     @RequestMapping(value =  "/folios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findListByFolio(@RequestParam(name = "folio", required = false) String folio) throws IOException{
         List<Requests> requestsList = requestsService.findListByFolio(folio);
+        if (!requestsList.isEmpty()){
+            for (Requests request : requestsList){
+                request.setPurchaseInvoices(purchaseInvoicesService.findByIdRequest(request.getIdRequest()));
+                request.setRequestsDates(requestsDatesService.getByRequest(request.getIdRequest()));
+            }
+        }
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
     }
 
@@ -310,5 +314,12 @@ public class RequestsController {
         Requests request = requestsService.sendToFinancialPlaningRequest(idRequest, user);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributors-with-requests", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAllWithStatus8() throws IOException{
+        List<CDistributors> distributorsList = requestsService.findRequestNumberByDistributor();
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsList), HttpStatus.OK);
     }
 }

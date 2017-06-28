@@ -207,4 +207,22 @@ public class DistributorCostCenterDaoImpl extends AbstractDao<Integer, Distribut
                 .list();
 
     }
+
+    @Override
+    public List<Integer> idDistributors(List<Integer> idsDCCs) {
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunction = Restrictions.disjunction();
+
+        if (!idsDCCs.isEmpty()){
+            for (Integer idDistributorCostCenter : idsDCCs){
+                disjunction.add(Restrictions.eq("idDistributorCostCenter", idDistributorCostCenter));
+            }
+        }
+
+        return criteria
+                .setProjection(Projections.distinct(Projections.property("idDistributor")))
+                .add(disjunction)
+                .list();
+    }
 }

@@ -4,9 +4,11 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DistributorsDetailBanksDao;
 import mx.bidg.model.DistributorsDetailBanks;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -52,6 +54,14 @@ public class DistributorsDetailBanksDaoImpl extends AbstractDao<Integer, Distrib
         criteria.add(Restrictions.eq("accountNumber",accountNumber));
 
         return (DistributorsDetailBanks) criteria.uniqueResult();
+    }
+
+    @Override
+    public BigDecimal sumByDistributor(Integer idDistributor) {
+        return (BigDecimal) createEntityCriteria()
+                .setProjection(Projections.sum("amount"))
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .uniqueResult();
     }
 
 }
