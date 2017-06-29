@@ -221,4 +221,10 @@ public class DistributorCostCenterController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts), HttpStatus.OK);
 
     }
+
+    @RequestMapping(value ="/cost-center/{idCostCenter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByCostCenter(@PathVariable Integer idCostCenter)throws IOException{
+        List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorCostCenters), HttpStatus.OK);
+    }
 }
