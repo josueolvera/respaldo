@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mx.bidg.dao.BudgetsDao;
+import mx.bidg.dao.CBudgetNatureDao;
 import mx.bidg.model.*;
 import mx.bidg.pojos.*;
 import mx.bidg.service.BudgetsService;
@@ -31,6 +32,9 @@ public class BudgetsServiceImpl implements BudgetsService {
     @Autowired
     BudgetsDao budgetsDao;
 
+    @Autowired
+    CBudgetNatureDao cBudgetNatureDao;
+
     @Override
     public Budgets saveBudget(Budgets budgets) {
         return budgetsDao.save(budgets);
@@ -39,6 +43,22 @@ public class BudgetsServiceImpl implements BudgetsService {
     @Override
     public List<Budgets> findAll() {
         return budgetsDao.findAll();
+    }
+
+    @Override
+    public List<CBudgetNature> findBudgetNatureByType(Integer idBudgetType) {
+        List<Integer> idsBudgetsNature = budgetsDao.findBudgetNatureByType(idBudgetType);
+
+        List<CBudgetNature> cBudgetNatureList = new ArrayList<>();
+        if (!idsBudgetsNature.isEmpty()){
+            for (Integer idBudgetNature : idsBudgetsNature){
+                CBudgetNature cBudgetNature = cBudgetNatureDao.findById(idBudgetNature);
+                if (cBudgetNature != null){
+                    cBudgetNatureList.add(cBudgetNature);
+                }
+            }
+        }
+        return cBudgetNatureList;
     }
 
     @Override
