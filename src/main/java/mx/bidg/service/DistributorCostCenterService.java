@@ -24,4 +24,5 @@ public interface DistributorCostCenterService {
 
     List<AccountingAccounts> getIdsAccountingAccountsByCostCenter(Integer idCostCenter);
     List<Integer> getIdsDCCByDistributor(Integer idDistributor);
+    DistributorCostCenter findByCostCenterAndAA(Integer idCostCenter, Integer idAccountingAccounts);
 }

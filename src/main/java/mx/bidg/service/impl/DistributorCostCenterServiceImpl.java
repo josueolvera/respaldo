@@ -109,4 +109,9 @@ public class DistributorCostCenterServiceImpl implements DistributorCostCenterSe
     public  List<Integer> getIdsDCCByDistributor(Integer idDistributor){
         return distributorCostCenterDao.getIdsDCCByDistributor(idDistributor);
     }
+
+    @Override
+    public DistributorCostCenter findByCostCenterAndAA(Integer idCostCenter, Integer idAccountingAccounts) {
+        return distributorCostCenterDao.findByIdCostCenterAndAA(idCostCenter, idAccountingAccounts);
+    }
 }
