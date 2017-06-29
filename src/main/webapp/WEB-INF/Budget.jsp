@@ -55,13 +55,6 @@
                 return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
             };
         </script>
-        <script>
-            $('.selectpicker').selectpicker({
-                style: 'btn-info',
-                size: 4
-            });
-
-        </script>
         <script type="text/javascript">
             var vm = new Vue({
                 el: '#content',
@@ -144,7 +137,16 @@
                     costCenterStatus: [],
                     flag: false,
                     costCenter: null,
-                    year: null
+                    year: null,
+                    conceptBudgetData: {
+                        idCostCenter: null,
+                        idAccountingAccount: null,
+                        idBudgetNature: null,
+                        idBudgetType: null,
+                        idConceptBudget: null
+                    },
+                    distributorCostCenter: [],
+                    conceptsSelectize: ''
                 },
                 methods: {
                     getUserInSession: function () {
@@ -568,6 +570,81 @@
                         this.flag = false;
                         $("#budgetsStatus").modal("hide");
                         $("#budgetInformation").modal("show");
+                    },
+                    findDisCCByCC: function () {
+                        this.$http.get(ROOT_URL + "/distributor-cost-center/cost-center/" + this.selected.costCenter.idCostCenter).success(function (data) {
+                            this.distributorCostCenter = data;
+                        });
+                    },
+                    openModalHighConcept: function () {
+                        this.conceptBudgetData.idCostCenter = null;
+                        this.conceptBudgetData.idAccountingAccount = null;
+                        this.conceptBudgetData.idBudgetNature = null;
+                        this.conceptBudgetData.idBudgetType = null;
+                        this.findDisCCByCC();
+                        this.findAllConcept();
+                        $("#modalConcept").modal("show");
+                    },
+                    findAllConcept: function () {
+                        this.$http.get(ROOT_URL + "/concept-budget").success(function (data) {
+                            this.createSelectForConcepts(data);
+                        })
+                    },
+                    createSelectForConcepts : function (concepts) {
+                        var self = this;
+                        this.conceptsSelectize = $('#concept-budget').selectize({
+                            maxItems: 1,
+                            valueField: 'idConceptBudget',
+                            labelField: 'nameConcept',
+                            searchField: 'nameConcept',
+                            options: concepts,
+                            create: function (input, callback) {
+                                self.$http.post(ROOT_URL + '/concept-budget/add', {
+                                    budgetConcept: input
+                                }).success(function (data){
+                                    showAlert('Concepto guardado');
+                                    self.findAllConcept();
+                                    callback(data);
+                                }).error(function (){
+                                    callback();
+                                });
+                            },
+                            render: {
+                                option_create: function(data, escape) {
+                                    return '<div data-selectable class="create">' +
+                                        'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                        '</div>'
+                                }
+                            }
+                        });
+
+                        return this.conceptsSelectize;
+                    },
+                    addConcept: function () {
+                        this.conceptBudgetData.idCostCenter = this.selected.costCenter.idCostCenter;
+                        this.conceptBudgetData.idBudgetNature = this.selected.budgetNature.idBudgetNature;
+                        this.conceptBudgetData.idBudgetType = this.selected.budgetType.idBudgetType;
+                        this.conceptBudgetData.idConceptBudget = this.conceptsSelectize[0].value;
+
+                        if (this.conceptBudgetData.idCostCenter != null
+                            && this.conceptBudgetData.idBudgetNature != null
+                            && this.conceptBudgetData.idBudgetType != null
+                            && this.conceptBudgetData.idAccountingAccount != null
+                            && this.conceptBudgetData.idConceptBudget.length > 0){
+                            this.$http.post(ROOT_URL + "/budgets/save", JSON.stringify(this.conceptBudgetData)).success(function () {
+                                this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
+                                $("#modalConcept").modal("hide");
+                                showAlert("Concepto agregado exitosamente");
+                            }).error(function () {
+                                showAlert("Error al guardar el concepto", {type: 3});
+                            });
+                        }else{
+                            showAlert("Es necesario llenar todos los campos", {type: 3});
+                        }
+
+                    },
+                    closeModalConcept: function () {
+                        $("#modalConcept").modal("hide");
                     }
                 },
                 filters: {
@@ -656,13 +733,6 @@
                 }
             }
         </style>
-        <script>
-            $(function () {
-                $('.multiselect-ui').multiselect({
-                    includeSelectAllOption: true
-                });
-            });
-        </script>
     </jsp:attribute>
     <jsp:body>
         <div id="content">
@@ -789,6 +859,12 @@
                             <div class="col-md-7" v-if="budgets.length > 0">
                                 <h3 align="right">Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b>
                                 </h3>
+                            </div>
+                            <div class="col-md-2" v-if="budgets.length > 0">
+                                <button style="margin-top: 15px" class="btn btn-info" type="button"
+                                        @click="openModalHighConcept()">
+                                    Alta de concepto
+                                </button>
                             </div>
 
                            <!-- <div class="col-md-2"
@@ -1346,6 +1422,47 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" @click="cancelBudgetStatus()">Cancelar
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modalConcept" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" aria-label="Close"
+                                        @click="closeModalConcept">
+                                    <span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title"><b>Alta de concepto</b></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-4">
+                                            <label>Centro de costos</label>
+                                            <input class="form-control" v-model="selected.costCenter.name" disabled>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Cuenta contable</label>
+                                            <select class="form-control"v-model="conceptBudgetData.idAccountingAccount">
+                                                <option v-for="disCC in distributorCostCenter" :value="disCC.idAccountingAccount">
+                                                    {{disCC.accountingAccounts.acronyms}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Concepto</label>
+                                            <select class="form-control" id="concept-budget">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-success" @click="addConcept()">Aceptar</button>
+                                <button class="btn btn-default" @click="closeModalConcept">Cancelar</button>
                             </div>
                         </div>
                     </div>
