@@ -14,6 +14,7 @@ import mx.bidg.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
@@ -245,6 +246,15 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     public List<Budgets> findByIdDistributor(Integer idDistributorCostCenter) {
         Criteria criteria = createEntityCriteria();
         return criteria.add(Restrictions.eq("idDistributorCostCenter",idDistributorCostCenter)).list();
+    }
+
+    @Override
+    public List<Integer> findBudgetNatureByType(Integer idBudgetType) {
+        Criteria criteria = createEntityCriteria();
+        return criteria
+                .setProjection(Projections.distinct(Projections.property("idBudgetNature")))
+                .add(Restrictions.eq("idBudgetType", idBudgetType))
+                .list();
     }
 
 }
