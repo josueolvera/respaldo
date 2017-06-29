@@ -39,4 +39,5 @@ public interface BudgetsService {
     List<Budgets> findByIdDistributor(Integer idDistributorCostCenter);
 
     List<Budgets> findAll();
+    List<CBudgetNature> findBudgetNatureByType(Integer idBudgetType);
 }

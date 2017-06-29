@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import mx.bidg.config.JsonViews;
@@ -436,6 +438,72 @@ public class BudgetController {
         EmailTemplates emailTemplate = emailTemplatesService.findByName("budget_modify_required");
         emailTemplate.addProperty("costCenter",c);
         return  ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(emailTemplate));
+    }
+
+    @RequestMapping(value = "/budget-nature/{idBudgetType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findBudgetNatureByType(@PathVariable Integer idBudgetType)throws IOException{
+        List<CBudgetNature> cBudgetNatureList = budgetsService.findBudgetNatureByType(idBudgetType);
+        return new  ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cBudgetNatureList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> saveDistributorCostCenterBudget(@RequestBody String data, HttpSession session)throws IOException{
+
+        Users user = (Users) session.getAttribute("user");
+        JsonNode node = mapper.readTree(data);
+
+        DistributorCostCenter distributorCostCenter = distributorCostCenterService.findByCostCenterAndAA(node.get("idCostCenter").asInt(), node.get("idAccountingAccount").asInt());
+        Budgets budget = new Budgets();
+
+        budget.setBudgetNature(new CBudgetNature(node.get("idBudgetNature").asInt()));
+        budget.setBudgetType(new CBudgetTypes(node.get("idBudgetType").asInt()));
+        budget.setConceptBudget( new CConceptBudget(node.get("idConceptBudget").asInt()));
+        budget.setCreationDate(LocalDateTime.now());
+        budget.setDistributorCostCenter(distributorCostCenter);
+        budget.setIdAccessLevel(1);
+        budget.setUsername(user.getUsername());
+
+        budget = budgetsService.saveBudget(budget);
+
+        RealBudgetSpending realBudgetSpending = new RealBudgetSpending();
+
+        Calendar fecha = Calendar.getInstance();
+
+        realBudgetSpending.setUsername(user.getUsername());
+        realBudgetSpending.setCreationDate(LocalDateTime.now());
+        realBudgetSpending.setYear(fecha.get(Calendar.YEAR));
+        realBudgetSpending.setCurrency(new CCurrencies(1));
+        realBudgetSpending.setBudget(budget);
+        realBudgetSpending.setJanuaryBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setFebruaryBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setMarchBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setAprilBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setMayBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setJuneBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setJulyBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setAugustBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setSeptemberBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setOctoberBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setNovemberBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setDecemberBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setJanuaryExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setFebruaryExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setMarchExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setAprilExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setMayExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setJuneExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setJulyExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setAugustExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setSeptemberExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setOctoberExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setNovemberExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setDecemberExpendedAmount(new BigDecimal(0.00));
+        realBudgetSpending.setTotalBudgetAmount(new BigDecimal(0.00));
+        realBudgetSpending.setTotalExpendedAmount(new BigDecimal(0.00));
+
+        realBudgetSpending = realBudgetSpendingService.save(realBudgetSpending);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(realBudgetSpending), HttpStatus.OK);
     }
 
 }
