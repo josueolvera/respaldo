@@ -350,10 +350,10 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         row.createCell(33).setCellValue("BONO CUMPLIMIENTO");
         row.createCell(34).setCellValue("BONO POR NUEVO INGRESO");
         row.createCell(35).setCellValue("APOYO A PASAJE");
-        row.createCell(36).setCellValue("COMISION TOTAL REAL");
-        row.createCell(37).setCellValue("COMISION PAGADA CSB");
-        row.createCell(38).setCellValue("COMISION TOTAL FINAL");
-        row.createCell(39).setCellValue("PAGO");
+        row.createCell(36).setCellValue("COMISION NORMAL");
+        row.createCell(37).setCellValue("COMISIÓN 3% CSB");
+        row.createCell(38).setCellValue("COMISION MENOS 3%");
+        row.createCell(39).setCellValue("TOTAL A PAGAR");
         row.createCell(40).setCellValue("ESTATUS");
 
         //Implementacion del estilo
