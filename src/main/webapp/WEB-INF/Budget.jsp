@@ -626,6 +626,10 @@
                         this.conceptBudgetData.idBudgetType = this.selected.budgetType.idBudgetType;
                         this.conceptBudgetData.idConceptBudget = this.conceptsSelectize[0].value;
 
+                        if (this.selected.budgetType.idBudgetType == 2) {
+                            this.conceptBudgetData.idBudgetNature = 0;
+                        }
+
                         if (this.conceptBudgetData.idCostCenter != null
                             && this.conceptBudgetData.idBudgetNature != null
                             && this.conceptBudgetData.idBudgetType != null
