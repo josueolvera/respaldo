@@ -130,6 +130,14 @@ public class CommissionAmountGroup implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal adjustment;
 
+    @Column(name = "CSB_COMMISSION")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal csbCommission;
+
+    @Column(name = "TOTAL_COMMISSION")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal totalCommission;
+
     public CommissionAmountGroup() {
     }
 
@@ -333,6 +341,22 @@ public class CommissionAmountGroup implements Serializable {
 
     public void setAdjustment(BigDecimal adjustment) {
         this.adjustment = adjustment;
+    }
+
+    public BigDecimal getCsbCommission() {
+        return csbCommission;
+    }
+
+    public void setCsbCommission(BigDecimal csbCommission) {
+        this.csbCommission = csbCommission;
+    }
+
+    public BigDecimal getTotalCommission() {
+        return totalCommission;
+    }
+
+    public void setTotalCommission(BigDecimal totalCommission) {
+        this.totalCommission = totalCommission;
     }
 
     @Override
