@@ -81,7 +81,9 @@
                         }
                         if (this.typeFile.idSapFile == 10) {
                             this.checkExistingCommission();
-
+                        }
+                        if (this.typeFile.idSapFile == 11) {
+                            this.checkExistingCsbPayCommission();
                         }
                     },
                     getFileFormData: function () {
@@ -120,6 +122,16 @@
 
                                 });
                     },
+                    saveCsbPaymentCommission: function () {
+                        $('#checkExistigCsbPayModal').modal('hide');
+                        this.$http.post(ROOT_URL + '/csb-pay-commission/excel', this.getFileFormData())
+                            .success(function (data) {
+                                this.updateTypeFile();
+                            })
+                            .error(function (data) {
+
+                            });
+                    },
                     updateSapSales: function () {
                         $('#checkExistigSaleModal').modal('hide');
                         this.$http.post(ROOT_URL + '/sap-sale/update-excel', this.getFileFormData())
@@ -128,6 +140,15 @@
                                 })
                                 .error(function (data) {
                                 });
+                    },
+                    updateCsbPaymentCommission: function () {
+                        $('#checkExistigCsbPayModal').modal('hide');
+                        this.$http.post(ROOT_URL + '/csb-pay-commission/update-excel', this.getFileFormData())
+                            .success(function (data) {
+                                this.updateTypeFile();
+                            })
+                            .error(function (data) {
+                            });
                     },
                     checkExistingSale: function () {
                         this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', this.getFileFormData())
@@ -142,6 +163,20 @@
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
                                 });
+                    },
+                    checkExistingCsbPayCommission: function () {
+                        this.$http.post(ROOT_URL + '/csb-pay-commission/check-existing-sale', this.getFileFormData())
+                            .success(function (data) {
+                                if (data == true) {
+                                    $('#checkExistigCsbPayModal').modal('show');
+                                } else {
+                                    this.saveCsbPaymentCommission();
+                                }
+                            })
+                            .error(function (data) {
+                                this.errorData = data;
+                                $('#errorModal').modal('show');
+                            });
                     },
                     checkExistingOutsourcing: function () {
                         this.$http.post(ROOT_URL + '/outsourcing/check-existing-outsourcing', this.getFileFormData())
@@ -325,7 +360,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group col-md-12" v-if="typeFile.idSapFile > 8 || typeFile.idSapFile == 5" >
+                                        <div class="form-group col-md-12" v-if="typeFile.idSapFile == 5 || typeFile.idSapFile == 9 || typeFile.idSapFile == 10" >
                                             <div class="col-md-12">
                                                 <div class="col-md-12">
                                                     <label>
@@ -420,6 +455,21 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" @click="saveSapSales">Guardar</button>
                             <button type="button" class="btn btn-primary" @click="updateSapSales">Sobreescribir</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="checkExistigCsbPayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Algunas de estas ventas ya existen. ¿Desea sobreescribir los registros o guardarlos como nuevos?.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" @click="saveCsbPaymentCommission">Guardar</button>
+                            <button type="button" class="btn btn-primary" @click="updateCsbPaymentCommission">Sobreescribir</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
