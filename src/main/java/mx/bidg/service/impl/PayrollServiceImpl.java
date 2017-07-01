@@ -1086,7 +1086,7 @@ public class PayrollServiceImpl implements PayrollService {
                 }
             }
         }
-        EmployeesHistory backOfficeT = employeesHistoryDao.findByIdEmployeeAndLastRegister(3220);
+
         Double totalDeTotales = 0.00;
         if (gmtNec != null) {
             totalDeTotales += gmtNec.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -1137,21 +1137,6 @@ public class PayrollServiceImpl implements PayrollService {
             rowRhmas.createCell(1).setCellValue("NOMINA IMSS EXTRANJEROS");
             rowRhmas.createCell(2).setCellValue(new BigDecimal(rhmasAsimilados).doubleValue());
         }
-        if (backOfficeT != null) {
-            if (backOfficeT.getSalary() != null) {
-                BigDecimal salary = backOfficeT.getSalary().divide(new BigDecimal(2), 2, BigDecimal.ROUND_HALF_UP);
-                BigDecimal percentage = new BigDecimal(0.1);
-                BigDecimal commission = salary.multiply(percentage).setScale(2, BigDecimal.ROUND_HALF_UP);
-                BigDecimal total = salary.add(commission);
-
-                totalDeTotales += total.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-
-                Row rowBackOffice = hoja4.createRow(10);
-
-                rowBackOffice.createCell(1).setCellValue("RHMAS ASIMILABLE");
-                rowBackOffice.createCell(2).setCellValue(total.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            }
-        }
 
         Row rowTotal = hoja4.createRow(11);
 
@@ -1184,71 +1169,14 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux7 = 1;
 
-        EmployeesHistory backOffice = employeesHistoryDao.findByIdEmployeeAndLastRegister(3220);
-
         List<Integer> idsEmployeeExtranjeros = outsourcingDao.getExtranjerosOnly();
 
         Double sum66 = 0.0;
         Double sum67 = 0.0;
         Double sum68 = 0.0;
 
-        row7 = hoja7.createRow(aux7);
-
-        if (backOffice.getIdEmployee() != null) {
-            row7.createCell(0).setCellValue(backOffice.getIdEmployee());
-        }
-        if (backOffice.getFullName() != null) {
-            row7.createCell(1).setCellValue(backOffice.getFullName());
-        }
-        row7.createCell(2).setCellValue("AS");
-        CRoles role = cRolesDao.findByIdRole(backOffice.getIdRole());
-        if (role != null) {
-            row7.createCell(3).setCellValue(role.getRoleName());
-        }
-        Accounts accounts = accountsDao.findById(backOffice.getIdAccount());
-        if (accounts != null) {
-            if (accounts.getBank() != null) {
-                row7.createCell(4).setCellValue(accounts.getBank().getBankName());
-            }
-            if (accounts.getAccountNumber() != null) {
-                row7.createCell(5).setCellValue(accounts.getAccountNumber());
-            }
-            if (accounts.getAccountClabe() != null) {
-                row7.createCell(6).setCellValue(accounts.getAccountClabe());
-            }
-        }
-        CBranchs cBranchs = cBranchsDao.findById(backOffice.getIdBranch());
-        if (cBranchs != null) {
-            if (cBranchs.getBranchShort() != null) {
-                row7.createCell(7).setCellValue(cBranchs.getBranchShort());
-            }
-        }
-        if (backOffice.getRfc() != null) {
-            row7.createCell(8).setCellValue(backOffice.getRfc());
-        }
-        if (backOffice.getCurp() != null) {
-            row7.createCell(9).setCellValue(backOffice.getCurp());
-        }
-        if (backOffice.getSalary() != null) {
-            BigDecimal salary = backOffice.getSalary().divide(new BigDecimal(2), 2, BigDecimal.ROUND_HALF_UP);
-
-            row7.createCell(10).setCellValue(salary.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            sum66 += salary.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-
-            BigDecimal percentage = new BigDecimal(0.1);
-            BigDecimal commission = salary.multiply(percentage).setScale(2, BigDecimal.ROUND_HALF_UP);
-
-            row7.createCell(11).setCellValue(commission.doubleValue());
-            sum67 += commission.doubleValue();
-
-            BigDecimal total = salary.add(commission);
-
-            row7.createCell(12).setCellValue(total.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
-            sum68 += total.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-        }
-
         if (!idsEmployeeExtranjeros.isEmpty()) {
-            aux7 = 2;
+            aux7 = 1;
             for (Integer idEmployee : idsEmployeeExtranjeros) {
                 if (idEmployee != 2580) {
                     row7 = hoja7.createRow(aux7);
