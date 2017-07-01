@@ -133,9 +133,10 @@ public class CsbPayCommissionServiceImpl implements CsbPayCommissionService {
 
             if (datePayment != null){
                 Date date = datePayment.getDateCellValue();
-
-                LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() ;
-                csbPayCommission.setPaymentDate(localDate);
+                if(date != null){
+                    LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() ;
+                    csbPayCommission.setPaymentDate(localDate);
+                }
             }
 
             if (percentajeSale != null){
@@ -191,8 +192,10 @@ public class CsbPayCommissionServiceImpl implements CsbPayCommissionService {
                     if (datePayment != null){
                         Date date = datePayment.getDateCellValue();
 
-                        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() ;
-                        csbPayCommission.setPaymentDate(localDate);
+                        if (date != null){
+                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() ;
+                            csbPayCommission.setPaymentDate(localDate);
+                        }
                     }
 
                     if (percentajeSale != null){
@@ -228,8 +231,10 @@ public class CsbPayCommissionServiceImpl implements CsbPayCommissionService {
                     if (datePayment != null){
                         Date date = datePayment.getDateCellValue();
 
-                        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() ;
-                        newCsbPayCommission.setPaymentDate(localDate);
+                        if (date != null){
+                            LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() ;
+                            newCsbPayCommission.setPaymentDate(localDate);
+                        }
                     }
 
                     if (percentajeSale != null){
