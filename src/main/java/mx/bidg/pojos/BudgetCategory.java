@@ -13,6 +13,7 @@ import java.util.List;
 public class BudgetCategory {
     private Integer idBudgetCategory;
     private String name;
+    private String firstLevel;
     private boolean show;
     private BigDecimal januaryCategoryAmount;
     private BigDecimal februaryCategoryAmount;
@@ -36,9 +37,10 @@ public class BudgetCategory {
         this.show = false;
     }
 
-    public BudgetCategory(Integer idBudgetCategory, String name) {
+    public BudgetCategory(Integer idBudgetCategory, String name, String firstLevel) {
         this.idBudgetCategory = idBudgetCategory;
         this.name = name;
+        this.firstLevel = firstLevel;
     }
 
     public Integer getIdBudgetCategory() {
@@ -55,6 +57,14 @@ public class BudgetCategory {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getFirstLevel() {
+        return firstLevel;
+    }
+
+    public void setFirstLevel(String firstLevel) {
+        this.firstLevel = firstLevel;
     }
 
     public BigDecimal getJanuaryCategoryAmount() {
@@ -457,6 +467,7 @@ public class BudgetCategory {
         return "BudgetCategory{" +
                 "idBudgetCategory=" + idBudgetCategory +
                 ", name='" + name + '\'' +
+                ", firstLevel='" + firstLevel + '\'' +
                 ", realBudgetSpendings=" + realBudgetSpendings +
                 ", budgetSubcategories=" + budgetSubcategories +
                 '}';

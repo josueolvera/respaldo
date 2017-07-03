@@ -228,10 +228,13 @@ public class BudgetHelper {
                         CostCenter costCenter = new CostCenter();
                         costCenter.setIdCostCenter(distributorCostCenter.getIdCostCenter());
                         costCenter.setName(distributorCostCenter.getCostCenter().getName());
+                        costCenter.setAcronym(distributorCostCenter.getCostCenter().getAcronym());
 
                         BudgetCategory budgetCategory = new BudgetCategory();
                         budgetCategory.setName(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getBudgetCategory());
+                        budgetCategory.setFirstLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-000-0000"));
                         budgetCategory.setIdBudgetCategory(distributorCostCenter.getAccountingAccounts().getIdBudgetCategory());
+
                         budgetCategory.setRealBudgetSpendings(new ArrayList<>());
                         budgetCategory.setBudgetSubcategories(new ArrayList<>());
                         List<Budgets> budgetsList = budgetsService.findByIdDistributorCostCenter(distributorCostCenter.getIdDistributorCostCenter(), null, null);
@@ -326,10 +329,13 @@ public class BudgetHelper {
                         CostCenter costCenter = new CostCenter();
                         costCenter.setIdCostCenter(distributorCostCenter.getIdCostCenter());
                         costCenter.setName(distributorCostCenter.getCostCenter().getName());
+                        costCenter.setAcronym(distributorCostCenter.getCostCenter().getAcronym());
 
                         BudgetCategory budgetCategory = new BudgetCategory();
                         budgetCategory.setName(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getBudgetCategory());
+                        budgetCategory.setFirstLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-000-0000"));
                         budgetCategory.setIdBudgetCategory(distributorCostCenter.getAccountingAccounts().getIdBudgetCategory());
+
                         List<Budgets> budgetsList = budgetsService.findByIdDistributorCostCenter(distributorCostCenter.getIdDistributorCostCenter(), null, null);
                         List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
                         for (Budgets budget : budgetsList){
@@ -353,6 +359,33 @@ public class BudgetHelper {
 
                         BudgetSubcategory budgetSubcategory = new BudgetSubcategory();
                         budgetSubcategory.setName(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getBudgetSubcategory());
+                        if (distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel().length() == 1){
+                            if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 1){
+                                budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-00")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-000")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                            } else if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 2){
+                                budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-00")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-00")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                            }
+                        }else{
+                            if (distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel().length() == 2){
+                                if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 1){
+                                    budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-0")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-000")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                } else if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 2){
+                                    budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-0")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-00")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                }
+                            }
+                        }
                         budgetSubcategory.setIdBudgetSubcategory(distributorCostCenter.getAccountingAccounts().getIdBudgetSubcategory());
                         budgetSubcategory.setRealBudgetSpendings(realBudgetSpendingList);
                         budgetSubcategory.setBudgetSubSubCategories(new ArrayList<>());
@@ -441,6 +474,7 @@ public class BudgetHelper {
                         CostCenter costCenter = new CostCenter();
                         costCenter.setIdCostCenter(distributorCostCenter.getIdCostCenter());
                         costCenter.setName(distributorCostCenter.getCostCenter().getName());
+                        costCenter.setAcronym(distributorCostCenter.getCostCenter().getAcronym());
 
                         BudgetCategory budgetCategory = new BudgetCategory();
                         budgetCategory.setName(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getBudgetCategory());
@@ -448,6 +482,33 @@ public class BudgetHelper {
 
                         BudgetSubcategory budgetSubcategory = new BudgetSubcategory();
                         budgetSubcategory.setName(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getBudgetSubcategory());
+                        if (distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel().length() == 1){
+                            if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 1){
+                                budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-00")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-000")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                            } else if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 2){
+                                budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-00")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-00")
+                                        .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                            }
+                        }else{
+                            if (distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel().length() == 2){
+                                if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 1){
+                                    budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-0")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-000")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                } else if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 2){
+                                    budgetSubcategory.setSecondLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-0")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-00")
+                                            .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                }
+                            }
+                        }
                         budgetSubcategory.setIdBudgetSubcategory(distributorCostCenter.getAccountingAccounts().getIdBudgetSubcategory());
 
                         List<Budgets> budgetsList = budgetsService.findByIdDistributorCostCenter(distributorCostCenter.getIdDistributorCostCenter(), null, null);
@@ -476,6 +537,37 @@ public class BudgetHelper {
                         budgetSubSubCategory.setName(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getBudgetSubSubcategory());
                         budgetSubSubCategory.setIdBudgetSubSubcategory(distributorCostCenter.getAccountingAccounts().getIdBudgetSubSubcategories());
                         budgetSubSubCategory.setRealBudgetSpendingList(realBudgetSpendingList);
+
+                                if (distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel().length() == 1) {
+
+                                    if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 1) {
+                                        budgetSubSubCategory.setThirdLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-00")
+                                                .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-000")
+                                                .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                    }else if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 2) {
+                                        budgetSubSubCategory.setThirdLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-00")
+                                                .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-00")
+                                                .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                    }
+                                }else{
+                                    if (distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel().length() == 2) {
+
+                                        if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 1) {
+                                            budgetSubSubCategory.setThirdLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-0")
+                                                    .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-000")
+                                                    .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+
+                                        }else if (distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel().length() == 2) {
+                                            budgetSubSubCategory.setThirdLevel(distributorCostCenter.getAccountingAccounts().getBudgetCategory().getFirstLevel().concat("-0")
+                                                    .concat(distributorCostCenter.getAccountingAccounts().getBudgetSubcategory().getSecondLevel()).concat("-00")
+                                                    .concat(distributorCostCenter.getAccountingAccounts().getcBudgetSubSubcategories().getThirdLevel()));
+
+                                        }
+                                    }
+                                }
 
 
                         if (!bussinessLines.contains(bussinessLine)){

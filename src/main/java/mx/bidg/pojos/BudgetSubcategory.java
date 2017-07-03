@@ -17,6 +17,7 @@ public class BudgetSubcategory {
 
     private Integer idBudgetSubcategory;
     private String name;
+    private String secondLevel;
     private boolean show;
     private BigDecimal januarySubcategoryAmount;
     private BigDecimal februarySubcategoryAmount;
@@ -40,9 +41,10 @@ public class BudgetSubcategory {
         this.show = false;
     }
 
-    public BudgetSubcategory(Integer idBudgetSubcategory, String name) {
+    public BudgetSubcategory(Integer idBudgetSubcategory, String name, String secondLevel) {
         this.idBudgetSubcategory = idBudgetSubcategory;
         this.name = name;
+        this.secondLevel = secondLevel;
     }
 
     public Integer getIdBudgetSubcategory() {
@@ -59,6 +61,14 @@ public class BudgetSubcategory {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSecondLevel() {
+        return secondLevel;
+    }
+
+    public void setSecondLevel(String secondLevel) {
+        this.secondLevel = secondLevel;
     }
 
     public BigDecimal getJanuarySubcategoryAmount() {
@@ -610,6 +620,7 @@ public class BudgetSubcategory {
         return "BudgetSubcategory{" +
                 "idBudgetSubcategory=" + idBudgetSubcategory +
                 ", name='" + name + '\'' +
+                ", secondLevel='" + secondLevel + '\'' +
                 ", realBudgetSpendings=" + realBudgetSpendings +
                 ", budgetSubSubCategories=" + budgetSubSubCategories +
                 '}';

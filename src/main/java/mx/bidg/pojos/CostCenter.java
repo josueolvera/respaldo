@@ -12,6 +12,7 @@ import java.util.List;
 public class CostCenter {
     private Integer idCostCenter;
     private String name;
+    private String acronym;
     private boolean show;
     private BigDecimal januaryAmount;
     private BigDecimal februaryAmount;
@@ -35,9 +36,10 @@ public class CostCenter {
         this.show = false;
     }
 
-    public CostCenter(Integer idCostCenter, String name) {
+    public CostCenter(Integer idCostCenter, String name, String acronym) {
         this.idCostCenter = idCostCenter;
         this.name = name;
+        this.acronym = acronym;
     }
 
     public Integer getIdCostCenter() {
@@ -54,6 +56,14 @@ public class CostCenter {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAcronym() {
+        return acronym;
+    }
+
+    public void setAcronym(String acronym) {
+        this.acronym = acronym;
     }
 
     public BigDecimal getJanuaryAmount() {
@@ -329,6 +339,7 @@ public class CostCenter {
         return "CostCenter{" +
                 "idCostCenter=" + idCostCenter +
                 ", name='" + name + '\'' +
+                ", acronym='" + acronym + '\'' +
                 ", budgetCategories=" + budgetCategories +
                 '}';
     }

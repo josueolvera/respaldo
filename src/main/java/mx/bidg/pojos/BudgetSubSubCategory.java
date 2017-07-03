@@ -15,6 +15,7 @@ public class BudgetSubSubCategory {
 
     private Integer idBudgetSubSubcategory;
     private String name;
+    private String thirdLevel;
     private boolean show;
     private BigDecimal januarySubSubcategoryAmount;
     private BigDecimal februarySubSubcategoryAmount;
@@ -37,9 +38,10 @@ public class BudgetSubSubCategory {
         this.show = false;
     }
 
-    public BudgetSubSubCategory(Integer idBudgetSubSubcategory, String name) {
+    public BudgetSubSubCategory(Integer idBudgetSubSubcategory, String name, String thirdLevel) {
         this.idBudgetSubSubcategory = idBudgetSubSubcategory;
         this.name = name;
+        this.thirdLevel = thirdLevel;
     }
 
     public BigDecimal getJanuarySubSubcategoryAmount() {
@@ -281,6 +283,14 @@ public class BudgetSubSubCategory {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getThirdLevel() {
+        return thirdLevel;
+    }
+
+    public void setThirdLevel(String thirdLevel) {
+        this.thirdLevel = thirdLevel;
     }
 
     public List<RealBudgetSpending> getRealBudgetSpendingList() {
