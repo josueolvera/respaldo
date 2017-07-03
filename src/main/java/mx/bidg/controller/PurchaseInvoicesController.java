@@ -16,10 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -59,6 +56,9 @@ public class PurchaseInvoicesController {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private RequestsDatesService requestsDatesService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll()throws IOException{
@@ -260,4 +260,118 @@ public class PurchaseInvoicesController {
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(status), HttpStatus.OK);
     }
+
+    /**
+     * Cuentas por pagar:
+     * Vigentes.
+     */
+    @RequestMapping(value = "/requests", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByRequestCategoryAndType
+    (@RequestParam(name = "idRequestCategory", required = false) Integer idRequestCategory
+            ,@RequestParam(name = "idRequestType", required = false) Integer idRequestType
+            ,@RequestParam(name = "idRequestStatus", required = false) Integer idRequestStatus)throws IOException{
+
+        List<PurchaseInvoices> invList = purchaseInvoicesService.findByRequestTypeAndCatgory(idRequestCategory, idRequestType, idRequestStatus);
+
+        if (!invList.isEmpty()){
+            for (PurchaseInvoices invoices : invList){
+                Integer limitDay = invoices.getProvider().getCreditDays();
+                Integer status = invoices.getRequest().getIdRequestStatus();
+                LocalDateTime requestDate = LocalDateTime.parse(invoices.getRequest().getCreationDateFormats().getIso(), DateTimeFormatter.ISO_DATE_TIME);
+                if (status == 3){
+                    LocalDateTime limit = (requestDate.plusDays(limitDay)) ;
+                    invoices.setLimitDay(limit);
+                }
+            }
+        }
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(invList), HttpStatus.OK);
+    }
+
+    /**
+     * Cuentas por pagar:
+     * Reprogramadas en proceso de pago.
+     */
+    @RequestMapping(value = "/reprogrammed-process", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByCategoryAndTypeRep
+    (@RequestParam(name = "idRequestCategory", required = false) Integer idRequestCategory
+            ,@RequestParam(name = "idRequestType", required = false) Integer idRequestType
+            ,@RequestParam(name = "idRequestStatus", required = false) Integer idRequestStatus)throws IOException{
+        List<PurchaseInvoices> purInvoicesList = purchaseInvoicesService.findAll();
+        List<PurchaseInvoices> list = new ArrayList<>();
+
+        for (PurchaseInvoices purchaseInvoices : purInvoicesList){
+            List<PurchaseInvoices> invoices = purchaseInvoicesService.findByRequestTypeAndCatgory
+                    (purchaseInvoices.getRequest().getIdRequestCategory().intValue(),
+                            purchaseInvoices.getRequest().getIdRequestType().intValue(),
+                            purchaseInvoices.getRequest().getIdRequestStatus().intValue());
+            List<RequestsDates> requestsDate = requestsDatesService.findAll();
+            for(RequestsDates dates : requestsDate){
+
+                Integer count = dates.getCountUpdate();
+                Integer idRequ = dates.getIdRequests();
+                Integer idReqInv = purchaseInvoices.getIdRequest();
+                Integer limitDay = purchaseInvoices.getProvider().getCreditDays();
+                LocalDateTime requestDate = LocalDateTime.parse(purchaseInvoices.getRequest().getCreationDateFormats().getIso(),
+                        DateTimeFormatter.ISO_DATE_TIME);
+                if (idRequ == idReqInv && count > 1 && idRequestCategory == purchaseInvoices.getRequest().getIdRequestCategory().intValue()
+                        && idRequestType == purchaseInvoices.getRequest().getIdRequestType().intValue()
+                        && idRequestStatus == purchaseInvoices.getRequest().getIdRequestStatus().intValue()){
+                    LocalDateTime limitD = (requestDate.plusDays(limitDay)) ;
+                    purchaseInvoices.setCountUpdate(count);
+                    purchaseInvoices.setLimitDay(limitD);
+                    list.add(purchaseInvoices);
+                }
+            }
+
+        }
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
+    }
+
+    /**
+     * Cuentas por pagar:
+     * Vigentes en proceso de pago.
+     */
+    @RequestMapping(value = "/requests-process", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByCategoryAndTypeProg
+    (@RequestParam(name = "idRequestCategory", required = false) Integer idRequestCategory
+            ,@RequestParam(name = "idRequestType", required = false) Integer idRequestType
+            ,@RequestParam(name = "idRequestStatus", required = false) Integer idRequestStatus)throws IOException{
+        List<PurchaseInvoices> purInvoicesList = purchaseInvoicesService.findAll();
+        List<PurchaseInvoices> list = new ArrayList<>();
+
+        for (PurchaseInvoices purchaseInvoices : purInvoicesList){
+            List<PurchaseInvoices> invoices = purchaseInvoicesService.findByRequestTypeAndCatgory
+                    (purchaseInvoices.getRequest().getIdRequestCategory().intValue(),
+                            purchaseInvoices.getRequest().getIdRequestType().intValue(),
+                            purchaseInvoices.getRequest().getIdRequestStatus().intValue());
+            List<RequestsDates> requestsDate = requestsDatesService.findAll();
+            for(RequestsDates dates : requestsDate){
+
+                Integer count = dates.getCountUpdate();
+                Integer idRequ = dates.getIdRequests();
+                Integer idReqInv = purchaseInvoices.getIdRequest();
+                Integer limitDay = purchaseInvoices.getProvider().getCreditDays();
+                LocalDateTime requestDate = LocalDateTime.parse(purchaseInvoices.getRequest().getCreationDateFormats().getIso(),
+                        DateTimeFormatter.ISO_DATE_TIME);
+                if (idRequ == idReqInv && count == 1 && idRequestCategory == purchaseInvoices.getRequest().getIdRequestCategory().intValue()
+                        && idRequestType == purchaseInvoices.getRequest().getIdRequestType().intValue()
+                        && idRequestStatus == purchaseInvoices.getRequest().getIdRequestStatus().intValue()){
+                    LocalDateTime limitD = (requestDate.plusDays(limitDay)) ;
+                    purchaseInvoices.setCountUpdate(count);
+                    purchaseInvoices.setLimitDay(limitD);
+                    list.add(purchaseInvoices);
+                }
+            }
+
+        }
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
+    }
+
 }
+
+
+
+
+
+

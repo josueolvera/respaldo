@@ -49,19 +49,23 @@
                 ready: function () {
                     this.getUserInSession();
                     this.getCurrencies();
-                    this.getRequestsDateProgrammerOne();
+//                    this.getRequestsDateProgrammerOne();
                     this.getRequestsDateProgrammer();
                     this.getProContact();
                     this.getProvidersReque();
                     this.getPurchaseInvoice();
                     this.getdwEmpleados();
                     this.getRedocuments();
+                    this.getBranchDis();
+                    this.getEmployeeReqDates();
+                    this.getBranchDis();
+                    this.getRolesE();
                 },
                 data: {
                     idRequ: ${idRequest},
                     idProv: ${idProvider},
                     idPurcha: ${idPurchaseInvoices},
-                    idEmp: ${idEmployee},
+                    idEmployee: ${idEmployee},
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
@@ -89,8 +93,11 @@
                     icon15: false,
                     requestsDateProg: [],
                     requestsDateProgrammer: [],
+                    branchDistributor: [],
+                    rolesEmplo: [],
                     proveContact: [],
                     providersReq: [],
+                    employeeFind: [],
                     requestInformation: [],
                     purchaseInvoicex: [],
                     dwEmpleado: [],
@@ -159,14 +166,27 @@
                     //requests dates
                     getPurchaseInvoice: function () {
                         this.$http.get(ROOT_URL + '/purchase-invoice').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.distributorCostCenter.costCenter)) {
+                                    jsonObjectIndex[request.request.distributorCostCenter.costCenter._id] = request.request.distributorCostCenter.costCenter;
+                                } else {
+                                    request.request.distributorCostCenter.costCenter = jsonObjectIndex[request.request.distributorCostCenter.costCenter];
+                                }
+                            });
                             this.purchaseInvoicex = data;
                         });
                     },
-                    getRequestsDateProgrammerOne: function() {
-                        this.$http.get(ROOT_URL + '/accounts-payables-dates/' + this.idRequestsDat).success( function (data) {
-                            this.requestsDateProg = data;
+                    getEmployeeReqDates: function () {
+                        this.$http.get(ROOT_URL + '/dw-employees/employee-find?idEmployee=' + this.idEmployee).success(function (data) {
+                            this.employeeFind = data;
                         });
                     },
+//                    getRequestsDateProgrammerOne: function() {
+//                        this.$http.get(ROOT_URL + '/accounts-payables-dates/' + this.idRequestsDat).success( function (data) {
+//                            this.requestsDateProg = data;
+//                        });
+//                    },
                     getRequestsDateProgrammer: function () {
                         this.$http.get(ROOT_URL + '/accounts-payables-dates').success(function (data) {
                             this.requestsDateProgrammer = data;
@@ -184,12 +204,59 @@
                     },
                     getdwEmpleados: function () {
                         this.$http.get(ROOT_URL + '/dw-employees').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.employee)) {
+                                    jsonObjectIndex[request.employee._id] = request.employee;
+                                } else {
+                                    request.employee = jsonObjectIndex[request.employee];
+                                }
+                            });
+                            data.forEach(function (request) {
+                                if (isNaN(request.dwEnterprise)) {
+                                    jsonObjectIndex[request.dwEnterprise._id] = request.dwEnterprise;
+                                } else {
+                                    request.dwEnterprise = jsonObjectIndex[request.dwEnterprise];
+                                }
+                            });
+                            data.forEach(function (request) {
+                                if (isNaN(request.dwEnterprise.area)) {
+                                    jsonObjectIndex[request.dwEnterprise.area._id] = request.dwEnterprise.area;
+                                } else {
+                                    request.dwEnterprise.area = jsonObjectIndex[request.dwEnterprise.area];
+                                }
+                            });
+                            data.forEach(function (request) {
+                                if (isNaN(request.dwEnterprise.region)) {
+                                    jsonObjectIndex[request.dwEnterprise.region._id] = request.dwEnterprise.region;
+                                } else {
+                                    request.dwEnterprise.region = jsonObjectIndex[request.dwEnterprise.region];
+                                }
+                            });
                             this.dwEmpleado = data;
                         });
                     },
                     getRedocuments: function () {
                         this.$http.get(ROOT_URL + '/order-documents-request').success(function (data) {
                             this.reqDocuments = data;
+                        });
+                    },
+                    getBranchDis: function () {
+                        this.$http.get(ROOT_URL + '/dw-enterprises').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.branch)) {
+                                    jsonObjectIndex[request.branch._id] = request.branch;
+                                } else {
+                                    request.branch = jsonObjectIndex[request.branch];
+                                }
+                            });
+                            this.branchDistributor = data;
+                        });
+                    },
+                    getRolesE: function () {
+                        this.$http.get(ROOT_URL + '/roles').success(function (data) {
+                            this.rolesEmplo = data;
                         });
                     },
                     onChangeCostCenter: function () {
@@ -259,26 +326,29 @@
                         $("#modalRepro").modal("show");
                     },
                     savePayables: function () {
-                        if(this.payable.countUpdate >= 1){
-                            this.payable.scheDate =  this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
+                        if (this.payable.scheDate == null || this.payable.scheDate == "") {
+                            showAlert("Capturar una fecha", {type: 3});
+                            $("#modalRepro").modal("hide");
+                        } else if (this.payable.countUpdate > 0) {
+                            this.payable.scheDate = this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
                             this.payable.requestId = this.idRequ;
                             console.log(this.payable.scheDate);
                             this.$http.post(ROOT_URL + "/accounts-payables-dates/update-rdates", JSON.stringify(this.payable)).success(function (data) {
                                 this.payables = [];
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
-                                $("#modalBandeja").modal("show");
+                                showAlert("Registro guardado con exito");
                             }).error(function () {
                                 showAlert("Fecha invalida.", {type: 3});
                             })
-                        }else{
-                            this.payable.scheDate =  this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
+                        } else if (this.payable.scheDate != null || this.payable.scheDate != "") {
+                            this.payable.scheDate = this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
                             this.payable.requestId = this.idRequ;
                             this.$http.post(ROOT_URL + "/accounts-payables-dates/save-requestdates", JSON.stringify(this.payable)).success(function (data) {
                                 this.payables = [];
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
-                                $("#modalBandeja").modal("show");
+                                showAlert("Registro guardado con exito");
                             }).error(function () {
                                 showAlert("Fecha invalida", {type: 3});
                             })
@@ -407,6 +477,9 @@
             function onlyNumbers(e) {
                 var key = window.Event ? e.which : e.keyCode
                 return (key >= 48 && key <= 57)
+            }
+            function backBandeja() {
+                window.history.back();
             }
         </script>
     </jsp:attribute>
@@ -555,33 +628,33 @@
                 </div>
             </div>
         </div>
-        <div class="panel panel-default">
+        <div class="panel panel-default" v-model="employeeFind.length > 0">
             <div class="panel-heading"><b>Información de solicitante</b></div>
             <div class="panel-body">
                 <div class="col-md-12">
                     <div class="row">
-                        <table class="table table-striped"
-                               v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
+                        <table class="table table-striped">
+                            <thead>
                             <tr>
                                 <td class="col-md-3"><b>Nombre</b></td>
                                 <td class="col-md-3"><b>Puesto</b></td>
                                 <td class="col-md-3"><b>Empresa</b></td>
                                 <td class="col-md-3"><b>Región</b></td>
                             </tr>
-                            <tr v-for="demple in dwEmpleado"
-                                v-if="this.idEmp == demple.idEmployee">
+                            </thead>
+                            <tbody>
+                            <tr v-for="dw in dwEmpleado" v-if="dw.idEmployee == this.idEmployee">
                                 <td class="col-md-3">
-                                    {{purchasex.request.employees.fullName}}
+                                    {{dw.employee.fullName}}
                                 </td>
-                                <td class="col-md-3">
-                                    {{demple.role.roleName}}
+                                <td class="col-md-3" v-for="rol in rolesEmplo" v-if="dw.idRole == rol.idRole">
+                                    {{rol.roleName}}
                                 </td>
-                                <td class="col-md-3">
-                                    {{purchasex.request.distributorCostCenter.distributors.acronyms}}
+                                <td class="col-md-3" v-for="bran in branchDistributor" v-if="dw.idDwEnterprise == bran.idDwEnterprise">
+                                    {{bran.distributor.acronyms}}
                                 </td>
-                                <td class="col-md-3" v-for="demple in dwEmpleado"
-                                    v-if="this.idEmp == demple.idEmployee">
-                                    {{demple.dwEnterprise.region.regionName}}
+                                <td>
+                                    {{dw.dwEnterprise.region.regionName}}
                                 </td>
                             </tr>
                             <tr>
@@ -590,19 +663,19 @@
                                 <td class="col-md-3"><b>Centro de costos</b></td>
                                 <td class="col-md-3"></td>
                             </tr>
-                            <tr v-for="demple in dwEmpleado"
-                                v-if="this.idEmp == demple.employee.idEmployee">
-                                <td class="col-md-3" >
-                                    {{demple.dwEnterprise.branch.branchName}}
+                            <tr v-for="dw in dwEmpleado" v-if="dw.idEmployee == this.idEmployee">
+                                <td class="col-md-3" v-for="bran in branchDistributor" v-if="dw.idDwEnterprise == bran.idDwEnterprise">
+                                    {{bran.branch.branchName}}
                                 </td>
                                 <td class="col-md-3">
-                                    {{demple.dwEnterprise.area.areaName}}
+                                    {{dw.dwEnterprise.area.areaName}}
                                 </td>
-                                <td class="col-md-3">
+                                <td class="col-md-3" v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
                                     {{purchasex.request.distributorCostCenter.costCenter.name}}
                                 </td>
                                 <td class="col-md-3"></td>
                             </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -627,7 +700,7 @@
                                 <td class="col-md-3">
                                 <div class='input-group date' id='proFecha'>
                                     <input type="text" id="fechaPayable" v-model="payable.scheDate" class="form-control"
-                                           placeholder="dd-mm-aaaa" required>
+                                           placeholder="dd-mm-aaaa" maxlength="10" required>
                                     <span class="input-group-addon" @click="proFecha()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -645,7 +718,7 @@
                 <div class="text-right">
                     <button class="btn btn-success" @click="showModalReprogram()">Guardar</button> &nbsp;&nbsp;
                     <a href="javascript:window.history.back();">
-                        <button class="btn btn-default">Cancelar</button>
+                        <button class="btn btn-default">Salir</button>
                     </a>
                 </div>
             </div>
@@ -657,10 +730,7 @@
                 <div class="modal-content modal-ms">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <div class="alert">
-                            <h4 class="modal-title" id=""><label>Enviar solicitud</label>
-                            </h4>
-                        </div>
+                            <h4 class="modal-title" id=""><label>Enviar solicitud</label></h4>
                     </div>
                     <div class="modal-body">
                         <div class="row">
@@ -680,30 +750,8 @@
                 </div>
             </div>
         </div>
-        <%--modal regresar--%>
-        <div class="modal fade" id="modalBandeja" tabindex="-1" role="dialog" aria-labelledby=""
-             aria-hidden="true">
-            <div class="modal-dialog modal-xs">
-                <div class="modal-content modal-xs">
-                    <div class="modal-header">
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p align="center" style="font-size: 16px">El registro se guardo correctamente<br></p>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="modal-footer">
-                        <a href="../siad/accounts-payables">
-                            <button type="button" class="btn btn-success">Aceptar</button>
-                        </a>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        <br>
+        <br>
     </jsp:body>
 </t:template>
 

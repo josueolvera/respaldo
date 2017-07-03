@@ -52,6 +52,21 @@
                     this.getCurrencies();
                     this.getPurchaseInvoice();
                     this.getRequestsDatesPro();
+                    this.getPurReqVigCompra();
+                    this.getPurReqVigPagoSer();
+                    this.getPurReqVigViati();
+                    this.getPurReqVigBolAvi();
+                    this.getPurReqVigReemb();
+                    this.getPurReqRepCompra();
+                    this.getPurReqRepPagoSer();
+                    this.getPurReqRepViati();
+                    this.getPurReqRepBolAvi();
+                    this.getPurReqRepReemb();
+                    this.getPurReqProCompra();
+                    this.getPurReqProPagoSer();
+                    this.getPurReqProViati();
+                    this.getPurReqProBolAvi();
+                    this.getPurReqProReemb();
                 },
                 data: {
                     roleCostCenterList: [],
@@ -80,11 +95,30 @@
                     icon14: false,
                     icon15: false,
                     purchaseInvoice: [],
+                    voidRequests: [],
                     requestsDatesList: [],
+                    purchaseInvoiceList: [],
+                    purchaseTypeThree: [],
+                    purReqVigCompra: [],
+                    purReqVigPagoSer: [],
+                    purReqVigViati: [],
+                    purReqVigBolAvi: [],
+                    purReqVigReemb: [],
+                    purReqRepCompra:[],
+                    purReqRepPagoSer: [],
+                    purReqRepViati: [],
+                    purReqRepReemb:[],
+                    purReqRepBolAvi:[],
+                    purReqProCompra:[],
+                    purReqProPagoSer:[],
+                    purReqProViati:[],
+                    purReqProBolAvi:[],
+                    purReqProReemb:[],
                     detailUrl: ROOT_URL + "/siad/accounts-payables-detail?idRequest=" ,
                     detailTwoUrl: "&idProvider=" ,
                     detailThreeUrl: "&idPurchaseInvoices=" ,
-                    detailFourUrl: "&idEmployee="
+                    detailFourUrl: "&idEmployee=" ,
+                    detailFiveUrl: "&limit="
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -150,6 +184,205 @@
                                 this.purchaseInvoice = data;
                             });
                     },
+                    //**categorias de vigentes
+                    getPurReqVigCompra: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests?idRequestCategory=1&idRequestType=1&idRequestStatus=3').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqVigCompra = data;
+                        });
+                    },
+                    getPurReqVigPagoSer: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests?idRequestCategory=4&idRequestType=1&idRequestStatus=3').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqVigPagoSer = data;
+                        });
+                    },
+                    getPurReqVigViati: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests?idRequestCategory=2&idRequestType=1&idRequestStatus=3').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqVigViati = data;
+                        });
+                    },
+                    getPurReqVigBolAvi: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests?idRequestCategory=3&idRequestType=1&idRequestStatus=3').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqVigBolAvi = data;
+                        });
+                    },
+                    getPurReqVigReemb: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests?idRequestCategory=5&idRequestType=1&idRequestStatus=3').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqVigReemb = data;
+                        });
+                    },
+                    //**categorias de reprogramadas
+                    getPurReqRepCompra: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/reprogrammed-process?idRequestCategory=1&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqRepCompra = data;
+                        });
+                    },
+                    getPurReqRepPagoSer: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/reprogrammed-process?idRequestCategory=4&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqRepPagoSer = data;
+                        });
+                    },
+                    getPurReqRepViati: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/reprogrammed-process?idRequestCategory=2&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqRepViati = data;
+                        });
+                    },
+                    getPurReqRepBolAvi: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/reprogrammed-process?idRequestCategory=3&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqRepBolAvi = data;
+                        });
+                    },
+                    getPurReqRepReemb: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/reprogrammed-process?idRequestCategory=5&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqRepReemb = data;
+                        });
+                    },
+                    //**categorias de vig programadas
+                    getPurReqProCompra: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests-process?idRequestCategory=1&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqProCompra = data;
+                        });
+                    },
+                    getPurReqProPagoSer: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests-process?idRequestCategory=4&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqProPagoSer = data;
+                        });
+                    },
+                    getPurReqProViati: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests-process?idRequestCategory=2&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqProViati = data;
+                        });
+                    },
+                    getPurReqProBolAvi: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests-process?idRequestCategory=3&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqProBolAvi = data;
+                        });
+                    },
+                    getPurReqProReemb: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice/requests-process?idRequestCategory=5&idRequestType=1&idRequestStatus=8').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (request) {
+                                if (isNaN(request.request.requestCategory)) {
+                                    jsonObjectIndex[request.request.requestCategory._id] = request.request.requestCategory;
+                                } else {
+                                    request.request.requestCategory = jsonObjectIndex[request.request.requestCategory];
+                                }
+                            });
+                            this.purReqProReemb = data;
+                        });
+                    },
+                    //**finaly categorias vig programadas
                     getRequestsDatesPro: function () {
                         this.$http.get(ROOT_URL + '/accounts-payables-dates').success(function (data) {
                             this.requestsDatesList = data;
@@ -343,6 +576,25 @@
                 var key = window.Event ? e.which : e.keyCode
                 return (key >= 48 && key <= 57)
             }
+
+            function infoTableHead(){
+                var oRows = document.getElementById('tableTrCount').getElementsByTagName('tr');
+                var iRowCount = oRows.length;
+                if (iRowCount > 1) {
+                    document.getElementById('headTableTr').style.color='black';
+                }else {
+                    document.getElementById('headTableTr').style.color='transparent';
+                }
+            }
+            function infoTableHead2(){
+                var oRows = document.getElementById('tableTrCount2').getElementsByTagName('tr');
+                var iRowCount = oRows.length;
+                if (iRowCount > 1) {
+                    document.getElementById('headTableTr2').style.color='black';
+                }else {
+                    document.getElementById('headTableTr2').style.color='transparent';
+                }
+            }
         </script>
     </jsp:attribute>
 
@@ -382,7 +634,7 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div id="content">
+    <div id="content">
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-5">
@@ -465,8 +717,14 @@
                                         <b>Compras de bienes</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon1 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon1 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon1 == false"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
+                                              aria-expanded="false" aria-controls="collapseThree">
+                                        </span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon1 == true"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
+                                              aria-expanded="false" aria-controls="collapseThree">
+                                        </span>
                                     </div>
                                 </div>
                             </a>
@@ -477,12 +735,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 3">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqVigCompra.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
@@ -493,7 +747,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
+                                            <tr v-for="purchose in purReqVigCompra">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -537,8 +791,14 @@
                                         <b>Pago de servicios</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon2 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon2 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon2 == false"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#payServices"
+                                              aria-expanded="false" aria-controls="payServices">
+                                        </span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon2 == true"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#payServices"
+                                              aria-expanded="false" aria-controls="payServices">
+                                        </span>
                                     </div>
                                 </div>
                             </a>
@@ -551,14 +811,14 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <thead>
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
+                                            <%--<tr>--%>
+                                                <%--<td class="col-md-1 text-center"><b>Solicitud</b></td>--%>
+                                                <%--<td class="col-md-3 text-center"><b>Fecha de compra</b></td>--%>
+                                                <%--<td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>--%>
+                                                <%--<td class="col-md-2 text-center"><b>Folio</b></td>--%>
+                                                <%--<td class="col-md-2 text-center"><b>Monto</b></td>--%>
+                                                <%--<td class="col-md-1 text-center"><b>Detalle</b></td>--%>
+                                            <%--</tr>--%>
                                             </thead>
                                             <tbody>
 
@@ -582,8 +842,14 @@
                                         <b>Viáticos</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon3 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon3 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon3 == false"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
+                                              aria-expanded="false" aria-controls="Viatics">
+                                        </span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon3 == true"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
+                                              aria-expanded="false" aria-controls="Viatics">
+                                        </span>
                                     </div>
                                 </div>
                             </a>
@@ -594,12 +860,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 2
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 3">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqVigViati.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
@@ -610,7 +872,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
+                                            <tr v-for="purchose in purReqVigViati">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -654,8 +916,12 @@
                                         <b>Boletos de avión</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon4 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon4 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon4 == false"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
+                                              aria-expanded="false" aria-controls="planeTickes"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon4 == true"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
+                                              aria-expanded="false" aria-controls="planeTickes"></span>
                                     </div>
                                 </div>
                             </a>
@@ -666,12 +932,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 3
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 3">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqVigBolAvi.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
@@ -682,7 +944,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
+                                            <tr v-for="purchose in purReqVigBolAvi">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -726,8 +988,12 @@
                                         <b>Reembolsos</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon5 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon5 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon5 == false"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#refounds"
+                                              aria-expanded="false" aria-controls="refounds"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon5 == true"
+                                              data-toggle="collapse" data-parent="#accordion1" href="#refounds"
+                                              aria-expanded="false" aria-controls="refounds"></span>
                                     </div>
                                 </div>
                             </a>
@@ -738,13 +1004,9 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 5
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 3">
-                                            <thead>
-                                            <tr>
+                                        <table class="table table-striped">
+                                            <thead >
+                                            <tr v-show="purReqVigReemb.length > 0">
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
                                                 <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
@@ -754,7 +1016,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
+                                            <tr v-for="purchose in purReqVigReemb">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -808,8 +1070,12 @@
                                         <b>Compras de bienes</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon6 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon6 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon6 == false"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
+                                              aria-expanded="false" aria-controls="collapseThreeR"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon6 == true"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
+                                              aria-expanded="false" aria-controls="collapseThreeR"></span>
                                     </div>
                                 </div>
                             </a>
@@ -820,13 +1086,9 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
+                                        <table class="table table-striped">
                                             <thead>
-                                            <tr>
+                                            <tr v-show="purReqRepCompra.length > 0">
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
@@ -836,9 +1098,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqRepCompra">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -881,8 +1143,12 @@
                                         <b>Pago de servicios</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon7 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon7 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon7 == false"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
+                                              aria-expanded="false" aria-controls="payServicesR"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon7 == true"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
+                                              aria-expanded="false" aria-controls="payServicesR"></span>
                                     </div>
                                 </div>
                             </a>
@@ -893,12 +1159,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqRepPagoSer.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -909,9 +1171,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqRepPagoSer">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -954,8 +1216,12 @@
                                         <b>Viáticos</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon8 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon8 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon8 == false"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
+                                              aria-expanded="false" aria-controls="ViaticsR"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon8 == true"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
+                                              aria-expanded="false" aria-controls="ViaticsR"></span>
                                     </div>
                                 </div>
                             </a>
@@ -966,12 +1232,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 2
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqRepViati.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -982,9 +1244,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqRepViati">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1027,8 +1289,12 @@
                                         <b>Boletos de avión</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon9 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon9 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon9 == false"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
+                                              aria-expanded="false" aria-controls="planeTickesR"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon9 == true"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
+                                              aria-expanded="false" aria-controls="planeTickesR"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1039,12 +1305,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 3
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqRepBolAvi.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -1055,9 +1317,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqRepBolAvi">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1100,8 +1362,12 @@
                                         <b>Reembolsos</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon10 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon10 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon10 == false"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
+                                              aria-expanded="false" aria-controls="refoundsR"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon10 == true"
+                                              data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
+                                              aria-expanded="false" aria-controls="refoundsR"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1112,12 +1378,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 5
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqRepReemb.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -1128,9 +1390,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqRepReemb">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1183,8 +1445,12 @@
                                         <b>Compras de bienes</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon11 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon11 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon11 == false"
+                                              data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
+                                              aria-expanded="false" aria-controls="collapseThreeV"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon11 == true"
+                                              data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
+                                              aria-expanded="false" aria-controls="collapseThreeV"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1195,12 +1461,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqProCompra.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -1210,10 +1472,10 @@
                                                 <td class="col-md-2 text-center"><b>Monto</b></td>
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                            </thead >
+                                            <tbody v-for="purchose in purReqProCompra">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1256,8 +1518,12 @@
                                         <b>Pago de servicios</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon12 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon12 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon12 == false"
+                                              data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
+                                              aria-expanded="false" aria-controls="payServicesV"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon12 == true"
+                                              data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
+                                              aria-expanded="false" aria-controls="payServicesV"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1268,12 +1534,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead v-show="purReqProPagoSer.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -1284,9 +1546,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqProPagoSer">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1329,8 +1591,12 @@
                                         <b>Viáticos</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon13 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon13 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon13 == false"
+                                              data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
+                                              aria-expanded="false" aria-controls="ViaticsV"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon13 == true"
+                                              data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
+                                              aria-expanded="false" aria-controls="ViaticsV"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1341,12 +1607,8 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 2
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
-                                            <thead>
+                                        <table class="table table-striped">
+                                            <thead  v-show="purReqProViati.length > 0">
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
@@ -1357,9 +1619,9 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody v-for="purchose in purReqProViati">
                                             <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
+                                                v-if="rdp.idRequest == purchose.idRequest">
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1402,8 +1664,12 @@
                                         <b>Boletos de avión</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon14 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon14 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon14 == false"
+                                              data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
+                                              aria-expanded="false" aria-controls="planeTickesV"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon14 == true"
+                                              data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
+                                              aria-expanded="false" aria-controls="planeTickesV"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1414,13 +1680,9 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 3
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
+                                        <table class="table table-striped" v-show="purReqProBolAvi.length > 0">
                                             <thead>
-                                            <tr>
+                                            <tr id="headTableTr2">
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
@@ -1430,16 +1692,17 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
+                                            <tbody v-for="purchose in purReqProBolAvi">
+                                            <tr>
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
+                                                <td class="col-md-2 text-center"
+                                                    v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
                                                     {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
@@ -1475,8 +1738,12 @@
                                         <b>Reembolsos</b>
                                     </div>
                                     <div class="col-md-6 text-center">
-                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon15 == false"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon15 == true"></span>
+                                        <span class="glyphicon glyphicon-chevron-down" v-if="icon15 == false"
+                                              data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
+                                              aria-expanded="false" aria-controls="refoundsV"></span>
+                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon15 == true"
+                                              data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
+                                              aria-expanded="false" aria-controls="refoundsV"></span>
                                     </div>
                                 </div>
                             </a>
@@ -1487,13 +1754,9 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped"
-                                               v-for="purchose in purchaseInvoice"
-                                               v-if="purchose.request.requestCategory.idRequestCategory == 5
-                                                        && purchose.request.requestType.idRequestType == 1
-                                                        && purchose.request.idRequestStatus == 8">
+                                        <table class="table table-striped">
                                             <thead>
-                                            <tr>
+                                            <tr v-show="purReqProReemb.length > 0">
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
@@ -1503,16 +1766,17 @@
                                                 <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             </thead>
-                                            <tbody>
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
+                                            <tbody v-for="purchose in purReqProReemb">
+                                            <tr>
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
+                                                <td class="col-md-2 text-center"
+                                                    v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
                                                     {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
@@ -1541,6 +1805,7 @@
         </div>
         <br>
         <%-- finish colapso--%>
+    </div>
     </jsp:body>
 </t:template>
 

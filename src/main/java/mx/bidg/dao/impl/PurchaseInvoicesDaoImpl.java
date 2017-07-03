@@ -46,4 +46,15 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
     public PurchaseInvoices findByIdRequest(Integer idRequest) {
         return (PurchaseInvoices) createEntityCriteria().add(Restrictions.eq("idRequest", idRequest)).uniqueResult();
     }
+
+    @Override
+    public List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus) {
+        return createEntityCriteria().createCriteria("request")
+                .add(Restrictions.eq("idRequestCategory", idRequestCategory))
+                .add(Restrictions.eq("idRequestType", idRequestType))
+                .add(Restrictions.eq("idRequestStatus", idRequestStatus))
+                .list();
+    }
+
+
 }

@@ -41,6 +41,6 @@ public interface DwEmployeesService {
     boolean validateExistRole (Integer idDwEnterprise, Integer idRole);
     void createReportCompanys(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     void createReportBpo(List<EmployeesHistory> employeesHistorys, OutputStream outputStream) throws IOException;
-    
     List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, List<MultilevelEmployee> multilevelEmployeeList);
+    DwEmployees findByIdEmployee(Integer idEmployee);
 }
