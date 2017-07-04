@@ -69,7 +69,7 @@
                     acronyms: ''
                 },
                 requestsPD: [],
-                distributorSelected: '',
+                distributorSelected: {},
                 detailBanks: [],
                 requestsDates: [],
                 banks:[],
@@ -93,6 +93,9 @@
                 distributor: ''
             },
             methods: {
+                exportReportPayRequests: function () {
+                        window.location = ROOT_URL + "/pay-requests-history/report-pay-requests?startDate="+this.startDate+"&endDate="+this.endDate;
+                },
                 getDistributors: function () {
                     this.$http.get(ROOT_URL + "/distributors").success(function (data) {
                         this.distributors = data;
@@ -107,7 +110,7 @@
                 obtainCurrentRequests: function () {
                     this.requestsPD = [];
                     //this.distributor = idDistributor;
-                    this.$http.get(ROOT_URL + "/requests/distributor/" + this.distributorSelected).success(function (data) {
+                    this.$http.get(ROOT_URL + "/requests/distributor/" + this.distributorSelected.idDistributor).success(function (data) {
                         var jsonObjectIndex = {};
                         var self = this;
                         data.forEach(function (pD2) {
@@ -144,7 +147,7 @@
                         var self = this;
                         showAlert("Se pagaron con exito las solicitudes!");
                         $("#modalPagar").modal("hide");
-                        this.obtainCurrentRequests(this.distributorSelected);
+                        this.obtainCurrentRequests(this.distributorSelected.idDistributor);
                         this.total = 0;
                         this.obtainDetailBanks();
                         this.totalParcial = 0;
@@ -430,8 +433,8 @@
                                         <div class="form-group">
                                             <div class="input-group date" id="startDate">
                                                 <input type="text" class="form-control"
-                                                       v-model="requestBody.travelExpense.startDate" required>
-                                                <span class="input-group-addon" @click="destroyDateTimePickerStart">
+                                                       v-model="startDate" required>
+                                                <span class="input-group-addon" @click="activateDateTimePickerStart">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
                                             </div>
@@ -443,8 +446,8 @@
                                         <div class="form-group">
                                             <div class="input-group date" id="endDate">
                                                 <input type="text" class="form-control"
-                                                       v-model="requestBody.travelExpense.endDate" required>
-                                                <span class="input-group-addon" @click="activateDateTimePickerEnd(requestBody.travelExpense.startDate)">
+                                                       v-model="endDate" required>
+                                                <span class="input-group-addon" @click="activateDateTimePickerEnd(startDate)">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
                                             </div>
@@ -453,7 +456,7 @@
 
                                     <div class="col-md-3 text-left">
                                         <div>
-                                            <button style="margin-top: 10%" type="button" class="btn btn-success">Generar</button>
+                                            <button style="margin-top: 10%" type="button" class="btn btn-success" @click="exportReportPayRequests">Generar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -468,7 +471,7 @@
                     <label>Seleccione un distribuidor</label>
                     <select class="form-control" v-model="distributorSelected" @change="obtainCurrentRequests()">
                         <option></option>
-                        <option v-for="distributor in distributors" :value="distributor.idDistributor">
+                        <option v-for="distributor in distributors" :value="distributor">
                             {{distributor.idDistributor}} - {{distributor.distributorName}}
                         </option>
                     </select>
@@ -478,11 +481,11 @@
                     <div class="panel panel-default">
                         <div class="card">
                             <div class="card-header" role="tab" id="headingOne">
-                                <div class="panel-heading" style="background-color: #6ccd51">
+                                <div class="panel-heading" style="background-color: #83d386">
                                     <a class="collapsed" data-toggle="collapse" data-parent="#collapseOne" href="#collapseOne"
                                        aria-expanded="false" aria-controls="collapseOne">
                                         <div class="col-md-11 text-center">
-                                            <b style="color: black">Buzon de solicitudes</b>
+                                            <b style="color: #ffffff">BUZÓN DE SOLICITUDES</b>
                                         </div>
                                     </a>
                                     <div class="col-md-1 text-right">
@@ -520,15 +523,16 @@
                 </div>
             </div>
 
+            <!-- Colapso de la empresa seleccionada-->
             <div class="col-md-12" v-if="requestsPD.length > 0">
                 <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingThree">
-                            <div class="panel-heading" style="background-color: #7AC5CD">
+                            <div class="panel-heading" style="background-color: #95f09c">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThree"
                                    aria-expanded="false" aria-controls="collapseThree">
                                     <div class="col-md-11 text-center">
-                                        <b style="color: black">Pago de solicitudes</b>
+                                        <b style="color: #000000">Pago de solicitudes de la empresa: {{distributorSelected.distributorName}}</b>
                                     </div>
                                 </a>
                                 <div class="col-md-1 text-right">
@@ -562,7 +566,7 @@
                                             <div class="row table-row" v-for="(index2, pd) in requestsPD | orderBy 'requestsDates.scheduledDateFormats.dateNumber'">
 
                                                 <div class="col-xs-1 text-center">{{pd.folio}}</div>
-                                                <div class="col-xs-2 text-center">{{pd.distributorCostCenter.distributors.acronyms}}</div>
+                                                <div class="col-xs-2 text-center">{{pd.distributorCostCenter.costCenter.name}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</div>
@@ -600,6 +604,7 @@
                     </div>
                 </div>
             </div>
+            <!--Cierra colapso de la empresa seleccionada-->
 
                 <%-- Modal para re-programar --%>
             <div class="modal fade" id="modalReprogramar" tabindex="-1" role="dialog" aria-labelledby=""

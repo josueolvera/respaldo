@@ -7,6 +7,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.events.requests.RequestCreatedEvent;
 import mx.bidg.model.*;
+import mx.bidg.reports.ProofPaymentReportService;
 import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -86,6 +87,9 @@ public class RequestsController {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private ProofPaymentReportService proofPaymentReportService;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session)
@@ -260,7 +264,7 @@ public class RequestsController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/pay-selected", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/pay-selected", method = RequestMethod.POST, produces = "application/pdf")
     public ResponseEntity<String> payRequests(@RequestBody String data, HttpSession session) throws IOException {
         JsonNode node = mapper.readTree(data);
         Users user = (Users) session.getAttribute("user");
@@ -272,9 +276,10 @@ public class RequestsController {
             distributorsDetailBanks.setAmount(resta);
             distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
         }
-        PayRequestsHistory payRequestsHistory = payRequestsHistoryService.saveData(data, user);
+        proofPaymentReportService.getReportePrueba(data);
+        List<PayRequestsHistory> payRequestsHistories = payRequestsHistoryService.saveData(data, user);
 
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(payRequestsHistories), HttpStatus.OK);
     }
 
     @RequestMapping(value =  "/folios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

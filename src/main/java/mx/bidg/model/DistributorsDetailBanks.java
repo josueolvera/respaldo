@@ -46,12 +46,12 @@ public class DistributorsDetailBanks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idDistributor;
 
-    @Size(max = 15)
+    @Size(max = 16)
     @Column(name = "ACCOUNT_NUMBER")
     @JsonView(JsonViews.Root.class)
     private String accountNumber;
 
-    @Size(max = 20)
+    @Size(max = 18)
     @Column(name = "ACCOUNT_CLABE")
     @JsonView(JsonViews.Root.class)
     private String accountClabe;

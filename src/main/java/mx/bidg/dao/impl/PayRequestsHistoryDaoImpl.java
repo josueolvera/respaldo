@@ -3,9 +3,11 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PayRequestsHistoryDao;
 import mx.bidg.model.PayRequestsHistory;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,7 +30,6 @@ public class PayRequestsHistoryDaoImpl extends AbstractDao<Integer, PayRequestsH
     @Override
     public List<PayRequestsHistory> findAll() {
         return createEntityCriteria()
-                .add(Restrictions.eq("hStatus",1))
                 .list();
     }
 
@@ -42,5 +43,12 @@ public class PayRequestsHistoryDaoImpl extends AbstractDao<Integer, PayRequestsH
     public boolean delete(PayRequestsHistory entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<PayRequestsHistory> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate){
+        Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.between("creationDate",fromDate,toDate));
+        return criteria.list();
     }
 }

@@ -6,13 +6,20 @@ import mx.bidg.dao.PayRequestsHistoryDao;
 import mx.bidg.model.PayRequestsHistory;
 import mx.bidg.model.Users;
 import mx.bidg.service.PayRequestsHistoryService;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by User on 21/06/2017.
@@ -28,11 +35,18 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
     private ObjectMapper mapper;
 
     @Override
-    public PayRequestsHistory saveData(String data, Users user) throws IOException {
-        JsonNode node = mapper.readTree(data);
-        PayRequestsHistory payRequestsHistory = new PayRequestsHistory();
+    public List<PayRequestsHistory> findAll() {
+        return payRequestsHistoryDao.findAll();
+    }
 
+    @Override
+    public List<PayRequestsHistory> saveData(String data, Users user) throws IOException {
+        JsonNode node = mapper.readTree(data);
+
+        List<PayRequestsHistory> payRequestsHistories = new ArrayList<>();
         for(JsonNode jsonNode : node.get("requestsSelected")){
+            PayRequestsHistory payRequestsHistory = new PayRequestsHistory();
+
             payRequestsHistory.setIdRequest(jsonNode.get("idRequest").asInt());
             payRequestsHistory.setIdCostCenter(jsonNode.get("distributorCostCenter").get("idCostCenter").asInt());
             payRequestsHistory.setIdRequestCategory(jsonNode.get("idRequestCategory").asInt());
@@ -56,9 +70,96 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
             payRequestsHistory.setBankDistributor(jsonNode.get("bank").get("banks").get("bankName").asText());
             payRequestsHistory.setUsername(user.getUsername());
             payRequestsHistory.setCreationDate(LocalDateTime.now());
+
+            payRequestsHistories.add(payRequestsHistory);
+        }
+        for(PayRequestsHistory payRequest : payRequestsHistories){
+            payRequest = payRequestsHistoryDao.save(payRequest);
         }
 
-        payRequestsHistory = payRequestsHistoryDao.save(payRequestsHistory);
-        return payRequestsHistory;
+        return payRequestsHistories;
+    }
+
+    @Override
+    public void payRequestsReport(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        List<PayRequestsHistory> payRequestsHistoryList = payRequestsHistoryDao.findBetweenDates(fromDate, toDate);
+
+        Font font = workbook.createFont();
+        font.setFontName("Arial");
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        CellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+
+        CellStyle cellDateStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+
+        Sheet hoja = workbook.createSheet("Cuentas_Pagadas");
+        Row row = hoja.createRow(0);
+
+        row.createCell(0).setCellValue("FOLIO");
+        row.createCell(1).setCellValue("CENTRO DE COSTOS");
+        row.createCell(2).setCellValue("TIPO DE SOLICITUD");
+        row.createCell(3).setCellValue("BENEFICIARIO");
+        row.createCell(4).setCellValue("BANCO");
+        row.createCell(5).setCellValue("CUENTA");
+        row.createCell(6).setCellValue("CLABE");
+        row.createCell(7).setCellValue("NÚMERO DE FACTURA");
+        row.createCell(8).setCellValue("MONTO CON IVA");
+        row.createCell(9).setCellValue("FECHA DE PAGO");
+        row.createCell(10).setCellValue("BANCO");
+
+        //Implementacion del estilo
+        for (Cell celda : row) {
+            celda.setCellStyle(style);
+        }
+
+        int aux = 1;
+
+        for (PayRequestsHistory request : payRequestsHistoryList){
+            row = hoja.createRow(aux);
+
+            row.createCell(0).setCellValue(request.getFolio());
+            row.createCell(1).setCellValue(request.getCostCenter());
+            row.createCell(2).setCellValue(request.getRequestCategory());
+            row.createCell(3).setCellValue(request.getProvider());
+            row.createCell(4).setCellValue(request.getBankProvider());
+            row.createCell(5).setCellValue(request.getAccountNumber());
+            row.createCell(6).setCellValue(request.getAccountClabe());
+            row.createCell(7).setCellValue(request.getPurchaseInvoiceFolio());
+            row.createCell(8).setCellValue(request.getAmountWithIva().doubleValue());
+            if (request.getCreationDate() != null){
+                Date fecha = Date.from(request.getRequestDate().atZone(ZoneId.systemDefault()).toInstant());
+
+                if (fecha != null){
+                    row.createCell(9);
+                    row.getCell(9).setCellValue(fecha);
+                    row.getCell(9).setCellStyle(cellDateStyle);
+
+                }
+            }
+            row.createCell(10).setCellValue(request.getBankDistributor());
+            aux++;
+        }
+        workbook.write(stream);
+    }
+
+    @Override
+    public  List<PayRequestsHistory> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate){
+        return payRequestsHistoryDao.findBetweenDates(fromDate, toDate);
     }
 }
