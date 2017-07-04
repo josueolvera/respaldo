@@ -3,7 +3,6 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
 
-
 <t:template pageTitle="BID Group: Percecciones y Deducciones">
 
     <jsp:attribute name="styles">

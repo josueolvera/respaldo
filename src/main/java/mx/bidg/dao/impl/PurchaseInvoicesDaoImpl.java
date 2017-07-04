@@ -55,6 +55,12 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
                 .add(Restrictions.eq("idRequestStatus", idRequestStatus))
                 .list();
     }
+    @Override
+    public List<PurchaseInvoices> findFolio(String folio) {
+        return createEntityCriteria().createCriteria("request")
+                .add(Restrictions.eq("folio", folio))
+                .list();
+    }
 
 
 }

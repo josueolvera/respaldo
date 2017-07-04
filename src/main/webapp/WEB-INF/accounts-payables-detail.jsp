@@ -118,8 +118,6 @@
                     },
                     proFecha: function () {
                         var fecha = new Date();
-//                        var fechaLimit = new Date(limite);
-//                        var fecha_limite = fechaLimit.getFullYear() + "-" + (fechaLimit.getMonth() + 1) + "-" + fechaLimit.getDate();
                         var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
                         this.timePickerDe = $('#proFecha').datetimepicker({
                             locale: 'es',
@@ -327,7 +325,7 @@
                     },
                     savePayables: function () {
                         if (this.payable.scheDate == null || this.payable.scheDate == "") {
-                            showAlert("Capturar una fecha", {type: 3});
+                            showAlert("Seleccionar una fecha", {type: 3});
                             $("#modalRepro").modal("hide");
                         } else if (this.payable.countUpdate > 0) {
                             this.payable.scheDate = this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
@@ -473,6 +471,7 @@
                 } else {
                     return false;
                 }
+
             }
             function onlyNumbers(e) {
                 var key = window.Event ? e.which : e.keyCode
@@ -480,6 +479,16 @@
             }
             function backBandeja() {
                 window.history.back();
+            }
+            function keyCaracteres(obj){
+                var inicial = obj.value;
+                if (obj.value.length > 0){
+                    obj.value = '';
+                    showAlert("Debes seleccionar el calendario.", {type: 3});
+                }else {
+                    showAlert("Debes seleccionar el calendario.", {type: 3});
+                    return false;
+                }
             }
         </script>
     </jsp:attribute>
@@ -700,7 +709,7 @@
                                 <td class="col-md-3">
                                 <div class='input-group date' id='proFecha'>
                                     <input type="text" id="fechaPayable" v-model="payable.scheDate" class="form-control"
-                                           placeholder="dd-mm-aaaa" maxlength="10" required>
+                                           maxlength="10" required onkeypress="return keyCaracteres(this)">
                                     <span class="input-group-addon" @click="proFecha()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>

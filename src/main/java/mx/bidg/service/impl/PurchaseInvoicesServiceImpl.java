@@ -55,5 +55,10 @@ public class PurchaseInvoicesServiceImpl implements PurchaseInvoicesService {
         return purchaseInvoicesDao.findByRequestTypeAndCatgory(idRequestCategory, idRequestType, idRequestStatus);
     }
 
+    @Override
+    public List<PurchaseInvoices> findFolio(String folio) {
+        return purchaseInvoicesDao.findFolio(folio);
+    }
+
 
 }

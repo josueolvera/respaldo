@@ -15,4 +15,5 @@ public interface PurchaseInvoicesService {
     boolean delete(PurchaseInvoices purchaseInvoices);
     PurchaseInvoices findByIdRequest(Integer idRequest);
     List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
+    List<PurchaseInvoices> findFolio (String folio);
 }

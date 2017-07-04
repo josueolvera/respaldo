@@ -78,6 +78,7 @@
                     providerAccounts: [],
                     currencies: [],
                     requestProducts: [],
+                    findFolio: [],
                     user: {},
                     icon1: false,
                     icon2: false,
@@ -95,6 +96,7 @@
                     icon14: false,
                     icon15: false,
                     purchaseInvoice: [],
+                    folio: '',
                     voidRequests: [],
                     requestsDatesList: [],
                     purchaseInvoiceList: [],
@@ -183,6 +185,20 @@
                         this.$http.get(ROOT_URL + '/purchase-invoice').success(function (data) {
                                 this.purchaseInvoice = data;
                             });
+                    },
+                    findByFolio: function () {
+                        if (this.folio == null || this.folio == ""){
+                            showAlert("Ingresa un Folio.", {type: 3});
+                        }else {
+                            this.$http.get(ROOT_URL + "/purchase-invoice/find-folio?folio=" + this.folio).success(function (data){
+                                this.findFolio = data;
+                                if (this.findFolio.length > 0) {
+                                    $('#modalFolio').modal('show');
+                                }else {
+                                    showAlert("El folio no existe.", {type: 3});
+                                }
+                            });
+                        }
                     },
                     //**categorias de vigentes
                     getPurReqVigCompra: function () {
@@ -637,22 +653,19 @@
     <div id="content">
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-5">
+                <div class="col-md-4">
                     <h2>Cuentas por pagar</h2>
-                </div>
-
-                <div class="col-md-1 text-right">
-
                 </div>
                 <div class="col-md-3">
                     <form style="margin-top: 5%">
                         <div class="col-md-8">
                             <label>Buscar por folio</label>
-                            <input class="form-control" type="text" placeholder="folio" maxlength="30" required/>
+                            <input class="form-control" type="text" v-model="folio" placeholder="folio" maxlength="20" required/>
                         </div>
-
                     </form>
+                    <button type="button" @click="findByFolio()" style="margin-top: 9%" class="btn btn-info">Buscar</button>
                 </div>
+                <div class="col-md-2"></div>
                 <div class="col-md-3 text-right" style="margin-top: 1.5%">
                     <label>Nombre de usuario</label>
                     <p>
@@ -698,7 +711,69 @@
                     </td>
                 </tr>
             </table>
+            <div class="modal fade" id="modalFolio" tabindex="-1" role="dialog" aria-labelledby=""
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content modal-lg">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id=""><label>Búsqueda por folio</label></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr v-show="findFolio.length > 0">
+                                            <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                            <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                            <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                            <td class="col-md-2 text-center"><b>Folio</b></td>
+                                            <td class="col-md-2 text-center"><b>Monto</b></td>
+                                            <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="folio in findFolio">
+                                            <td class="col-md-1 text-center">
+                                                {{folio.request.requestCategory.requestCategoryName}}</td>
+                                            <td class="col-md-2 text-center">
+                                                {{folio.request.creationDateFormats.dateNumber}}</td>
+                                            <td class="col-md-2 text-center">
+                                                {{folio.paydayLimitFormats.dateNumber}}</td>
+                                            <td class="col-md-2 text-center">
+                                                {{folio.request.folio}}</td>
+                                            <td class="col-md-2 text-center">
+                                                {{folio.request.totalExpended | currency}}</td>
+                                            <td class="col-md-1 text-center">
+                                                <button>
+                                                <a class="glyphicon glyphicon-new-window"
+                                                   :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + folio.idProvider +
+                                                              detailThreeUrl + folio.idPurchaseInvoices +
+                                                              detailFourUrl + folio.request.idEmployee"
+                                                   data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                </a>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
+                                    aria-hidden="true">Salir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <br>
         <%-- start colapso--%>
         <div class="panel panel-success">
@@ -1803,9 +1878,9 @@
                 <!-- one acordding -->
             </div>
         </div>
-        <br>
         <%-- finish colapso--%>
     </div>
+
     </jsp:body>
 </t:template>
 
