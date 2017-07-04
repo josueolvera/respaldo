@@ -80,6 +80,8 @@ public class CommissionAmountGroupBackupController {
             commissionAmountGroupBackup.setTabulator(commissionAmountGroup.getTabulator());
             commissionAmountGroupBackup.setBonusCommissionableAmount(commissionAmountGroup.getBonusCommissionableAmount());
             commissionAmountGroupBackup.setAdjustment(commissionAmountGroup.getAdjustment());
+            commissionAmountGroupBackup.setCsbCommission(commissionAmountGroup.getCsbCommission());
+            commissionAmountGroupBackup.setTotalCommission(commissionAmountGroup.getTotalCommission());
 
             commissionAmountGroupBackupService.save(commissionAmountGroupBackup);
         }
