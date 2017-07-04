@@ -359,6 +359,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
+    public DwEmployees findByIdEmployee(Integer idEmployee){
+        return dwEmployeesDao.findByIdEmployee(idEmployee);
+    }
+    @Override
     public DwEmployees update(String data, Users user) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
