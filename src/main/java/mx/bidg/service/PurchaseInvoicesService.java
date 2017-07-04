@@ -14,4 +14,5 @@ public interface PurchaseInvoicesService {
     List<PurchaseInvoices> findAll();
     boolean delete(PurchaseInvoices purchaseInvoices);
     PurchaseInvoices findByIdRequest(Integer idRequest);
+    List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
 }

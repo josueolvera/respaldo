@@ -217,26 +217,28 @@ public class BudgetsServiceImpl implements BudgetsService {
         Row row = sheet.createRow(0);
         row.createCell(0).setCellValue("LINEA DE NEGOCIO");
         row.createCell(1).setCellValue("EMPRESA");
-        row.createCell(2).setCellValue("CENTRO DE COSTOS");
-        row.createCell(3).setCellValue("CATEGORIA");
-        row.createCell(4).setCellValue("SUBCATEGORIA");
-        row.createCell(5).setCellValue("SUB-SUBCATEGORIA");
-        row.createCell(6).setCellValue("CONCEPTOS");
-        row.createCell(7).setCellValue("PPTO " + (year - 1));
-        row.createCell(8).setCellValue("ENERO");
-        row.createCell(9).setCellValue("FEBRERO");
-        row.createCell(10).setCellValue("MARZO");
-        row.createCell(11).setCellValue("ABRIL");
-        row.createCell(12).setCellValue("MAYO");
-        row.createCell(13).setCellValue("JUNIO");
-        row.createCell(14).setCellValue("JULIO");
-        row.createCell(15).setCellValue("AGOSTO");
-        row.createCell(16).setCellValue("SEPTIEMBRE");
-        row.createCell(17).setCellValue("OCTUBRE");
-        row.createCell(18).setCellValue("NOVIEMBRE");
-        row.createCell(19).setCellValue("DICIEMBRE");
-        row.createCell(20).setCellValue("PPTO " + year);
-        row.createCell(21).setCellValue("PPTO BASE " + year);
+        row.createCell(2).setCellValue("CODIGO"); //ACRONYM
+        row.createCell(3).setCellValue("CENTRO DE COSTOS");
+        row.createCell(4).setCellValue("CUENTA CONTABLE"); //CUENTA CONTABLE
+        row.createCell(5).setCellValue("CATEGORIA");
+        row.createCell(6).setCellValue("SUBCATEGORIA");
+        row.createCell(7).setCellValue("SUB-SUBCATEGORIA");
+        row.createCell(8).setCellValue("CONCEPTOS");
+        row.createCell(9).setCellValue("PPTO " + (year - 1));
+        row.createCell(10).setCellValue("ENERO");
+        row.createCell(11).setCellValue("FEBRERO");
+        row.createCell(12).setCellValue("MARZO");
+        row.createCell(13).setCellValue("ABRIL");
+        row.createCell(14).setCellValue("MAYO");
+        row.createCell(15).setCellValue("JUNIO");
+        row.createCell(16).setCellValue("JULIO");
+        row.createCell(17).setCellValue("AGOSTO");
+        row.createCell(18).setCellValue("SEPTIEMBRE");
+        row.createCell(19).setCellValue("OCTUBRE");
+        row.createCell(20).setCellValue("NOVIEMBRE");
+        row.createCell(21).setCellValue("DICIEMBRE");
+        row.createCell(22).setCellValue("PPTO " + year);
+        row.createCell(23).setCellValue("PPTO BASE " + year);
 
         for (Cell celda : row) {
             celda.setCellStyle(style8);
@@ -248,26 +250,28 @@ public class BudgetsServiceImpl implements BudgetsService {
             Row row1 = sheet.createRow(aux);
             row1.createCell(0).setCellValue(bussinessLine.getName());
             row1.createCell(1).setCellValue(" ");
-            row1.createCell(2).setCellValue(" ");
+            row1.createCell(2).setCellValue(" "); //ACRONIMO
             row1.createCell(3).setCellValue(" ");
-            row1.createCell(4).setCellValue(" ");
+            row1.createCell(4).setCellValue(" "); //CUENTA CONTABLE
             row1.createCell(5).setCellValue(" ");
             row1.createCell(6).setCellValue(" ");
-            row1.createCell(7).setCellValue(bussinessLine.getTotalBudgetAmountLastYear().doubleValue());
-            row1.createCell(8).setCellValue(bussinessLine.getJanuaryAmount().doubleValue());
-            row1.createCell(9).setCellValue(bussinessLine.getFebruaryAmount().doubleValue());
-            row1.createCell(10).setCellValue(bussinessLine.getMarchAmount().doubleValue());
-            row1.createCell(11).setCellValue(bussinessLine.getAprilAmount().doubleValue());
-            row1.createCell(12).setCellValue(bussinessLine.getMayAmount().doubleValue());
-            row1.createCell(13).setCellValue(bussinessLine.getJuneAmount().doubleValue());
-            row1.createCell(14).setCellValue(bussinessLine.getJulyAmount().doubleValue());
-            row1.createCell(15).setCellValue(bussinessLine.getAugustAmount().doubleValue());
-            row1.createCell(16).setCellValue(bussinessLine.getSeptemberAmount().doubleValue());
-            row1.createCell(17).setCellValue(bussinessLine.getOctoberAmount().doubleValue());
-            row1.createCell(18).setCellValue(bussinessLine.getNovemberAmount().doubleValue());
-            row1.createCell(19).setCellValue(bussinessLine.getDecemberAmount().doubleValue());
-            row1.createCell(20).setCellValue(bussinessLine.getTotalAmount().doubleValue());
-            row1.createCell(21).setCellValue(bussinessLine.getRealTotalBudgetAmount().doubleValue());
+            row1.createCell(7).setCellValue(" ");
+            row1.createCell(8).setCellValue(" ");
+            row1.createCell(9).setCellValue(bussinessLine.getTotalBudgetAmountLastYear().doubleValue());
+            row1.createCell(10).setCellValue(bussinessLine.getJanuaryAmount().doubleValue());
+            row1.createCell(11).setCellValue(bussinessLine.getFebruaryAmount().doubleValue());
+            row1.createCell(12).setCellValue(bussinessLine.getMarchAmount().doubleValue());
+            row1.createCell(13).setCellValue(bussinessLine.getAprilAmount().doubleValue());
+            row1.createCell(14).setCellValue(bussinessLine.getMayAmount().doubleValue());
+            row1.createCell(15).setCellValue(bussinessLine.getJuneAmount().doubleValue());
+            row1.createCell(16).setCellValue(bussinessLine.getJulyAmount().doubleValue());
+            row1.createCell(17).setCellValue(bussinessLine.getAugustAmount().doubleValue());
+            row1.createCell(18).setCellValue(bussinessLine.getSeptemberAmount().doubleValue());
+            row1.createCell(19).setCellValue(bussinessLine.getOctoberAmount().doubleValue());
+            row1.createCell(20).setCellValue(bussinessLine.getNovemberAmount().doubleValue());
+            row1.createCell(21).setCellValue(bussinessLine.getDecemberAmount().doubleValue());
+            row1.createCell(22).setCellValue(bussinessLine.getTotalAmount().doubleValue());
+            row1.createCell(23).setCellValue(bussinessLine.getRealTotalBudgetAmount().doubleValue());
             for (Cell celda : row1) {
                 celda.setCellStyle(style1);
             }
@@ -277,26 +281,28 @@ public class BudgetsServiceImpl implements BudgetsService {
                     Row row2 = sheet.createRow(aux);
                     row2.createCell(0).setCellValue(bussinessLine.getName());
                     row2.createCell(1).setCellValue(distributor.getName());
-                    row2.createCell(2).setCellValue(" ");
+                    row2.createCell(2).setCellValue(" "); //ACRONIMO
                     row2.createCell(3).setCellValue(" ");
-                    row2.createCell(4).setCellValue(" ");
+                    row2.createCell(4).setCellValue(" "); //CUENTA CONTABLE
                     row2.createCell(5).setCellValue(" ");
                     row2.createCell(6).setCellValue(" ");
-                    row2.createCell(7).setCellValue(distributor.getTotalBudgetAmountLastYear().doubleValue());
-                    row2.createCell(8).setCellValue(distributor.getJanuaryAmount().doubleValue());
-                    row2.createCell(9).setCellValue(distributor.getFebruaryAmount().doubleValue());
-                    row2.createCell(10).setCellValue(distributor.getMarchAmount().doubleValue());
-                    row2.createCell(11).setCellValue(distributor.getAprilAmount().doubleValue());
-                    row2.createCell(12).setCellValue(distributor.getMayAmount().doubleValue());
-                    row2.createCell(13).setCellValue(distributor.getJuneAmount().doubleValue());
-                    row2.createCell(14).setCellValue(distributor.getJulyAmount().doubleValue());
-                    row2.createCell(15).setCellValue(distributor.getAugustAmount().doubleValue());
-                    row2.createCell(16).setCellValue(distributor.getSeptemberAmount().doubleValue());
-                    row2.createCell(17).setCellValue(distributor.getOctoberAmount().doubleValue());
-                    row2.createCell(18).setCellValue(distributor.getNovemberAmount().doubleValue());
-                    row2.createCell(19).setCellValue(distributor.getDecemberAmount().doubleValue());
-                    row2.createCell(20).setCellValue(distributor.getTotalAmount().doubleValue());
-                    row2.createCell(21).setCellValue(distributor.getRealTotalBudgetAmount().doubleValue());
+                    row2.createCell(7).setCellValue(" ");
+                    row2.createCell(8).setCellValue(" ");
+                    row2.createCell(9).setCellValue(distributor.getTotalBudgetAmountLastYear().doubleValue());
+                    row2.createCell(10).setCellValue(distributor.getJanuaryAmount().doubleValue());
+                    row2.createCell(11).setCellValue(distributor.getFebruaryAmount().doubleValue());
+                    row2.createCell(12).setCellValue(distributor.getMarchAmount().doubleValue());
+                    row2.createCell(13).setCellValue(distributor.getAprilAmount().doubleValue());
+                    row2.createCell(14).setCellValue(distributor.getMayAmount().doubleValue());
+                    row2.createCell(15).setCellValue(distributor.getJuneAmount().doubleValue());
+                    row2.createCell(16).setCellValue(distributor.getJulyAmount().doubleValue());
+                    row2.createCell(17).setCellValue(distributor.getAugustAmount().doubleValue());
+                    row2.createCell(18).setCellValue(distributor.getSeptemberAmount().doubleValue());
+                    row2.createCell(19).setCellValue(distributor.getOctoberAmount().doubleValue());
+                    row2.createCell(20).setCellValue(distributor.getNovemberAmount().doubleValue());
+                    row2.createCell(21).setCellValue(distributor.getDecemberAmount().doubleValue());
+                    row2.createCell(22).setCellValue(distributor.getTotalAmount().doubleValue());
+                    row2.createCell(23).setCellValue(distributor.getRealTotalBudgetAmount().doubleValue());
                     for (Cell celda : row2) {
                         celda.setCellStyle(style2);
                     }
@@ -306,26 +312,28 @@ public class BudgetsServiceImpl implements BudgetsService {
                             Row row3 = sheet.createRow(aux);
                             row3.createCell(0).setCellValue(bussinessLine.getName());
                             row3.createCell(1).setCellValue(distributor.getName());
-                            row3.createCell(2).setCellValue(costCenter.getName());
-                            row3.createCell(3).setCellValue(" ");
-                            row3.createCell(4).setCellValue(" ");
+                            row3.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIMO
+                            row3.createCell(3).setCellValue(costCenter.getName());
+                            row3.createCell(4).setCellValue(" "); //CUENTA CONTABLE
                             row3.createCell(5).setCellValue(" ");
                             row3.createCell(6).setCellValue(" ");
-                            row3.createCell(7).setCellValue(costCenter.getTotalBudgetAmountLastYear().doubleValue());
-                            row3.createCell(8).setCellValue(costCenter.getJanuaryAmount().doubleValue());
-                            row3.createCell(9).setCellValue(costCenter.getFebruaryAmount().doubleValue());
-                            row3.createCell(10).setCellValue(costCenter.getMarchAmount().doubleValue());
-                            row3.createCell(11).setCellValue(costCenter.getAprilAmount().doubleValue());
-                            row3.createCell(12).setCellValue(costCenter.getMayAmount().doubleValue());
-                            row3.createCell(13).setCellValue(costCenter.getJuneAmount().doubleValue());
-                            row3.createCell(14).setCellValue(costCenter.getJulyAmount().doubleValue());
-                            row3.createCell(15).setCellValue(costCenter.getAugustAmount().doubleValue());
-                            row3.createCell(16).setCellValue(costCenter.getSeptemberAmount().doubleValue());
-                            row3.createCell(17).setCellValue(costCenter.getOctoberAmount().doubleValue());
-                            row3.createCell(18).setCellValue(costCenter.getNovemberAmount().doubleValue());
-                            row3.createCell(19).setCellValue(costCenter.getDecemberAmount().doubleValue());
-                            row3.createCell(20).setCellValue(costCenter.getTotalAmount().doubleValue());
-                            row3.createCell(21).setCellValue(costCenter.getRealTotalBudgetAmount().doubleValue());
+                            row3.createCell(7).setCellValue(" ");
+                            row3.createCell(8).setCellValue(" ");
+                            row3.createCell(9).setCellValue(costCenter.getTotalBudgetAmountLastYear().doubleValue());
+                            row3.createCell(10).setCellValue(costCenter.getJanuaryAmount().doubleValue());
+                            row3.createCell(11).setCellValue(costCenter.getFebruaryAmount().doubleValue());
+                            row3.createCell(12).setCellValue(costCenter.getMarchAmount().doubleValue());
+                            row3.createCell(13).setCellValue(costCenter.getAprilAmount().doubleValue());
+                            row3.createCell(14).setCellValue(costCenter.getMayAmount().doubleValue());
+                            row3.createCell(15).setCellValue(costCenter.getJuneAmount().doubleValue());
+                            row3.createCell(16).setCellValue(costCenter.getJulyAmount().doubleValue());
+                            row3.createCell(17).setCellValue(costCenter.getAugustAmount().doubleValue());
+                            row3.createCell(18).setCellValue(costCenter.getSeptemberAmount().doubleValue());
+                            row3.createCell(19).setCellValue(costCenter.getOctoberAmount().doubleValue());
+                            row3.createCell(20).setCellValue(costCenter.getNovemberAmount().doubleValue());
+                            row3.createCell(21).setCellValue(costCenter.getDecemberAmount().doubleValue());
+                            row3.createCell(22).setCellValue(costCenter.getTotalAmount().doubleValue());
+                            row3.createCell(23).setCellValue(costCenter.getRealTotalBudgetAmount().doubleValue());
                             for (Cell celda : row3) {
                                 celda.setCellStyle(style3);
                             }
@@ -335,26 +343,28 @@ public class BudgetsServiceImpl implements BudgetsService {
                                     Row row4 = sheet.createRow(aux);
                                     row4.createCell(0).setCellValue(bussinessLine.getName());
                                     row4.createCell(1).setCellValue(distributor.getName());
-                                    row4.createCell(2).setCellValue(costCenter.getName());
-                                    row4.createCell(3).setCellValue(budgetCategory.getName());
-                                    row4.createCell(4).setCellValue(" ");
-                                    row4.createCell(5).setCellValue(" ");
+                                    row4.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIMO
+                                    row4.createCell(3).setCellValue(costCenter.getName());
+                                    row4.createCell(4).setCellValue(" "); //CUENTA CONTABLE
+                                    row4.createCell(5).setCellValue(budgetCategory.getName());
                                     row4.createCell(6).setCellValue(" ");
-                                    row4.createCell(7).setCellValue(budgetCategory.getTotalBudgetAmountLastYear().doubleValue());
-                                    row4.createCell(8).setCellValue(budgetCategory.getJanuaryCategoryAmount().doubleValue());
-                                    row4.createCell(9).setCellValue(budgetCategory.getFebruaryCategoryAmount().doubleValue());
-                                    row4.createCell(10).setCellValue(budgetCategory.getMarchCategoryAmount().doubleValue());
-                                    row4.createCell(11).setCellValue(budgetCategory.getAprilCategoryAmount().doubleValue());
-                                    row4.createCell(12).setCellValue(budgetCategory.getMayCategoryAmount().doubleValue());
-                                    row4.createCell(13).setCellValue(budgetCategory.getJuneCategoryAmount().doubleValue());
-                                    row4.createCell(14).setCellValue(budgetCategory.getJulyCategoryAmount().doubleValue());
-                                    row4.createCell(15).setCellValue(budgetCategory.getAugustCategoryAmount().doubleValue());
-                                    row4.createCell(16).setCellValue(budgetCategory.getSeptemberCategoryAmount().doubleValue());
-                                    row4.createCell(17).setCellValue(budgetCategory.getOctoberCategoryAmount().doubleValue());
-                                    row4.createCell(18).setCellValue(budgetCategory.getNovemberCategoryAmount().doubleValue());
-                                    row4.createCell(19).setCellValue(budgetCategory.getDecemberCategoryAmount().doubleValue());
-                                    row4.createCell(20).setCellValue(budgetCategory.getTotalCategoryAmount().doubleValue());
-                                    row4.createCell(21).setCellValue(budgetCategory.getRealTotalBudgetAmount().doubleValue());
+                                    row4.createCell(7).setCellValue(" ");
+                                    row4.createCell(8).setCellValue(" ");
+                                    row4.createCell(9).setCellValue(budgetCategory.getTotalBudgetAmountLastYear().doubleValue());
+                                    row4.createCell(10).setCellValue(budgetCategory.getJanuaryCategoryAmount().doubleValue());
+                                    row4.createCell(11).setCellValue(budgetCategory.getFebruaryCategoryAmount().doubleValue());
+                                    row4.createCell(12).setCellValue(budgetCategory.getMarchCategoryAmount().doubleValue());
+                                    row4.createCell(13).setCellValue(budgetCategory.getAprilCategoryAmount().doubleValue());
+                                    row4.createCell(14).setCellValue(budgetCategory.getMayCategoryAmount().doubleValue());
+                                    row4.createCell(15).setCellValue(budgetCategory.getJuneCategoryAmount().doubleValue());
+                                    row4.createCell(16).setCellValue(budgetCategory.getJulyCategoryAmount().doubleValue());
+                                    row4.createCell(17).setCellValue(budgetCategory.getAugustCategoryAmount().doubleValue());
+                                    row4.createCell(18).setCellValue(budgetCategory.getSeptemberCategoryAmount().doubleValue());
+                                    row4.createCell(19).setCellValue(budgetCategory.getOctoberCategoryAmount().doubleValue());
+                                    row4.createCell(20).setCellValue(budgetCategory.getNovemberCategoryAmount().doubleValue());
+                                    row4.createCell(21).setCellValue(budgetCategory.getDecemberCategoryAmount().doubleValue());
+                                    row4.createCell(22).setCellValue(budgetCategory.getTotalCategoryAmount().doubleValue());
+                                    row4.createCell(23).setCellValue(budgetCategory.getRealTotalBudgetAmount().doubleValue());
                                     for (Cell celda : row4) {
                                         celda.setCellStyle(style4);
                                     }
@@ -365,28 +375,30 @@ public class BudgetsServiceImpl implements BudgetsService {
                                                 Row row5 = sheet.createRow(aux);
                                                 row5.createCell(0).setCellValue(bussinessLine.getName());
                                                 row5.createCell(1).setCellValue(distributor.getName());
-                                                row5.createCell(2).setCellValue(costCenter.getName());
-                                                row5.createCell(3).setCellValue(budgetCategory.getName());
-                                                row5.createCell(4).setCellValue(conceptFirstLevel.getBudget().getConceptBudget().getNameConcept());
-                                                row5.createCell(5).setCellValue(" ");
-                                                row5.createCell(6).setCellValue(" ");
-                                                row5.createCell(7).setCellValue(conceptFirstLevel.getTotalLastYearAmount().doubleValue());
-                                                row5.createCell(8).setCellValue(conceptFirstLevel.getJanuaryBudgetAmount().doubleValue());
-                                                row5.createCell(9).setCellValue(conceptFirstLevel.getFebruaryBudgetAmount().doubleValue());
-                                                row5.createCell(10).setCellValue(conceptFirstLevel.getMarchBudgetAmount().doubleValue());
-                                                row5.createCell(11).setCellValue(conceptFirstLevel.getAprilBudgetAmount().doubleValue());
-                                                row5.createCell(12).setCellValue(conceptFirstLevel.getMayBudgetAmount().doubleValue());
-                                                row5.createCell(13).setCellValue(conceptFirstLevel.getJuneBudgetAmount().doubleValue());
-                                                row5.createCell(14).setCellValue(conceptFirstLevel.getJulyBudgetAmount().doubleValue());
-                                                row5.createCell(15).setCellValue(conceptFirstLevel.getAugustBudgetAmount().doubleValue());
-                                                row5.createCell(16).setCellValue(conceptFirstLevel.getSeptemberBudgetAmount().doubleValue());
-                                                row5.createCell(17).setCellValue(conceptFirstLevel.getOctoberBudgetAmount().doubleValue());
-                                                row5.createCell(18).setCellValue(conceptFirstLevel.getNovemberBudgetAmount().doubleValue());
-                                                row5.createCell(19).setCellValue(conceptFirstLevel.getDecemberBudgetAmount().doubleValue());
-                                                row5.createCell(20).setCellValue(conceptFirstLevel.getTotalBudgetAmount().doubleValue());
-                                                row5.createCell(21).setCellValue(conceptFirstLevel.getRealTotalBudgetAmount().doubleValue());
+                                                row5.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIMO
+                                                row5.createCell(3).setCellValue(costCenter.getName());
+                                                row5.createCell(4).setCellValue(" "); //CUENTA CONTABLE
+                                                row5.createCell(5).setCellValue(budgetCategory.getName());
+                                                row5.createCell(6).setCellValue(conceptFirstLevel.getBudget().getConceptBudget().getNameConcept());
+                                                row5.createCell(7).setCellValue(" ");
+                                                row5.createCell(8).setCellValue(" ");
+                                                row5.createCell(9).setCellValue(conceptFirstLevel.getTotalLastYearAmount().doubleValue());
+                                                row5.createCell(10).setCellValue(conceptFirstLevel.getJanuaryBudgetAmount().doubleValue());
+                                                row5.createCell(11).setCellValue(conceptFirstLevel.getFebruaryBudgetAmount().doubleValue());
+                                                row5.createCell(12).setCellValue(conceptFirstLevel.getMarchBudgetAmount().doubleValue());
+                                                row5.createCell(13).setCellValue(conceptFirstLevel.getAprilBudgetAmount().doubleValue());
+                                                row5.createCell(14).setCellValue(conceptFirstLevel.getMayBudgetAmount().doubleValue());
+                                                row5.createCell(15).setCellValue(conceptFirstLevel.getJuneBudgetAmount().doubleValue());
+                                                row5.createCell(16).setCellValue(conceptFirstLevel.getJulyBudgetAmount().doubleValue());
+                                                row5.createCell(17).setCellValue(conceptFirstLevel.getAugustBudgetAmount().doubleValue());
+                                                row5.createCell(18).setCellValue(conceptFirstLevel.getSeptemberBudgetAmount().doubleValue());
+                                                row5.createCell(19).setCellValue(conceptFirstLevel.getOctoberBudgetAmount().doubleValue());
+                                                row5.createCell(20).setCellValue(conceptFirstLevel.getNovemberBudgetAmount().doubleValue());
+                                                row5.createCell(21).setCellValue(conceptFirstLevel.getDecemberBudgetAmount().doubleValue());
+                                                row5.createCell(22).setCellValue(conceptFirstLevel.getTotalBudgetAmount().doubleValue());
+                                                row5.createCell(23).setCellValue(conceptFirstLevel.getRealTotalBudgetAmount().doubleValue());
                                                 for (Cell celda : row5) {
-                                                    celda.setCellStyle(style7);
+                                                    celda.setCellStyle(style5);
                                                 }
                                                 aux++;
                                             }
@@ -398,28 +410,30 @@ public class BudgetsServiceImpl implements BudgetsService {
                                                 Row row6 = sheet.createRow(aux);
                                                 row6.createCell(0).setCellValue(bussinessLine.getName());
                                                 row6.createCell(1).setCellValue(distributor.getName());
-                                                row6.createCell(2).setCellValue(costCenter.getName());
-                                                row6.createCell(3).setCellValue(budgetCategory.getName());
-                                                row6.createCell(4).setCellValue(budgetSubcategory.getName());
-                                                row6.createCell(5).setCellValue(" ");
-                                                row6.createCell(6).setCellValue(" ");
-                                                row6.createCell(7).setCellValue(budgetSubcategory.getTotalBudgetAmountLastYear().doubleValue());
-                                                row6.createCell(8).setCellValue(budgetSubcategory.getJanuarySubcategoryAmount().doubleValue());
-                                                row6.createCell(9).setCellValue(budgetSubcategory.getFebruarySubcategoryAmount().doubleValue());
-                                                row6.createCell(10).setCellValue(budgetSubcategory.getMarchSubcategoryAmount().doubleValue());
-                                                row6.createCell(11).setCellValue(budgetSubcategory.getAprilSubcategoryAmount().doubleValue());
-                                                row6.createCell(12).setCellValue(budgetSubcategory.getMaySubcategoryAmount().doubleValue());
-                                                row6.createCell(13).setCellValue(budgetSubcategory.getJuneSubcategoryAmount().doubleValue());
-                                                row6.createCell(14).setCellValue(budgetSubcategory.getJulySubcategoryAmount().doubleValue());
-                                                row6.createCell(15).setCellValue(budgetSubcategory.getAugustSubcategoryAmount().doubleValue());
-                                                row6.createCell(16).setCellValue(budgetSubcategory.getSeptemberSubcategoryAmount().doubleValue());
-                                                row6.createCell(17).setCellValue(budgetSubcategory.getOctoberSubcategoryAmount().doubleValue());
-                                                row6.createCell(18).setCellValue(budgetSubcategory.getNovemberSubcategoryAmount().doubleValue());
-                                                row6.createCell(19).setCellValue(budgetSubcategory.getDecemberSubcategoryAmount().doubleValue());
-                                                row6.createCell(20).setCellValue(budgetSubcategory.getTotalSubcategoryAmount().doubleValue());
-                                                row6.createCell(21).setCellValue(budgetSubcategory.getRealTotalBudgetAmount().doubleValue());
+                                                row6.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIMO
+                                                row6.createCell(3).setCellValue(costCenter.getName());
+                                                row6.createCell(4).setCellValue(budgetSubcategory.getSecondLevel()); //CUENTA CONTABLE
+                                                row6.createCell(5).setCellValue(budgetCategory.getName());
+                                                row6.createCell(6).setCellValue(budgetSubcategory.getName());
+                                                row6.createCell(7).setCellValue(" ");
+                                                row6.createCell(8).setCellValue(" ");
+                                                row6.createCell(9).setCellValue(budgetSubcategory.getTotalBudgetAmountLastYear().doubleValue());
+                                                row6.createCell(10).setCellValue(budgetSubcategory.getJanuarySubcategoryAmount().doubleValue());
+                                                row6.createCell(11).setCellValue(budgetSubcategory.getFebruarySubcategoryAmount().doubleValue());
+                                                row6.createCell(12).setCellValue(budgetSubcategory.getMarchSubcategoryAmount().doubleValue());
+                                                row6.createCell(13).setCellValue(budgetSubcategory.getAprilSubcategoryAmount().doubleValue());
+                                                row6.createCell(14).setCellValue(budgetSubcategory.getMaySubcategoryAmount().doubleValue());
+                                                row6.createCell(15).setCellValue(budgetSubcategory.getJuneSubcategoryAmount().doubleValue());
+                                                row6.createCell(16).setCellValue(budgetSubcategory.getJulySubcategoryAmount().doubleValue());
+                                                row6.createCell(17).setCellValue(budgetSubcategory.getAugustSubcategoryAmount().doubleValue());
+                                                row6.createCell(18).setCellValue(budgetSubcategory.getSeptemberSubcategoryAmount().doubleValue());
+                                                row6.createCell(19).setCellValue(budgetSubcategory.getOctoberSubcategoryAmount().doubleValue());
+                                                row6.createCell(20).setCellValue(budgetSubcategory.getNovemberSubcategoryAmount().doubleValue());
+                                                row6.createCell(21).setCellValue(budgetSubcategory.getDecemberSubcategoryAmount().doubleValue());
+                                                row6.createCell(22).setCellValue(budgetSubcategory.getTotalSubcategoryAmount().doubleValue());
+                                                row6.createCell(23).setCellValue(budgetSubcategory.getRealTotalBudgetAmount().doubleValue());
                                                 for (Cell celda : row6) {
-                                                    celda.setCellStyle(style5);
+                                                    celda.setCellStyle(style6);
                                                 }
                                                 aux++;
                                                 if (budgetSubcategory.getRealBudgetSpendings() != null) {
@@ -428,26 +442,28 @@ public class BudgetsServiceImpl implements BudgetsService {
                                                             Row row7 = sheet.createRow(aux);
                                                             row7.createCell(0).setCellValue(bussinessLine.getName());
                                                             row7.createCell(1).setCellValue(distributor.getName());
-                                                            row7.createCell(2).setCellValue(costCenter.getName());
-                                                            row7.createCell(3).setCellValue(budgetCategory.getName());
-                                                            row7.createCell(4).setCellValue(budgetSubcategory.getName());
-                                                            row7.createCell(5).setCellValue(conceptSecondLevel.getBudget().getConceptBudget().getNameConcept());
-                                                            row7.createCell(6).setCellValue(" ");
-                                                            row7.createCell(7).setCellValue(conceptSecondLevel.getTotalLastYearAmount().doubleValue());
-                                                            row7.createCell(8).setCellValue(conceptSecondLevel.getJanuaryBudgetAmount().doubleValue());
-                                                            row7.createCell(9).setCellValue(conceptSecondLevel.getFebruaryBudgetAmount().doubleValue());
-                                                            row7.createCell(10).setCellValue(conceptSecondLevel.getMarchBudgetAmount().doubleValue());
-                                                            row7.createCell(11).setCellValue(conceptSecondLevel.getAprilBudgetAmount().doubleValue());
-                                                            row7.createCell(12).setCellValue(conceptSecondLevel.getMayBudgetAmount().doubleValue());
-                                                            row7.createCell(13).setCellValue(conceptSecondLevel.getJuneBudgetAmount().doubleValue());
-                                                            row7.createCell(14).setCellValue(conceptSecondLevel.getJulyBudgetAmount().doubleValue());
-                                                            row7.createCell(15).setCellValue(conceptSecondLevel.getAugustBudgetAmount().doubleValue());
-                                                            row7.createCell(16).setCellValue(conceptSecondLevel.getSeptemberBudgetAmount().doubleValue());
-                                                            row7.createCell(17).setCellValue(conceptSecondLevel.getOctoberBudgetAmount().doubleValue());
-                                                            row7.createCell(18).setCellValue(conceptSecondLevel.getNovemberBudgetAmount().doubleValue());
-                                                            row7.createCell(19).setCellValue(conceptSecondLevel.getDecemberBudgetAmount().doubleValue());
-                                                            row7.createCell(20).setCellValue(conceptSecondLevel.getTotalBudgetAmount().doubleValue());
-                                                            row7.createCell(21).setCellValue(conceptSecondLevel.getRealTotalBudgetAmount().doubleValue());
+                                                            row7.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIM
+                                                            row7.createCell(3).setCellValue(costCenter.getName());
+                                                            row7.createCell(4).setCellValue(budgetSubcategory.getSecondLevel()); //CUENTA CONTABL
+                                                            row7.createCell(5).setCellValue(budgetCategory.getName());
+                                                            row7.createCell(6).setCellValue(budgetSubcategory.getName());
+                                                            row7.createCell(7).setCellValue(conceptSecondLevel.getBudget().getConceptBudget().getNameConcept());
+                                                            row7.createCell(8).setCellValue(" ");
+                                                            row7.createCell(9).setCellValue(conceptSecondLevel.getTotalLastYearAmount().doubleValue());
+                                                            row7.createCell(10).setCellValue(conceptSecondLevel.getJanuaryBudgetAmount().doubleValue());
+                                                            row7.createCell(11).setCellValue(conceptSecondLevel.getFebruaryBudgetAmount().doubleValue());
+                                                            row7.createCell(12).setCellValue(conceptSecondLevel.getMarchBudgetAmount().doubleValue());
+                                                            row7.createCell(13).setCellValue(conceptSecondLevel.getAprilBudgetAmount().doubleValue());
+                                                            row7.createCell(14).setCellValue(conceptSecondLevel.getMayBudgetAmount().doubleValue());
+                                                            row7.createCell(15).setCellValue(conceptSecondLevel.getJuneBudgetAmount().doubleValue());
+                                                            row7.createCell(16).setCellValue(conceptSecondLevel.getJulyBudgetAmount().doubleValue());
+                                                            row7.createCell(17).setCellValue(conceptSecondLevel.getAugustBudgetAmount().doubleValue());
+                                                            row7.createCell(18).setCellValue(conceptSecondLevel.getSeptemberBudgetAmount().doubleValue());
+                                                            row7.createCell(19).setCellValue(conceptSecondLevel.getOctoberBudgetAmount().doubleValue());
+                                                            row7.createCell(20).setCellValue(conceptSecondLevel.getNovemberBudgetAmount().doubleValue());
+                                                            row7.createCell(21).setCellValue(conceptSecondLevel.getDecemberBudgetAmount().doubleValue());
+                                                            row7.createCell(22).setCellValue(conceptSecondLevel.getTotalBudgetAmount().doubleValue());
+                                                            row7.createCell(23).setCellValue(conceptSecondLevel.getRealTotalBudgetAmount().doubleValue());
                                                             for (Cell celda : row7) {
                                                                 celda.setCellStyle(style7);
                                                             }
@@ -461,26 +477,28 @@ public class BudgetsServiceImpl implements BudgetsService {
                                                             Row row8 = sheet.createRow(aux);
                                                             row8.createCell(0).setCellValue(bussinessLine.getName());
                                                             row8.createCell(1).setCellValue(distributor.getName());
-                                                            row8.createCell(2).setCellValue(costCenter.getName());
-                                                            row8.createCell(3).setCellValue(budgetCategory.getName());
-                                                            row8.createCell(4).setCellValue(budgetSubcategory.getName());
-                                                            row8.createCell(5).setCellValue(budgetSubSubCategory.getName());
-                                                            row8.createCell(6).setCellValue(" ");
-                                                            row8.createCell(7).setCellValue(budgetSubSubCategory.getTotalBudgetAmountLastYear().doubleValue());
-                                                            row8.createCell(8).setCellValue(budgetSubSubCategory.getJanuarySubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(9).setCellValue(budgetSubSubCategory.getFebruarySubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(10).setCellValue(budgetSubSubCategory.getMarchSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(11).setCellValue(budgetSubSubCategory.getAprilSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(12).setCellValue(budgetSubSubCategory.getMaySubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(13).setCellValue(budgetSubSubCategory.getJuneSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(14).setCellValue(budgetSubSubCategory.getJulySubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(15).setCellValue(budgetSubSubCategory.getAugustSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(16).setCellValue(budgetSubSubCategory.getSeptemberSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(17).setCellValue(budgetSubSubCategory.getOctoberSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(18).setCellValue(budgetSubSubCategory.getNovemberSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(19).setCellValue(budgetSubSubCategory.getDecemberSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(20).setCellValue(budgetSubSubCategory.getTotalSubSubcategoryAmount().doubleValue());
-                                                            row8.createCell(21).setCellValue(budgetSubSubCategory.getRealTotalBudgetAmount().doubleValue());
+                                                            row8.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIMO
+                                                            row8.createCell(3).setCellValue(costCenter.getName());
+                                                            row8.createCell(4).setCellValue(budgetSubSubCategory.getThirdLevel()); //CUENTA CONTABLE
+                                                            row8.createCell(5).setCellValue(budgetCategory.getName());
+                                                            row8.createCell(6).setCellValue(budgetSubcategory.getName());
+                                                            row8.createCell(7).setCellValue(budgetSubSubCategory.getName());
+                                                            row8.createCell(8).setCellValue(" ");
+                                                            row8.createCell(9).setCellValue(budgetSubSubCategory.getTotalBudgetAmountLastYear().doubleValue());
+                                                            row8.createCell(10).setCellValue(budgetSubSubCategory.getJanuarySubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(11).setCellValue(budgetSubSubCategory.getFebruarySubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(12).setCellValue(budgetSubSubCategory.getMarchSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(13).setCellValue(budgetSubSubCategory.getAprilSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(14).setCellValue(budgetSubSubCategory.getMaySubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(15).setCellValue(budgetSubSubCategory.getJuneSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(16).setCellValue(budgetSubSubCategory.getJulySubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(17).setCellValue(budgetSubSubCategory.getAugustSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(18).setCellValue(budgetSubSubCategory.getSeptemberSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(19).setCellValue(budgetSubSubCategory.getOctoberSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(20).setCellValue(budgetSubSubCategory.getNovemberSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(21).setCellValue(budgetSubSubCategory.getDecemberSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(22).setCellValue(budgetSubSubCategory.getTotalSubSubcategoryAmount().doubleValue());
+                                                            row8.createCell(23).setCellValue(budgetSubSubCategory.getRealTotalBudgetAmount().doubleValue());
                                                             for (Cell celda : row8) {
                                                                 celda.setCellStyle(style6);
                                                             }
@@ -491,33 +509,37 @@ public class BudgetsServiceImpl implements BudgetsService {
                                                                         Row row9 = sheet.createRow(aux);
                                                                         row9.createCell(0).setCellValue(bussinessLine.getName());
                                                                         row9.createCell(1).setCellValue(distributor.getName());
-                                                                        row9.createCell(2).setCellValue(costCenter.getName());
-                                                                        row9.createCell(3).setCellValue(budgetCategory.getName());
-                                                                        row9.createCell(4).setCellValue(budgetSubcategory.getName());
-                                                                        row9.createCell(5).setCellValue(budgetSubSubCategory.getName());
-                                                                        row9.createCell(6).setCellValue(conceptThirdLevel.getBudget().getConceptBudget().getNameConcept());
-                                                                        row9.createCell(7).setCellValue(conceptThirdLevel.getTotalLastYearAmount().doubleValue());
-                                                                        row9.createCell(8).setCellValue(conceptThirdLevel.getJanuaryBudgetAmount().doubleValue());
-                                                                        row9.createCell(9).setCellValue(conceptThirdLevel.getFebruaryBudgetAmount().doubleValue());
-                                                                        row9.createCell(10).setCellValue(conceptThirdLevel.getMarchBudgetAmount().doubleValue());
-                                                                        row9.createCell(11).setCellValue(conceptThirdLevel.getAprilBudgetAmount().doubleValue());
-                                                                        row9.createCell(12).setCellValue(conceptThirdLevel.getMayBudgetAmount().doubleValue());
-                                                                        row9.createCell(13).setCellValue(conceptThirdLevel.getJuneBudgetAmount().doubleValue());
-                                                                        row9.createCell(14).setCellValue(conceptThirdLevel.getJulyBudgetAmount().doubleValue());
-                                                                        row9.createCell(15).setCellValue(conceptThirdLevel.getAugustBudgetAmount().doubleValue());
-                                                                        row9.createCell(16).setCellValue(conceptThirdLevel.getSeptemberBudgetAmount().doubleValue());
-                                                                        row9.createCell(17).setCellValue(conceptThirdLevel.getOctoberBudgetAmount().doubleValue());
-                                                                        row9.createCell(18).setCellValue(conceptThirdLevel.getNovemberBudgetAmount().doubleValue());
-                                                                        row9.createCell(19).setCellValue(conceptThirdLevel.getDecemberBudgetAmount().doubleValue());
-                                                                        row9.createCell(20).setCellValue(conceptThirdLevel.getTotalBudgetAmount().doubleValue());
-                                                                        row9.createCell(21).setCellValue(conceptThirdLevel.getRealTotalBudgetAmount().doubleValue());
+                                                                        row9.createCell(2).setCellValue(costCenter.getAcronym()); //ACRONIMO
+                                                                        row9.createCell(3).setCellValue(costCenter.getName());
+                                                                        row9.createCell(4).setCellValue(budgetSubSubCategory.getThirdLevel()); //CUENTA CONTABLE
+                                                                        row9.createCell(5).setCellValue(budgetCategory.getName());
+                                                                        row9.createCell(6).setCellValue(budgetSubcategory.getName());
+                                                                        row9.createCell(7).setCellValue(budgetSubSubCategory.getName());
+                                                                        row9.createCell(8).setCellValue(conceptThirdLevel.getBudget().getConceptBudget().getNameConcept());
+                                                                        row9.createCell(9).setCellValue(conceptThirdLevel.getTotalLastYearAmount().doubleValue());
+                                                                        row9.createCell(10).setCellValue(conceptThirdLevel.getJanuaryBudgetAmount().doubleValue());
+                                                                        row9.createCell(11).setCellValue(conceptThirdLevel.getFebruaryBudgetAmount().doubleValue());
+                                                                        row9.createCell(12).setCellValue(conceptThirdLevel.getMarchBudgetAmount().doubleValue());
+                                                                        row9.createCell(13).setCellValue(conceptThirdLevel.getAprilBudgetAmount().doubleValue());
+                                                                        row9.createCell(14).setCellValue(conceptThirdLevel.getMayBudgetAmount().doubleValue());
+                                                                        row9.createCell(15).setCellValue(conceptThirdLevel.getJuneBudgetAmount().doubleValue());
+                                                                        row9.createCell(16).setCellValue(conceptThirdLevel.getJulyBudgetAmount().doubleValue());
+                                                                        row9.createCell(17).setCellValue(conceptThirdLevel.getAugustBudgetAmount().doubleValue());
+                                                                        row9.createCell(18).setCellValue(conceptThirdLevel.getSeptemberBudgetAmount().doubleValue());
+                                                                        row9.createCell(19).setCellValue(conceptThirdLevel.getOctoberBudgetAmount().doubleValue());
+                                                                        row9.createCell(20).setCellValue(conceptThirdLevel.getNovemberBudgetAmount().doubleValue());
+                                                                        row9.createCell(21).setCellValue(conceptThirdLevel.getDecemberBudgetAmount().doubleValue());
+                                                                        row9.createCell(22).setCellValue(conceptThirdLevel.getTotalBudgetAmount().doubleValue());
+                                                                        row9.createCell(23).setCellValue(conceptThirdLevel.getRealTotalBudgetAmount().doubleValue());
                                                                         for (Cell celda : row9) {
                                                                             celda.setCellStyle(style7);
                                                                         }
                                                                         aux++;
+
                                                                     }
                                                                 }
                                                             }
+
                                                         }
                                                     }
                                                 }
@@ -554,6 +576,8 @@ public class BudgetsServiceImpl implements BudgetsService {
         sheet.autoSizeColumn(19, true);
         sheet.autoSizeColumn(20, true);
         sheet.autoSizeColumn(21, true);
+        sheet.autoSizeColumn(22, true);
+        sheet.autoSizeColumn(23, true);
         wb.write(outputStream);
     }
 
