@@ -136,6 +136,15 @@ public class DwEmployeesController {
         );
     }
 
+    @RequestMapping(value = "/employee-find",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String>
+    getDwEmployeeByIdEmployee(@RequestParam(name = "idEmployee", required = false) Integer idEmployee) throws IOException {
+
+        DwEmployees dwEmployee = dwEmployeesService.findByIdEmployee(idEmployee);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployee), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/change-employee-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> changeEmployeeStatus(@RequestBody String data, HttpSession session) throws Exception {
 
@@ -172,8 +181,6 @@ public class DwEmployeesController {
     public ResponseEntity<String> findDwEmployeeByDwEnterpirseAndRoleAdvisers(@PathVariable Integer idDwEnterprise) throws IOException {
 
         List<MultilevelEmployee> multilevelEmployees = multilevelEmployeeService.findAllActives();
-
-
 
         List<DwEmployees> dwEmployees = dwEmployeesService.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise, multilevelEmployees);
 

@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -29,7 +31,7 @@ import javax.validation.constraints.Size;
 @Entity
 @DynamicUpdate
 @Table(name = "PROVIDERS_CONTACT")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class ProvidersContact implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,25 +44,9 @@ public class ProvidersContact implements Serializable {
     private Integer idProviderContact;
 
     @Size(max = 100)
-    @Column(name = "NAME")
-    @JsonView(JsonViews.Root.class)
-    private String name;
-
-    @Size(max = 30)
-    @Column(name = "POST")
-    @JsonView(JsonViews.Root.class)
-    private String post;
-
-    @Size(max = 100)
     @Column(name = "EMAIL")
     @JsonView(JsonViews.Root.class)
     private String email;
-
-    @Size(max = 11)
-    @NotNull
-    @Column(name = "PHONE_NUMBER")
-    @JsonView(JsonViews.Root.class)
-    private String phoneNumber;
 
     @Basic(optional = false)
     @NotNull
@@ -71,6 +57,22 @@ public class ProvidersContact implements Serializable {
     @Column(name="ID_PROVIDER", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
     private Integer idProvider;
+
+    @Size(max = 100)
+    @Column(name = "NAME")
+    @JsonView(JsonViews.Root.class)
+    private String name;
+
+    @Size(max = 11)
+    @NotNull
+    @Column(name = "PHONE_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private String phoneNumber;
+
+    @Size(max = 30)
+    @Column(name = "POST")
+    @JsonView(JsonViews.Root.class)
+    private String post;
 
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
     @ManyToOne(optional = false)
