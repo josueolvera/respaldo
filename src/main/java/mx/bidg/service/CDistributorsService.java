@@ -5,6 +5,7 @@
  */
 package mx.bidg.service;
 
+import java.io.OutputStream;
 import java.util.List;
 import mx.bidg.model.CDistributors;
 
@@ -23,4 +24,5 @@ public interface CDistributorsService {
     CDistributors save(CDistributors cDistributors);
     CDistributors update(CDistributors cDistributors);
     boolean delete(CDistributors cDistributors);
+    void exportFile(OutputStream stream) throws Exception;
 }
