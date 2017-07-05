@@ -2,6 +2,9 @@ package mx.bidg.service;
 
 import mx.bidg.model.PurchaseInvoices;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,4 +19,5 @@ public interface PurchaseInvoicesService {
     PurchaseInvoices findByIdRequest(Integer idRequest);
     List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
     List<PurchaseInvoices> findFolio (String folio);
+    void payablesRequests(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException;
 }

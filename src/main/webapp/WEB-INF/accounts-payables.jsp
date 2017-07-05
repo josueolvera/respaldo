@@ -79,6 +79,7 @@
                     currencies: [],
                     requestProducts: [],
                     findFolio: [],
+                    cuentasPorPagar: '',
                     user: {},
                     icon1: false,
                     icon2: false,
@@ -97,6 +98,10 @@
                     icon15: false,
                     purchaseInvoice: [],
                     folio: '',
+
+                    opcionXls:{
+                        reporteOpc: ''
+                    },
                     voidRequests: [],
                     requestsDatesList: [],
                     purchaseInvoiceList: [],
@@ -140,9 +145,10 @@
                     },
                     GenerarA: function () {
                         var fechaDos = new Date();
+                        var fecha_actual2 = fechaDos.getFullYear() + "-" + (fechaDos.getMonth() + 1) + "-" + fechaDos.getDate();
                         this.timePickerA = $('#generarA').datetimepicker({
                             locale: 'es',
-                            format: 'DD-MM-YYYY',
+                            format: 'DD-MM-YYYY'
                         }).data();
                     },
                     getUserInSession: function () {
@@ -199,6 +205,29 @@
                                 }
                             });
                         }
+                    },
+                    generarReporte: function () {
+                        if (this.timePickerDe == null || this.timePickerA == null){
+                            showAlert("Seleccionar opciones vacias.", {type: 3});
+                        }else if (this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1) > this.timePickerA.DateTimePicker.date().toISOString().slice(0, -1)){
+                            showAlert("La fecha final debe ser mayor a la de inicio.", {type: 3});
+                        }else if(this.cuentasPorPagar == 1){
+                            window.location = ROOT_URL + "/purchase-invoice/report-payables?startDate="+this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1)
+                                + "&endDate=" + this.timePickerA.DateTimePicker.date().toISOString().slice(0, -1);
+                            this.timePickerDe.DateTimePicker.clear();
+                            this.timePickerA.DateTimePicker.clear();
+                            this.cuentasPorPagar= '';
+                        }
+                        else if(this.cuentasPorPagar == 2){
+                            showAlert("Opcion no disponible.", {type: 3});
+                        }else{
+                            showAlert("Seleccionar una cuenta.", {type: 3});
+                        }
+
+                    },
+                    folioCerrar: function () {
+                        $('#modalFolio').modal('hide');
+                        this.folio = '';
                     },
                     //**categorias de vigentes
                     getPurReqVigCompra: function () {
@@ -611,6 +640,16 @@
                     document.getElementById('headTableTr2').style.color='transparent';
                 }
             }
+            function keyCaracteres(obj){
+                var inicial = obj.value;
+                if (obj.value.length > 0){
+                    obj.value = '';
+                    showAlert("Debes seleccionar una fecha del calendario.", {type: 3});
+                }else {
+                    showAlert("Debes seleccionar una fecha del calendario.", {type: 3});
+                    return false;
+                }
+            }
         </script>
     </jsp:attribute>
 
@@ -680,17 +719,16 @@
             <table class="table table-striped">
                 <tr>
                     <td class="col-md-2 text-center">
-                        <select class="form-control">
-                            <option value=""></option>
-                            <option>Cuentas por pagar</option>
-                            <option>Cuentas pagadas</option>
+                        <select class="form-control" v-model="cuentasPorPagar" >
+                            <option :value="1">Cuentas por pagar</option>
+                            <option :value="2">Cuentas pagadas</option>
                         </select>
                     </td>
                     <td class="col-md-1 text-right"><label style="margin-top: 8%;">De </label>
                     </td>
                     <td class="col-md-3">
                         <div class='input-group date' id='generarDe'>
-                            <input type='text' class="form-control" required>
+                            <input type='text' class="form-control" required onkeypress="return keyCaracteres(this)">
                             <span class="input-group-addon" @click="GenerarDe()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -700,14 +738,14 @@
                     </td>
                     <td class="col-md-3">
                         <div class='input-group date' id='generarA'>
-                            <input type='text' class="form-control" required>
+                            <input type='text' class="form-control" required onkeypress="return keyCaracteres(this)">
                             <span class="input-group-addon" @click="GenerarA()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                         </div>
                     </td>
                     <td class="col-md-2 text-center">
-                        <button type="button" style="width: 80%" class="btn btn-success">Generar</button>
+                        <button @click="generarReporte()" type="button" style="width: 80%" class="btn btn-success">Generar</button>
                     </td>
                 </tr>
             </table>
@@ -746,15 +784,13 @@
                                             <td class="col-md-2 text-center">
                                                 {{folio.request.totalExpended | currency}}</td>
                                             <td class="col-md-1 text-center">
-                                                <button>
                                                 <a class="glyphicon glyphicon-new-window"
-                                                   :href="detailUrl + purchose.idRequest +
+                                                   :href="detailUrl + folio.idRequest +
                                                               detailTwoUrl + folio.idProvider +
                                                               detailThreeUrl + folio.idPurchaseInvoices +
                                                               detailFourUrl + folio.request.idEmployee"
                                                    data-toggle="tooltip" data-placement="top" title="Detalle">
                                                 </a>
-                                                </button>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -764,8 +800,7 @@
                         </div>
                         <br>
                         <div class="modal-footer">
-
-                            <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
+                            <button type="button" class="btn btn-default" class="close" @click="folioCerrar()" data-dismiss="modal"
                                     aria-hidden="true">Salir
                             </button>
                         </div>

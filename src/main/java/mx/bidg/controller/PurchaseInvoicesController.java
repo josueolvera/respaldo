@@ -18,10 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -393,6 +395,27 @@ public class PurchaseInvoicesController {
         }
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(purInvoicesList), HttpStatus.OK);
+    }
+
+    /**
+     * Exportar Excel cuentas por pagar
+     */
+    @RequestMapping(value = "/report-payables", method = RequestMethod.GET)
+    public ResponseEntity<String> reportPayables(HttpServletResponse response,
+                    @RequestParam(name= "startDate", required=true) String startDate,
+                    @RequestParam(name="endDate", required=true) String endDate) throws IOException{
+
+        LocalDateTime ofDate = (startDate == null || startDate.equals("")) ? null : LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime untilDate = (endDate == null || endDate.equals("")) ? null : LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"reporte_cuentas_por_pagar.xls"+ "\"");
+        OutputStream outputStream = response.getOutputStream();
+        purchaseInvoicesService.payablesRequests(outputStream, ofDate, untilDate);
+        outputStream.flush();
+        outputStream.close();
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(purchaseInvoicesService.findAll()));
     }
 }
 

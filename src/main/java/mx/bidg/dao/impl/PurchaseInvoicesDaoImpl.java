@@ -3,9 +3,11 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PurchaseInvoicesDao;
 import mx.bidg.model.PurchaseInvoices;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -62,5 +64,12 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
                 .list();
     }
 
+    @Override
+    public List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate){
+        Criteria criteria = createEntityCriteria();
+        criteria.createCriteria("request")
+                .add(Restrictions.eq( "idRequestStatus", 3 ));
+        return criteria.list();
+    }
 
 }

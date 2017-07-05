@@ -3,6 +3,7 @@ package mx.bidg.dao;
 import mx.bidg.model.PurchaseInvoices;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -12,4 +13,5 @@ public interface PurchaseInvoicesDao extends InterfaceDao<PurchaseInvoices> {
     PurchaseInvoices findByIdRequest(Integer idRequest);
     List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
     List<PurchaseInvoices> findFolio (String folio);
+    List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate);
 }

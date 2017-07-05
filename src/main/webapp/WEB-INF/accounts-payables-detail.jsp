@@ -484,9 +484,9 @@
                 var inicial = obj.value;
                 if (obj.value.length > 0){
                     obj.value = '';
-                    showAlert("Debes seleccionar el calendario.", {type: 3});
+                    showAlert("Debes seleccionar una fecha del calendario.", {type: 3});
                 }else {
-                    showAlert("Debes seleccionar el calendario.", {type: 3});
+                    showAlert("Debes seleccionar una fecha del calendario.", {type: 3});
                     return false;
                 }
             }
