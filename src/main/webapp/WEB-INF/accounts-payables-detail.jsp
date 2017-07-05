@@ -49,7 +49,6 @@
                 ready: function () {
                     this.getUserInSession();
                     this.getCurrencies();
-//                    this.getRequestsDateProgrammerOne();
                     this.getRequestsDateProgrammer();
                     this.getProContact();
                     this.getProvidersReque();
@@ -60,6 +59,7 @@
                     this.getEmployeeReqDates();
                     this.getBranchDis();
                     this.getRolesE();
+                    this.descargarArchivos();
                 },
                 data: {
                     idRequ: ${idRequest},
@@ -92,7 +92,9 @@
                     icon14: false,
                     icon15: false,
                     requestsDateProg: [],
+                    descargaAr: [],
                     requestsDateProgrammer: [],
+                    fileUrl: ROOT_URL + "/purchase-invoices-files/attachment/download/" ,
                     branchDistributor: [],
                     rolesEmplo: [],
                     proveContact: [],
@@ -134,6 +136,11 @@
                             })
                             .error(function (data) {
                                 showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
+                            });
+                    },
+                    descargarArchivos: function () {
+                        this.$http.get(ROOT_URL + "/purchase-invoices-files").success(function (data) {
+                                this.descargaAr = data;
                             });
                     },
                     getRolesCostCenter: function (idRole) {
@@ -180,11 +187,6 @@
                             this.employeeFind = data;
                         });
                     },
-//                    getRequestsDateProgrammerOne: function() {
-//                        this.$http.get(ROOT_URL + '/accounts-payables-dates/' + this.idRequestsDat).success( function (data) {
-//                            this.requestsDateProg = data;
-//                        });
-//                    },
                     getRequestsDateProgrammer: function () {
                         this.$http.get(ROOT_URL + '/accounts-payables-dates').success(function (data) {
                             this.requestsDateProgrammer = data;
@@ -336,6 +338,8 @@
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
                                 showAlert("Registro guardado con exito");
+                                setTimeout("location.href = '../siad/accounts-payables'",3000);
+
                             }).error(function () {
                                 showAlert("Fecha invalida.", {type: 3});
                             })
@@ -347,6 +351,7 @@
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
                                 showAlert("Registro guardado con exito");
+                                setTimeout("location.href = '../siad/accounts-payables'",3000);
                             }).error(function () {
                                 showAlert("Fecha invalida", {type: 3});
                             })
@@ -611,23 +616,31 @@
                             <tr>
                                 <td class="col-md-2"><b>Banco</b></td>
                                 <td class="col-md-3"><b>Cuenta bancaria</b></td>
-                                <td class="col-md-3"><b>Monto total</b></td>
-                                <td class="col-md-2"><b>PDF</b></td>
-                                <td class="col-md-2"><b>XML</b></td>
+                                <td class="col-md-2"><b>Monto total</b></td>
+                                <td class="col-md-1 text-center"><b>PDF</b></td>
+                                <td class="col-md-1 text-center"><b>XML</b></td>
+                                <td class="col-md-2 text-center"><b>Descargar</b></td>
                             </tr>
                             <tr v-for="purch in purchaseInvoicex" v-if="this.idPurcha == purch.idPurchaseInvoices">
                                 <td class="col-md-2">{{purch.account.bank.acronyms}}</td>
                                 <td class="col-md-3">{{purch.account.accountNumber}}</td>
-                                <td class="col-md-3">{{purch.request.totalExpended | currency}}</td>
-                                <td class="col-md-2">
-                                    <a class="btn btn-md btn-hover btn-circle btn-danger"
-                                       data-toggle="tooltip" data-placement="top" title="Descargar">
-                                        <span class="glyphicon glyphicon-download-alt"></span>
+                                <td class="col-md-2">{{purch.amountWithIva | currency}}</td>
+                                <td class="col-md-1 text-center">
+                                    <a class="btn btn-md btn-hover btn-danger"
+                                       data-toggle="tooltip" data-placement="top">
+                                        <span class="glyphicon glyphicon-file"></span>
                                     </a>
                                 </td>
-                                <td class="col-md-2">
-                                    <a class="btn btn-md btn-hover btn-circle btn-success"
-                                       data-toggle="tooltip" data-placement="top" title="Descargar">
+                                <td class="col-md-1 text-center">
+                                    <a class="btn btn-md btn-hover btn-info"
+                                       data-toggle="tooltip" data-placement="top">
+                                        <span class="glyphicon glyphicon-file"></span>
+                                    </a>
+                                </td>
+                                <td class="col-md-2 text-center" v-for="files in descargaAr"
+                                    v-if="this.idPurcha == files.idPurchaseInvoices">
+                                    <a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Descargar"
+                                        :href="fileUrl + files.idPurchaseInvoicesFiles">
                                         <span class="glyphicon glyphicon-download-alt"></span>
                                     </a>
                                 </td>
@@ -726,7 +739,7 @@
                 </div>
                 <div class="text-right">
                     <button class="btn btn-success" @click="showModalReprogram()">Guardar</button> &nbsp;&nbsp;
-                    <a href="javascript:window.history.back();">
+                    <a href="../siad/accounts-payables">
                         <button class="btn btn-default">Salir</button>
                     </a>
                 </div>

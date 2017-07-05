@@ -189,8 +189,8 @@
                     //requests dates
                     getPurchaseInvoice: function () {
                         this.$http.get(ROOT_URL + '/purchase-invoice').success(function (data) {
-                                this.purchaseInvoice = data;
-                            });
+                            this.purchaseInvoice = data;
+                        });
                     },
                     findByFolio: function () {
                         if (this.folio == null || this.folio == ""){
@@ -207,21 +207,35 @@
                         }
                     },
                     generarReporte: function () {
-                        if (this.timePickerDe == null || this.timePickerA == null){
-                            showAlert("Seleccionar opciones vacias.", {type: 3});
+                        if (this.timePickerDe == null || this.timePickerA == null || this.cuentasPorPagar =="" || this.cuentasPorPagar == null){
+                            showAlert("Seleccionar cuenta y fechas.", {type: 3});
+                            this.timePickerDe.DateTimePicker.clear();
+                            this.timePickerA.DateTimePicker.clear();
+                            this.cuentasPorPagar= '';
                         }else if (this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1) > this.timePickerA.DateTimePicker.date().toISOString().slice(0, -1)){
                             showAlert("La fecha final debe ser mayor a la de inicio.", {type: 3});
+                            this.timePickerDe.DateTimePicker.clear();
+                            this.timePickerA.DateTimePicker.clear();
+                            this.cuentasPorPagar= '';
                         }else if(this.cuentasPorPagar == 1){
                             window.location = ROOT_URL + "/purchase-invoice/report-payables?startDate="+this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1)
-                                + "&endDate=" + this.timePickerA.DateTimePicker.date().toISOString().slice(0, -1);
+                                + "&endDate=" + this.timePickerA.DateTimePicker.date().toISOString().slice(0, -1) +"&status=3";
                             this.timePickerDe.DateTimePicker.clear();
                             this.timePickerA.DateTimePicker.clear();
                             this.cuentasPorPagar= '';
                         }
                         else if(this.cuentasPorPagar == 2){
-                            showAlert("Opcion no disponible.", {type: 3});
+                            window.location = ROOT_URL + "/pay-requests-history/report-pay-requests?startDate=" +
+                                this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1)
+                                + "&endDate=" + this.timePickerA.DateTimePicker.date().toISOString().slice(0, -1);
+                            this.timePickerDe.DateTimePicker.clear();
+                            this.timePickerA.DateTimePicker.clear();
+                            this.cuentasPorPagar= '';
                         }else{
                             showAlert("Seleccionar una cuenta.", {type: 3});
+                            this.timePickerDe.DateTimePicker.clear();
+                            this.timePickerA.DateTimePicker.clear();
+                            this.cuentasPorPagar= '';
                         }
 
                     },
@@ -689,1232 +703,1232 @@
     </jsp:attribute>
 
     <jsp:body>
-    <div id="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-4">
-                    <h2>Cuentas por pagar</h2>
-                </div>
-                <div class="col-md-3">
-                    <form style="margin-top: 5%">
-                        <div class="col-md-8">
-                            <label>Buscar por folio</label>
-                            <input class="form-control" type="text" v-model="folio" placeholder="folio" maxlength="20" required/>
-                        </div>
-                    </form>
-                    <button type="button" @click="findByFolio()" style="margin-top: 9%" class="btn btn-info">Buscar</button>
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-3 text-right" style="margin-top: 1.5%">
-                    <label>Nombre de usuario</label>
-                    <p>
-                        <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
-                    </p>
+        <div id="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-4">
+                        <h2>Cuentas por pagar</h2>
+                    </div>
+                    <div class="col-md-3">
+                        <form style="margin-top: 5%">
+                            <div class="col-md-8">
+                                <label>Buscar por folio</label>
+                                <input class="form-control" type="text" v-model="folio" placeholder="folio" maxlength="20" required/>
+                            </div>
+                        </form>
+                        <button type="button" @click="findByFolio()" style="margin-top: 9%" class="btn btn-info">Buscar</button>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-3 text-right" style="margin-top: 1.5%">
+                        <label>Nombre de usuario</label>
+                        <p>
+                            <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <div class="row">
-            <b>Cuentas</b>
-            <table class="table table-striped">
-                <tr>
-                    <td class="col-md-2 text-center">
-                        <select class="form-control" v-model="cuentasPorPagar" >
-                            <option :value="1">Cuentas por pagar</option>
-                            <option :value="2">Cuentas pagadas</option>
-                        </select>
-                    </td>
-                    <td class="col-md-1 text-right"><label style="margin-top: 8%;">De </label>
-                    </td>
-                    <td class="col-md-3">
-                        <div class='input-group date' id='generarDe'>
-                            <input type='text' class="form-control" required onkeypress="return keyCaracteres(this)">
-                            <span class="input-group-addon" @click="GenerarDe()">
+            <br>
+            <div class="row">
+                <b>Cuentas</b>
+                <table class="table table-striped">
+                    <tr>
+                        <td class="col-md-2 text-center">
+                            <select class="form-control" v-model="cuentasPorPagar" >
+                                <option :value="1">Cuentas por pagar</option>
+                                <option :value="2">Cuentas pagadas</option>
+                            </select>
+                        </td>
+                        <td class="col-md-1 text-right"><label style="margin-top: 8%;">De </label>
+                        </td>
+                        <td class="col-md-3">
+                            <div class='input-group date' id='generarDe'>
+                                <input type='text' class="form-control" required onkeypress="return keyCaracteres(this)">
+                                <span class="input-group-addon" @click="GenerarDe()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
-                        </div>
-                    </td>
-                    <td class="col-md-1 text-right"><label style="margin-top: 8%;">a </label>
-                    </td>
-                    <td class="col-md-3">
-                        <div class='input-group date' id='generarA'>
-                            <input type='text' class="form-control" required onkeypress="return keyCaracteres(this)">
-                            <span class="input-group-addon" @click="GenerarA()">
+                            </div>
+                        </td>
+                        <td class="col-md-1 text-right"><label style="margin-top: 8%;">a </label>
+                        </td>
+                        <td class="col-md-3">
+                            <div class='input-group date' id='generarA'>
+                                <input type='text' class="form-control" required onkeypress="return keyCaracteres(this)">
+                                <span class="input-group-addon" @click="GenerarA()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
-                        </div>
-                    </td>
-                    <td class="col-md-2 text-center">
-                        <button @click="generarReporte()" type="button" style="width: 80%" class="btn btn-success">Generar</button>
-                    </td>
-                </tr>
-            </table>
-            <div class="modal fade" id="modalFolio" tabindex="-1" role="dialog" aria-labelledby=""
-                 aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content modal-lg">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id=""><label>Búsqueda por folio</label></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr v-show="findFolio.length > 0">
-                                            <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                            <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                            <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                            <td class="col-md-2 text-center"><b>Folio</b></td>
-                                            <td class="col-md-2 text-center"><b>Monto</b></td>
-                                            <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr v-for="folio in findFolio">
-                                            <td class="col-md-1 text-center">
-                                                {{folio.request.requestCategory.requestCategoryName}}</td>
-                                            <td class="col-md-2 text-center">
-                                                {{folio.request.creationDateFormats.dateNumber}}</td>
-                                            <td class="col-md-2 text-center">
-                                                {{folio.paydayLimitFormats.dateNumber}}</td>
-                                            <td class="col-md-2 text-center">
-                                                {{folio.request.folio}}</td>
-                                            <td class="col-md-2 text-center">
-                                                {{folio.request.totalExpended | currency}}</td>
-                                            <td class="col-md-1 text-center">
-                                                <a class="glyphicon glyphicon-new-window"
-                                                   :href="detailUrl + folio.idRequest +
+                            </div>
+                        </td>
+                        <td class="col-md-2 text-center">
+                            <button @click="generarReporte()" type="button" style="width: 80%" class="btn btn-success">Generar</button>
+                        </td>
+                    </tr>
+                </table>
+                <div class="modal fade" id="modalFolio" tabindex="-1" role="dialog" aria-labelledby=""
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content modal-lg">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id=""><label>Búsqueda por folio</label></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr v-show="findFolio.length > 0">
+                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="folio in findFolio">
+                                                <td class="col-md-1 text-center">
+                                                    {{folio.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{folio.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{folio.paydayLimitFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{folio.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{folio.amountWithIva | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + folio.idRequest +
                                                               detailTwoUrl + folio.idProvider +
                                                               detailThreeUrl + folio.idPurchaseInvoices +
                                                               detailFourUrl + folio.request.idEmployee"
-                                                   data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <br>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" class="close" @click="folioCerrar()" data-dismiss="modal"
-                                    aria-hidden="true">Salir
-                            </button>
+                            <br>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" class="close" @click="folioCerrar()" data-dismiss="modal"
+                                        aria-hidden="true">Salir
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <br>
-        <%-- start colapso--%>
-        <div class="panel panel-success">
-            <div class="panel-heading text-center">
-                <b>Vigentes</b>
-            </div>
-            <div id="accordion1" role="tablist" aria-multiselectable="true">
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingThree">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
-                               @click="icon1 = !icon1" aria-expanded="false" aria-controls="collapseThree">
-                                <div class="col-md-12" style="color: #3C763D">
-                                    <div class="col-md-3">
-                                        <b>Compras de bienes</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+            <br>
+                <%-- start colapso--%>
+            <div class="panel panel-success">
+                <div class="panel-heading text-center">
+                    <b>Vigentes</b>
+                </div>
+                <div id="accordion1" role="tablist" aria-multiselectable="true">
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingThree">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
+                                   @click="icon1 = !icon1" aria-expanded="false" aria-controls="collapseThree">
+                                    <div class="col-md-12" style="color: #3C763D">
+                                        <div class="col-md-3">
+                                            <b>Compras de bienes</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon1 == false"
                                               data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
                                               aria-expanded="false" aria-controls="collapseThree">
                                         </span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon1 == true"
-                                              data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
-                                              aria-expanded="false" aria-controls="collapseThree">
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon1 == true"
+                                                  data-toggle="collapse" data-parent="#accordion1" href="#collapseThree"
+                                                  aria-expanded="false" aria-controls="collapseThree">
                                         </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqVigCompra.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="purchose in purReqVigCompra">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}
-                                                </td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqVigCompra.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="purchose in purReqVigCompra">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}
+                                                    </td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingpayServices">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#payServices"
-                               @click="icon2 = !icon2" aria-expanded="false" aria-controls="payServices">
-                                <div class="col-md-12" style="color: #3C763D">
-                                    <div class="col-md-3">
-                                        <b>Pago de servicios</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingpayServices">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#payServices"
+                                   @click="icon2 = !icon2" aria-expanded="false" aria-controls="payServices">
+                                    <div class="col-md-12" style="color: #3C763D">
+                                        <div class="col-md-3">
+                                            <b>Pago de servicios</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon2 == false"
                                               data-toggle="collapse" data-parent="#accordion1" href="#payServices"
                                               aria-expanded="false" aria-controls="payServices">
                                         </span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon2 == true"
-                                              data-toggle="collapse" data-parent="#accordion1" href="#payServices"
-                                              aria-expanded="false" aria-controls="payServices">
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon2 == true"
+                                                  data-toggle="collapse" data-parent="#accordion1" href="#payServices"
+                                                  aria-expanded="false" aria-controls="payServices">
                                         </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="payServices" class="collapse" role="tabpanel" aria-labelledby="headingpayServices">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <%--<tr>--%>
-                                                <%--<td class="col-md-1 text-center"><b>Solicitud</b></td>--%>
-                                                <%--<td class="col-md-3 text-center"><b>Fecha de compra</b></td>--%>
-                                                <%--<td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>--%>
-                                                <%--<td class="col-md-2 text-center"><b>Folio</b></td>--%>
-                                                <%--<td class="col-md-2 text-center"><b>Monto</b></td>--%>
-                                                <%--<td class="col-md-1 text-center"><b>Detalle</b></td>--%>
-                                            <%--</tr>--%>
-                                            </thead>
-                                            <tbody>
+                        <div id="payServices" class="collapse" role="tabpanel" aria-labelledby="headingpayServices">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <%--<tr>--%>
+                                                    <%--<td class="col-md-1 text-center"><b>Solicitud</b></td>--%>
+                                                    <%--<td class="col-md-3 text-center"><b>Fecha de compra</b></td>--%>
+                                                    <%--<td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>--%>
+                                                    <%--<td class="col-md-2 text-center"><b>Folio</b></td>--%>
+                                                    <%--<td class="col-md-2 text-center"><b>Monto</b></td>--%>
+                                                    <%--<td class="col-md-1 text-center"><b>Detalle</b></td>--%>
+                                                    <%--</tr>--%>
+                                                </thead>
+                                                <tbody>
 
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingViatics">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
-                               @click="icon3 = !icon3" aria-expanded="false" aria-controls="Viatics">
-                                <div class="col-md-12" style="color: #3C763D">
-                                    <div class="col-md-3">
-                                        <b>Viáticos</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingViatics">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
+                                   @click="icon3 = !icon3" aria-expanded="false" aria-controls="Viatics">
+                                    <div class="col-md-12" style="color: #3C763D">
+                                        <div class="col-md-3">
+                                            <b>Viáticos</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon3 == false"
                                               data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
                                               aria-expanded="false" aria-controls="Viatics">
                                         </span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon3 == true"
-                                              data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
-                                              aria-expanded="false" aria-controls="Viatics">
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon3 == true"
+                                                  data-toggle="collapse" data-parent="#accordion1" href="#Viatics"
+                                                  aria-expanded="false" aria-controls="Viatics">
                                         </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="Viatics" class="collapse" role="tabpanel" aria-labelledby="headingViatics">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqVigViati.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="purchose in purReqVigViati">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}
-                                                </td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="Viatics" class="collapse" role="tabpanel" aria-labelledby="headingViatics">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqVigViati.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="purchose in purReqVigViati">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}
+                                                    </td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingPlaneTickes">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
-                               @click="icon4 = !icon4" aria-expanded="false" aria-controls="planeTickes">
-                                <div class="col-md-12" style="color: #3C763D">
-                                    <div class="col-md-3">
-                                        <b>Boletos de avión</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingPlaneTickes">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
+                                   @click="icon4 = !icon4" aria-expanded="false" aria-controls="planeTickes">
+                                    <div class="col-md-12" style="color: #3C763D">
+                                        <div class="col-md-3">
+                                            <b>Boletos de avión</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon4 == false"
                                               data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
                                               aria-expanded="false" aria-controls="planeTickes"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon4 == true"
-                                              data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
-                                              aria-expanded="false" aria-controls="planeTickes"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon4 == true"
+                                                  data-toggle="collapse" data-parent="#accordion1" href="#planeTickes"
+                                                  aria-expanded="false" aria-controls="planeTickes"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="planeTickes" class="collapse" role="tabpanel" aria-labelledby="headingPlaneTickes">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqVigBolAvi.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="purchose in purReqVigBolAvi">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}
-                                                </td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="planeTickes" class="collapse" role="tabpanel" aria-labelledby="headingPlaneTickes">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqVigBolAvi.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="purchose in purReqVigBolAvi">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}
+                                                    </td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingRefounds">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#refounds"
-                               @click="icon5 = !icon5" aria-expanded="false" aria-controls="refounds">
-                                <div class="col-md-12" style="color: #3C763D">
-                                    <div class="col-md-3">
-                                        <b>Reembolsos</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingRefounds">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#refounds"
+                                   @click="icon5 = !icon5" aria-expanded="false" aria-controls="refounds">
+                                    <div class="col-md-12" style="color: #3C763D">
+                                        <div class="col-md-3">
+                                            <b>Reembolsos</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon5 == false"
                                               data-toggle="collapse" data-parent="#accordion1" href="#refounds"
                                               aria-expanded="false" aria-controls="refounds"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon5 == true"
-                                              data-toggle="collapse" data-parent="#accordion1" href="#refounds"
-                                              aria-expanded="false" aria-controls="refounds"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon5 == true"
+                                                  data-toggle="collapse" data-parent="#accordion1" href="#refounds"
+                                                  aria-expanded="false" aria-controls="refounds"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="refounds" class="collapse" role="tabpanel" aria-labelledby="headingRefounds">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead >
-                                            <tr v-show="purReqVigReemb.length > 0">
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr v-for="purchose in purReqVigReemb">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-3 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}
-                                                </td>
-                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}
-                                                </td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="refounds" class="collapse" role="tabpanel" aria-labelledby="headingRefounds">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead >
+                                                <tr v-show="purReqVigReemb.length > 0">
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr v-for="purchose in purReqVigReemb">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}
+                                                    </td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- one acordding -->
                 </div>
-                <!-- one acordding -->
             </div>
-        </div>
-        <%-- finish colapso--%>
+                <%-- finish colapso--%>
 
-        <%-- start colapso--%>
-        <div class="panel panel-warning">
-            <div class="panel-heading text-center">
-                <b>Reprogramadas en proceso de pago</b>
-            </div>
-            <div id="accordion2" role="tablist" aria-multiselectable="true">
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingThreeR">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
-                               @click="icon6 = !icon6" aria-expanded="false" aria-controls="collapseThreeR">
-                                <div class="col-md-12" style="color: #8A6D3B">
-                                    <div class="col-md-3">
-                                        <b>Compras de bienes</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                <%-- start colapso--%>
+            <div class="panel panel-warning">
+                <div class="panel-heading text-center">
+                    <b>Reprogramadas en proceso de pago</b>
+                </div>
+                <div id="accordion2" role="tablist" aria-multiselectable="true">
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingThreeR">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
+                                   @click="icon6 = !icon6" aria-expanded="false" aria-controls="collapseThreeR">
+                                    <div class="col-md-12" style="color: #8A6D3B">
+                                        <div class="col-md-3">
+                                            <b>Compras de bienes</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon6 == false"
                                               data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
                                               aria-expanded="false" aria-controls="collapseThreeR"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon6 == true"
-                                              data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
-                                              aria-expanded="false" aria-controls="collapseThreeR"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon6 == true"
+                                                  data-toggle="collapse" data-parent="#accordion2" href="#collapseThreeR"
+                                                  aria-expanded="false" aria-controls="collapseThreeR"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="collapseThreeR" class="collapse" role="tabpanel" aria-labelledby="headingThreeR">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr v-show="purReqRepCompra.length > 0">
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqRepCompra">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="collapseThreeR" class="collapse" role="tabpanel" aria-labelledby="headingThreeR">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr v-show="purReqRepCompra.length > 0">
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqRepCompra">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingpayServicesR">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
-                               @click="icon7 = !icon7" aria-expanded="false" aria-controls="payServicesR">
-                                <div class="col-md-12" style="color: #8A6D3B">
-                                    <div class="col-md-3">
-                                        <b>Pago de servicios</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingpayServicesR">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
+                                   @click="icon7 = !icon7" aria-expanded="false" aria-controls="payServicesR">
+                                    <div class="col-md-12" style="color: #8A6D3B">
+                                        <div class="col-md-3">
+                                            <b>Pago de servicios</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon7 == false"
                                               data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
                                               aria-expanded="false" aria-controls="payServicesR"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon7 == true"
-                                              data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
-                                              aria-expanded="false" aria-controls="payServicesR"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon7 == true"
+                                                  data-toggle="collapse" data-parent="#accordion2" href="#payServicesR"
+                                                  aria-expanded="false" aria-controls="payServicesR"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="payServicesR" class="collapse" role="tabpanel" aria-labelledby="headingpayServicesR">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqRepPagoSer.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqRepPagoSer">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="payServicesR" class="collapse" role="tabpanel" aria-labelledby="headingpayServicesR">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqRepPagoSer.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqRepPagoSer">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingViaticsR">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
-                               @click="icon8 = !icon8" aria-expanded="false" aria-controls="ViaticsR">
-                                <div class="col-md-12" style="color: #8A6D3B">
-                                    <div class="col-md-3">
-                                        <b>Viáticos</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingViaticsR">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
+                                   @click="icon8 = !icon8" aria-expanded="false" aria-controls="ViaticsR">
+                                    <div class="col-md-12" style="color: #8A6D3B">
+                                        <div class="col-md-3">
+                                            <b>Viáticos</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon8 == false"
                                               data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
                                               aria-expanded="false" aria-controls="ViaticsR"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon8 == true"
-                                              data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
-                                              aria-expanded="false" aria-controls="ViaticsR"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon8 == true"
+                                                  data-toggle="collapse" data-parent="#accordion2" href="#ViaticsR"
+                                                  aria-expanded="false" aria-controls="ViaticsR"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="ViaticsR" class="collapse" role="tabpanel" aria-labelledby="headingViaticsR">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqRepViati.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqRepViati">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="ViaticsR" class="collapse" role="tabpanel" aria-labelledby="headingViaticsR">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqRepViati.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqRepViati">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingPlaneTickesR">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
-                               @click="icon9 = !icon9" aria-expanded="false" aria-controls="planeTickesR">
-                                <div class="col-md-12" style="color: #8A6D3B">
-                                    <div class="col-md-3">
-                                        <b>Boletos de avión</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingPlaneTickesR">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
+                                   @click="icon9 = !icon9" aria-expanded="false" aria-controls="planeTickesR">
+                                    <div class="col-md-12" style="color: #8A6D3B">
+                                        <div class="col-md-3">
+                                            <b>Boletos de avión</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon9 == false"
                                               data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
                                               aria-expanded="false" aria-controls="planeTickesR"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon9 == true"
-                                              data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
-                                              aria-expanded="false" aria-controls="planeTickesR"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon9 == true"
+                                                  data-toggle="collapse" data-parent="#accordion2" href="#planeTickesR"
+                                                  aria-expanded="false" aria-controls="planeTickesR"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="planeTickesR" class="collapse" role="tabpanel" aria-labelledby="headingPlaneTickesR">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqRepBolAvi.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqRepBolAvi">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="planeTickesR" class="collapse" role="tabpanel" aria-labelledby="headingPlaneTickesR">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqRepBolAvi.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqRepBolAvi">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingRefoundsR">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
-                               @click="icon10 = !icon10" aria-expanded="false" aria-controls="refoundsR">
-                                <div class="col-md-12" style="color: #8A6D3B">
-                                    <div class="col-md-3">
-                                        <b>Reembolsos</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingRefoundsR">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
+                                   @click="icon10 = !icon10" aria-expanded="false" aria-controls="refoundsR">
+                                    <div class="col-md-12" style="color: #8A6D3B">
+                                        <div class="col-md-3">
+                                            <b>Reembolsos</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon10 == false"
                                               data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
                                               aria-expanded="false" aria-controls="refoundsR"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon10 == true"
-                                              data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
-                                              aria-expanded="false" aria-controls="refoundsR"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon10 == true"
+                                                  data-toggle="collapse" data-parent="#accordion2" href="#refoundsR"
+                                                  aria-expanded="false" aria-controls="refoundsR"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="refoundsR" class="collapse" role="tabpanel" aria-labelledby="headingRefoundsR">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqRepReemb.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqRepReemb">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="refoundsR" class="collapse" role="tabpanel" aria-labelledby="headingRefoundsR">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqRepReemb.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha Re-programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqRepReemb">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- one acordding -->
                 </div>
-                <!-- one acordding -->
             </div>
-        </div>
-        <%-- finish colapso--%>
+                <%-- finish colapso--%>
 
-        <%-- start colapso--%>
-        <div class="panel panel-info">
-            <div class="panel-heading text-center">
-                <b>Vigentes en proceso de pago</b>
-            </div>
-            <div id="accordion" role="tablist" aria-multiselectable="true">
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingThreeV">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
-                               @click="icon11 = !icon11" aria-expanded="false" aria-controls="collapseThreeV">
-                                <div class="col-md-12">
-                                    <div class="col-md-3">
-                                        <b>Compras de bienes</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                <%-- start colapso--%>
+            <div class="panel panel-info">
+                <div class="panel-heading text-center">
+                    <b>Vigentes en proceso de pago</b>
+                </div>
+                <div id="accordion" role="tablist" aria-multiselectable="true">
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingThreeV">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
+                                   @click="icon11 = !icon11" aria-expanded="false" aria-controls="collapseThreeV">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <b>Compras de bienes</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon11 == false"
                                               data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
                                               aria-expanded="false" aria-controls="collapseThreeV"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon11 == true"
-                                              data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
-                                              aria-expanded="false" aria-controls="collapseThreeV"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon11 == true"
+                                                  data-toggle="collapse" data-parent="#accordion" href="#collapseThreeV"
+                                                  aria-expanded="false" aria-controls="collapseThreeV"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="collapseThreeV" class="collapse" role="tabpanel" aria-labelledby="headingThreeV">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqProCompra.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead >
-                                            <tbody v-for="purchose in purReqProCompra">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="collapseThreeV" class="collapse" role="tabpanel" aria-labelledby="headingThreeV">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqProCompra.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead >
+                                                <tbody v-for="purchose in purReqProCompra">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingpayServicesV">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
-                               @click="icon12 = !icon12" aria-expanded="false" aria-controls="payServicesV">
-                                <div class="col-md-12">
-                                    <div class="col-md-3">
-                                        <b>Pago de servicios</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingpayServicesV">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
+                                   @click="icon12 = !icon12" aria-expanded="false" aria-controls="payServicesV">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <b>Pago de servicios</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon12 == false"
                                               data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
                                               aria-expanded="false" aria-controls="payServicesV"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon12 == true"
-                                              data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
-                                              aria-expanded="false" aria-controls="payServicesV"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon12 == true"
+                                                  data-toggle="collapse" data-parent="#accordion" href="#payServicesV"
+                                                  aria-expanded="false" aria-controls="payServicesV"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="payServicesV" class="collapse" role="tabpanel" aria-labelledby="headingpayServicesV">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead v-show="purReqProPagoSer.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqProPagoSer">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="payServicesV" class="collapse" role="tabpanel" aria-labelledby="headingpayServicesV">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead v-show="purReqProPagoSer.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqProPagoSer">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingViaticsV">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
-                               @click="icon13 = !icon13" aria-expanded="false" aria-controls="ViaticsV">
-                                <div class="col-md-12">
-                                    <div class="col-md-3">
-                                        <b>Viáticos</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingViaticsV">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
+                                   @click="icon13 = !icon13" aria-expanded="false" aria-controls="ViaticsV">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <b>Viáticos</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon13 == false"
                                               data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
                                               aria-expanded="false" aria-controls="ViaticsV"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon13 == true"
-                                              data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
-                                              aria-expanded="false" aria-controls="ViaticsV"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon13 == true"
+                                                  data-toggle="collapse" data-parent="#accordion" href="#ViaticsV"
+                                                  aria-expanded="false" aria-controls="ViaticsV"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="ViaticsV" class="collapse" role="tabpanel" aria-labelledby="headingViaticsV">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead  v-show="purReqProViati.length > 0">
-                                            <tr>
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqProViati">
-                                            <tr v-for="rdp in requestsDatesList"
-                                                v-if="rdp.idRequest == purchose.idRequest">
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="ViaticsV" class="collapse" role="tabpanel" aria-labelledby="headingViaticsV">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead  v-show="purReqProViati.length > 0">
+                                                <tr>
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqProViati">
+                                                <tr v-for="rdp in requestsDatesList"
+                                                    v-if="rdp.idRequest == purchose.idRequest">
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingPlaneTickesV">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
-                               @click="icon14 = !icon14" aria-expanded="false" aria-controls="planeTickesV">
-                                <div class="col-md-12">
-                                    <div class="col-md-3">
-                                        <b>Boletos de avión</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card">
+                        <div class="card-header" role="tab" id="headingPlaneTickesV">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
+                                   @click="icon14 = !icon14" aria-expanded="false" aria-controls="planeTickesV">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <b>Boletos de avión</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon14 == false"
                                               data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
                                               aria-expanded="false" aria-controls="planeTickesV"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon14 == true"
-                                              data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
-                                              aria-expanded="false" aria-controls="planeTickesV"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon14 == true"
+                                                  data-toggle="collapse" data-parent="#accordion" href="#planeTickesV"
+                                                  aria-expanded="false" aria-controls="planeTickesV"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="planeTickesV" class="collapse" role="tabpanel" aria-labelledby="headingPlaneTickesV">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped" v-show="purReqProBolAvi.length > 0">
-                                            <thead>
-                                            <tr id="headTableTr2">
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqProBolAvi">
-                                            <tr>
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center"
-                                                    v-for="rdp in requestsDatesList"
-                                                    v-if="rdp.idRequest == purchose.idRequest">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="planeTickesV" class="collapse" role="tabpanel" aria-labelledby="headingPlaneTickesV">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped" v-show="purReqProBolAvi.length > 0">
+                                                <thead>
+                                                <tr id="headTableTr2">
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqProBolAvi">
+                                                <tr>
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center"
+                                                        v-for="rdp in requestsDatesList"
+                                                        v-if="rdp.idRequest == purchose.idRequest">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- one acordding -->
-                <!-- one acordding -->
-                <div class="card" >
-                    <div class="card-header" role="tab" id="headingRefoundsV">
-                        <div class="panel-body">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
-                               @click="icon15 = !icon15" aria-expanded="false" aria-controls="refoundsV">
-                                <div class="col-md-12">
-                                    <div class="col-md-3">
-                                        <b>Reembolsos</b>
-                                    </div>
-                                    <div class="col-md-6 text-center">
+                    <!-- one acordding -->
+                    <!-- one acordding -->
+                    <div class="card" >
+                        <div class="card-header" role="tab" id="headingRefoundsV">
+                            <div class="panel-body">
+                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
+                                   @click="icon15 = !icon15" aria-expanded="false" aria-controls="refoundsV">
+                                    <div class="col-md-12">
+                                        <div class="col-md-3">
+                                            <b>Reembolsos</b>
+                                        </div>
+                                        <div class="col-md-6 text-center">
                                         <span class="glyphicon glyphicon-chevron-down" v-if="icon15 == false"
                                               data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
                                               aria-expanded="false" aria-controls="refoundsV"></span>
-                                        <span class="glyphicon glyphicon-chevron-up" v-if="icon15 == true"
-                                              data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
-                                              aria-expanded="false" aria-controls="refoundsV"></span>
+                                            <span class="glyphicon glyphicon-chevron-up" v-if="icon15 == true"
+                                                  data-toggle="collapse" data-parent="#accordion" href="#refoundsV"
+                                                  aria-expanded="false" aria-controls="refoundsV"></span>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div id="refoundsV" class="collapse" role="tabpanel" aria-labelledby="headingRefoundsV">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <thead>
-                                            <tr v-show="purReqProReemb.length > 0">
-                                                <td class="col-md-1 text-center"><b>Solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha programada</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            </thead>
-                                            <tbody v-for="purchose in purReqProReemb">
-                                            <tr>
-                                                <td class="col-md-1 text-center">
-                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center"
-                                                    v-for="rdp in requestsDatesList"
-                                                    v-if="rdp.idRequest == purchose.idRequest">
-                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.folio}}</td>
-                                                <td class="col-md-2 text-center">
-                                                    {{purchose.request.totalExpended | currency}}</td>
-                                                <td class="col-md-1 text-center">
-                                                    <a class="glyphicon glyphicon-new-window"
-                                                       :href="detailUrl + purchose.idRequest +
+                        <div id="refoundsV" class="collapse" role="tabpanel" aria-labelledby="headingRefoundsV">
+                            <div class="card-block">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                <tr v-show="purReqProReemb.length > 0">
+                                                    <td class="col-md-1 text-center"><b>Solicitud</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha de compra</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha limite de pago</b></td>
+                                                    <td class="col-md-2 text-center"><b>Fecha programada</b></td>
+                                                    <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-2 text-center"><b>Monto</b></td>
+                                                    <td class="col-md-1 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                </thead>
+                                                <tbody v-for="purchose in purReqProReemb">
+                                                <tr>
+                                                    <td class="col-md-1 text-center">
+                                                        {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.paydayLimitFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center"
+                                                        v-for="rdp in requestsDatesList"
+                                                        v-if="rdp.idRequest == purchose.idRequest">
+                                                        {{rdp.scheduledDateFormats.dateNumber}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.request.folio}}</td>
+                                                    <td class="col-md-2 text-center">
+                                                        {{purchose.amountWithIva | currency}}</td>
+                                                    <td class="col-md-1 text-center">
+                                                        <a class="glyphicon glyphicon-new-window"
+                                                           :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
                                                               detailThreeUrl + purchose.idPurchaseInvoices +
                                                               detailFourUrl + purchose.request.idEmployee"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- one acordding -->
                 </div>
-                <!-- one acordding -->
             </div>
+                <%-- finish colapso--%>
         </div>
-        <%-- finish colapso--%>
-    </div>
 
     </jsp:body>
 </t:template>

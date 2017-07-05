@@ -301,10 +301,7 @@ public class PurchaseInvoicesController {
         List<PurchaseInvoices> list = new ArrayList<>();
 
         for (PurchaseInvoices purchaseInvoices : purInvoicesList) {
-            List<PurchaseInvoices> invoices = purchaseInvoicesService.findByRequestTypeAndCatgory
-                    (purchaseInvoices.getRequest().getIdRequestCategory().intValue(),
-                            purchaseInvoices.getRequest().getIdRequestType().intValue(),
-                            purchaseInvoices.getRequest().getIdRequestStatus().intValue());
+
             List<RequestsDates> requestsDate = requestsDatesService.findAll();
             for (RequestsDates dates : requestsDate) {
 
@@ -342,10 +339,7 @@ public class PurchaseInvoicesController {
         List<PurchaseInvoices> list = new ArrayList<>();
 
         for (PurchaseInvoices purchaseInvoices : purInvoicesList) {
-            List<PurchaseInvoices> invoices = purchaseInvoicesService.findByRequestTypeAndCatgory
-                    (purchaseInvoices.getRequest().getIdRequestCategory().intValue(),
-                            purchaseInvoices.getRequest().getIdRequestType().intValue(),
-                            purchaseInvoices.getRequest().getIdRequestStatus().intValue());
+
             List<RequestsDates> requestsDate = requestsDatesService.findAll();
             for (RequestsDates dates : requestsDate) {
 
@@ -398,7 +392,8 @@ public class PurchaseInvoicesController {
     }
 
     /**
-     * Exportar Excel cuentas por pagar
+     * Exportar Excel:
+     * Cuentas por pagar
      */
     @RequestMapping(value = "/report-payables", method = RequestMethod.GET)
     public ResponseEntity<String> reportPayables(HttpServletResponse response,
