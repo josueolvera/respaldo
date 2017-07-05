@@ -63,6 +63,15 @@ public class PayRequestsHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idDistributorDetailBank;
 
+    @Column(name = "ID_DISTRIBUTOR", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributor;
+
+    @Size(max = 100)
+    @Column(name = "DISTRIBUTOR", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String distributor;
+
     @Size(max = 50)
     @Column(name = "FOLIO", nullable=true)
     @JsonView(JsonViews.Root.class)
@@ -143,6 +152,8 @@ public class PayRequestsHistory implements Serializable {
         this.idPurchaseInvoices = idPurchaseInvoices;
         this.idRequestsDates = idRequestsDates;
         this.idDistributorDetailBank = idDistributorDetailBank;
+        this.idDistributor = idDistributor;
+        this.distributor = distributor;
         this.folio = folio;
         this.costCenter = costCenter;
         this.requestCategory = requestCategory;
@@ -228,6 +239,22 @@ public class PayRequestsHistory implements Serializable {
 
     public void setIdDistributorDetailBank(Integer idDistributorDetailBank) {
         this.idDistributorDetailBank = idDistributorDetailBank;
+    }
+
+    public Integer getIdDistributor() {
+        return idDistributor;
+    }
+
+    public void setIdDistributor(Integer idDistributor) {
+        this.idDistributor = idDistributor;
+    }
+
+    public String getDistributor() {
+        return distributor;
+    }
+
+    public void setDistributor(String distributor) {
+        this.distributor = distributor;
     }
 
     public String getFolio() {
@@ -359,8 +386,7 @@ public class PayRequestsHistory implements Serializable {
         if (idCostCenter != null ? !idCostCenter.equals(that.idCostCenter) : that.idCostCenter != null) return false;
         if (idRequestCategory != null ? !idRequestCategory.equals(that.idRequestCategory) : that.idRequestCategory != null)
             return false;
-        if (idProvider != null ? !idProvider.equals(that.idProvider) : that.idProvider != null)
-            return false;
+        if (idProvider != null ? !idProvider.equals(that.idProvider) : that.idProvider != null) return false;
         if (idAccount != null ? !idAccount.equals(that.idAccount) : that.idAccount != null) return false;
         if (idPurchaseInvoices != null ? !idPurchaseInvoices.equals(that.idPurchaseInvoices) : that.idPurchaseInvoices != null)
             return false;
@@ -368,6 +394,9 @@ public class PayRequestsHistory implements Serializable {
             return false;
         if (idDistributorDetailBank != null ? !idDistributorDetailBank.equals(that.idDistributorDetailBank) : that.idDistributorDetailBank != null)
             return false;
+        if (idDistributor != null ? !idDistributor.equals(that.idDistributor) : that.idDistributor != null)
+            return false;
+        if (distributor != null ? !distributor.equals(that.distributor) : that.distributor != null) return false;
         if (folio != null ? !folio.equals(that.folio) : that.folio != null) return false;
         if (costCenter != null ? !costCenter.equals(that.costCenter) : that.costCenter != null) return false;
         if (requestCategory != null ? !requestCategory.equals(that.requestCategory) : that.requestCategory != null)
@@ -398,6 +427,8 @@ public class PayRequestsHistory implements Serializable {
         result = 31 * result + (idPurchaseInvoices != null ? idPurchaseInvoices.hashCode() : 0);
         result = 31 * result + (idRequestsDates != null ? idRequestsDates.hashCode() : 0);
         result = 31 * result + (idDistributorDetailBank != null ? idDistributorDetailBank.hashCode() : 0);
+        result = 31 * result + (idDistributor != null ? idDistributor.hashCode() : 0);
+        result = 31 * result + (distributor != null ? distributor.hashCode() : 0);
         result = 31 * result + (folio != null ? folio.hashCode() : 0);
         result = 31 * result + (costCenter != null ? costCenter.hashCode() : 0);
         result = 31 * result + (requestCategory != null ? requestCategory.hashCode() : 0);
@@ -426,6 +457,8 @@ public class PayRequestsHistory implements Serializable {
                 ", idPurchaseInvoices=" + idPurchaseInvoices +
                 ", idRequestsDates=" + idRequestsDates +
                 ", idDistributorDetailBank=" + idDistributorDetailBank +
+                ", idDistributor=" + idDistributor +
+                ", distributor='" + distributor + '\'' +
                 ", folio='" + folio + '\'' +
                 ", costCenter='" + costCenter + '\'' +
                 ", requestCategory='" + requestCategory + '\'' +

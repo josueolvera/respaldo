@@ -100,16 +100,17 @@ public class PurchaseInvoicesServiceImpl implements PurchaseInvoicesService {
         Sheet hoja = workbook.createSheet("Cuentas_Por_Pagar");
         Row row = hoja.createRow(0);
 
-        row.createCell(0).setCellValue("FOLIO");
-        row.createCell(1).setCellValue("CONCEPTO");
-        row.createCell(2).setCellValue("PROVEEDOR");
-        row.createCell(3).setCellValue("RFC");
-        row.createCell(4).setCellValue("DIAS DE CREDITO");
-        row.createCell(5).setCellValue("TOTAL");
-        row.createCell(6).setCellValue("CATEGORIA");
-        row.createCell(7).setCellValue("ESTATUS");
-        row.createCell(8).setCellValue("SOLICITANTE");
-        row.createCell(9).setCellValue("FECHA DE SOLICITUD");
+        row.createCell(0).setCellValue("EMPRESA");
+        row.createCell(1).setCellValue("FOLIO");
+        row.createCell(2).setCellValue("CONCEPTO");
+        row.createCell(3).setCellValue("PROVEEDOR");
+        row.createCell(4).setCellValue("RFC");
+        row.createCell(5).setCellValue("DIAS DE CREDITO");
+        row.createCell(6).setCellValue("TOTAL");
+        row.createCell(7).setCellValue("CATEGORIA");
+        row.createCell(8).setCellValue("ESTATUS");
+        row.createCell(9).setCellValue("SOLICITANTE");
+        row.createCell(10).setCellValue("FECHA DE SOLICITUD");
 
         for (Cell celda : row) {
             celda.setCellStyle(style);
@@ -119,21 +120,22 @@ public class PurchaseInvoicesServiceImpl implements PurchaseInvoicesService {
         for (PurchaseInvoices request : payables){
             row = hoja.createRow(aux);
 
-            row.createCell(0).setCellValue(request.getRequest().getFolio());
-            row.createCell(1).setCellValue(request.getConceptName());
-            row.createCell(2).setCellValue(request.getProvider().getProviderName());
-            row.createCell(3).setCellValue(request.getProvider().getRfc());
-            row.createCell(4).setCellValue(request.getProvider().getCreditDays());
-            row.createCell(5).setCellValue(request.getRequest().getTotalExpended().doubleValue());
-            row.createCell(6).setCellValue(request.getRequest().getRequestCategory().getRequestCategoryName());
-            row.createCell(7).setCellValue(request.getRequest().getRequestStatus().getRequestStatus());
-            row.createCell(8).setCellValue(request.getRequest().getEmployees().getFullName());
+            row.createCell(0).setCellValue(request.getRequest().getDistributorCostCenter().getDistributors().getDistributorName());
+            row.createCell(1).setCellValue(request.getRequest().getFolio());
+            row.createCell(2).setCellValue(request.getConceptName());
+            row.createCell(3).setCellValue(request.getProvider().getProviderName());
+            row.createCell(4).setCellValue(request.getProvider().getRfc());
+            row.createCell(5).setCellValue(request.getProvider().getCreditDays());
+            row.createCell(6).setCellValue(request.getRequest().getTotalExpended().doubleValue());
+            row.createCell(7).setCellValue(request.getRequest().getRequestCategory().getRequestCategoryName());
+            row.createCell(8).setCellValue(request.getRequest().getRequestStatus().getRequestStatus());
+            row.createCell(9).setCellValue(request.getRequest().getEmployees().getFullName());
             if (request.getCreationDate() != null){
                 Date fecha = Date.from(request.getCreationDate().atZone(ZoneId.systemDefault()).toInstant());
                 if (fecha != null){
-                    row.createCell(9);
-                    row.getCell(9).setCellValue(fecha);
-                    row.getCell(9).setCellStyle(cellDateStyle);
+                    row.createCell(10);
+                    row.getCell(10).setCellValue(fecha);
+                    row.getCell(10).setCellStyle(cellDateStyle);
                 }
             }
             aux++;

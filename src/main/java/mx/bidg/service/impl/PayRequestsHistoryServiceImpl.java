@@ -55,7 +55,9 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
             payRequestsHistory.setIdPurchaseInvoices(jsonNode.get("purchaseInvoices").get("idPurchaseInvoices").asInt());
             payRequestsHistory.setIdRequestsDates(jsonNode.get("requestsDates").get("idRequestsDates").asInt());
             payRequestsHistory.setIdDistributorDetailBank(jsonNode.get("bank").get("idDistributorDetailBank").asInt());
+            payRequestsHistory.setIdDistributor(jsonNode.get("distributorCostCenter").get("idDistributor").asInt());
 
+            payRequestsHistory.setDistributor(jsonNode.get("distributorCostCenter").get("distributors").get("distributorName").asText());
             payRequestsHistory.setFolio(jsonNode.get("folio").asText());
             payRequestsHistory.setCostCenter(jsonNode.get("distributorCostCenter").get("costCenter").get("name").asText());
             payRequestsHistory.setRequestCategory(jsonNode.get("requestCategory").get("requestCategoryName").asText());
@@ -111,17 +113,18 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
         Sheet hoja = workbook.createSheet("Cuentas_Pagadas");
         Row row = hoja.createRow(0);
 
-        row.createCell(0).setCellValue("FOLIO");
-        row.createCell(1).setCellValue("CENTRO DE COSTOS");
-        row.createCell(2).setCellValue("TIPO DE SOLICITUD");
-        row.createCell(3).setCellValue("BENEFICIARIO");
-        row.createCell(4).setCellValue("BANCO");
-        row.createCell(5).setCellValue("CUENTA");
-        row.createCell(6).setCellValue("CLABE");
-        row.createCell(7).setCellValue("NÚMERO DE FACTURA");
-        row.createCell(8).setCellValue("MONTO CON IVA");
-        row.createCell(9).setCellValue("FECHA DE PAGO");
-        row.createCell(10).setCellValue("BANCO");
+        row.createCell(0).setCellValue("EMPRESA");
+        row.createCell(1).setCellValue("FOLIO");
+        row.createCell(2).setCellValue("CENTRO DE COSTOS");
+        row.createCell(3).setCellValue("TIPO DE SOLICITUD");
+        row.createCell(4).setCellValue("BENEFICIARIO");
+        row.createCell(5).setCellValue("BANCO");
+        row.createCell(6).setCellValue("CUENTA");
+        row.createCell(7).setCellValue("CLABE");
+        row.createCell(8).setCellValue("NÚMERO DE FACTURA");
+        row.createCell(9).setCellValue("MONTO CON IVA");
+        row.createCell(10).setCellValue("FECHA DE PAGO");
+        row.createCell(11).setCellValue("BANCO");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -133,26 +136,27 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
         for (PayRequestsHistory request : payRequestsHistoryList){
             row = hoja.createRow(aux);
 
-            row.createCell(0).setCellValue(request.getFolio());
-            row.createCell(1).setCellValue(request.getCostCenter());
-            row.createCell(2).setCellValue(request.getRequestCategory());
-            row.createCell(3).setCellValue(request.getProvider());
-            row.createCell(4).setCellValue(request.getBankProvider());
-            row.createCell(5).setCellValue(request.getAccountNumber());
-            row.createCell(6).setCellValue(request.getAccountClabe());
-            row.createCell(7).setCellValue(request.getPurchaseInvoiceFolio());
-            row.createCell(8).setCellValue(request.getAmountWithIva().doubleValue());
+            row.createCell(0).setCellValue(request.getDistributor());
+            row.createCell(1).setCellValue(request.getFolio());
+            row.createCell(2).setCellValue(request.getCostCenter());
+            row.createCell(3).setCellValue(request.getRequestCategory());
+            row.createCell(4).setCellValue(request.getProvider());
+            row.createCell(5).setCellValue(request.getBankProvider());
+            row.createCell(6).setCellValue(request.getAccountNumber());
+            row.createCell(7).setCellValue(request.getAccountClabe());
+            row.createCell(8).setCellValue(request.getPurchaseInvoiceFolio());
+            row.createCell(9).setCellValue(request.getAmountWithIva().doubleValue());
             if (request.getCreationDate() != null){
                 Date fecha = Date.from(request.getRequestDate().atZone(ZoneId.systemDefault()).toInstant());
 
                 if (fecha != null){
-                    row.createCell(9);
-                    row.getCell(9).setCellValue(fecha);
-                    row.getCell(9).setCellStyle(cellDateStyle);
+                    row.createCell(10);
+                    row.getCell(10).setCellValue(fecha);
+                    row.getCell(10).setCellStyle(cellDateStyle);
 
                 }
             }
-            row.createCell(10).setCellValue(request.getBankDistributor());
+            row.createCell(11).setCellValue(request.getBankDistributor());
             aux++;
         }
         workbook.write(stream);

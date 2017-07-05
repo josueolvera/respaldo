@@ -133,23 +133,28 @@
                     this.requestsPD = [];
                     //this.distributor = idDistributor;
                     this.$http.get(ROOT_URL + "/requests/distributor/" + this.distributorSelected.idDistributor).success(function (data) {
-                        var jsonObjectIndex = {};
-                        var self = this;
-                        data.forEach(function (pD2) {
-                            if(isNaN(pD2.distributorCostCenter)){
-                                jsonObjectIndex[pD2.distributorCostCenter._id] = pD2.distributorCostCenter;
-                            }else{
-                                pD2.distributorCostCenter = jsonObjectIndex[pD2.distributorCostCenter];
-                            }
-                        });
-                        data.forEach(function (pD2) {
-                            if (isNaN(pD2.requestCategory)){
-                                jsonObjectIndex[pD2.requestCategory._id] = pD2.requestCategory;
-                            }else{
-                                pD2.requestCategory = jsonObjectIndex[pD2.requestCategory];
-                            }
-                        });
-                        this.requestsPD = data;
+                        if(data.length == 0){
+                            this.distributorSelected = {};
+                            showAlert("No hay solicitudes", {type: 3});
+                        }else {
+                            var jsonObjectIndex = {};
+                            var self = this;
+                            data.forEach(function (pD2) {
+                                if (isNaN(pD2.distributorCostCenter)) {
+                                    jsonObjectIndex[pD2.distributorCostCenter._id] = pD2.distributorCostCenter;
+                                } else {
+                                    pD2.distributorCostCenter = jsonObjectIndex[pD2.distributorCostCenter];
+                                }
+                            });
+                            data.forEach(function (pD2) {
+                                if (isNaN(pD2.requestCategory)) {
+                                    jsonObjectIndex[pD2.requestCategory._id] = pD2.requestCategory;
+                                } else {
+                                    pD2.requestCategory = jsonObjectIndex[pD2.requestCategory];
+                                }
+                            });
+                            this.requestsPD = data;
+                        }
                     }).error(function () {
                         showAlert("Error al obtener información de Requests", {type: 3});
                     });
@@ -167,14 +172,14 @@
                     this.$http.post(ROOT_URL + "/requests/pay-selected", JSON.stringify(this.pD2)).success(function (data) {
                         this.arregloPd = data;
                         var self = this;
-                        showAlert("Se pagaron con exito las solicitudes!");
-                        $("#modalPagar").modal("hide");
                         this.obtainCurrentRequests(this.distributorSelected.idDistributor);
+                        $("#modalPagar").modal("hide");
                         this.total = 0;
                         this.obtainDetailBanks();
                         this.totalParcial = 0;
                         this.pD2.requestsSelected = [];
                         this.obtainDistributorsWithRequests();
+                        showAlert("Se pagaron con éxito las solicitudes!");
                     }).error(function () {
                         showAlert("Error en la solicitud, vuelva a intentarlo", {type: 3});
                     });
@@ -185,6 +190,7 @@
                         this.detailBanks = data;
                         var self = this;
                         this.detailBanks.forEach(function (element) {
+                            element.amount = element.amount * element.currencies.rate;
                             self.total += element.amount;
                         });
                     });
@@ -371,6 +377,16 @@
 
             setTimeout("mueveReloj()",1000)
         }
+        function keyCaracteres(obj){
+            var inicial = obj.value;
+            if (obj.value.length > 0){
+                obj.value = '';
+                showAlert("Debes seleccionar una fecha del calendario.", {type: 3});
+            }else {
+                showAlert("Debes seleccionar una fecha del calendario.", {type: 3});
+                return false;
+            }
+        }
     </script>
     </jsp:attribute>
 
@@ -442,7 +458,6 @@
                                     <div class="col-md-3">
                                         <label>Selecciona tipo de Cuentas</label>
                                         <select v-model="opcionReporte" class="form-control">
-                                            <option></option>
                                             <option :value="1">Cuentas por pagar</option>
                                             <option :value="2">Cuentas pagadas</option>
                                         </select>
@@ -453,7 +468,7 @@
                                         <div class="form-group">
                                             <div class="input-group date" id="startDate">
                                                 <input type="text" class="form-control"
-                                                       v-model="startDate" required>
+                                                       v-model="startDate" required onkeypress="return keyCaracteres(this)">
                                                 <span class="input-group-addon" @click="activateDateTimePickerStart">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>
@@ -466,7 +481,7 @@
                                         <div class="form-group">
                                             <div class="input-group date" id="endDate">
                                                 <input type="text" class="form-control"
-                                                       v-model="endDate" required>
+                                                       v-model="endDate" required onkeypress="return keyCaracteres(this)">
                                                 <span class="input-group-addon" @click="activateDateTimePickerEnd(startDate)">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                                 </span>

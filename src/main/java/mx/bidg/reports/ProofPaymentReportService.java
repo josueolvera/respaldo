@@ -41,7 +41,8 @@ public class ProofPaymentReportService {
             params.put("logo",  url1);
             Date date = new Date();
             DateFormat hourdateFormat = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss");
-            //String fechaLocal = LocalDate.now().toString();
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy - HH:mm:ss");
+            params.put("fecha", dateFormat.format(date));
             List<String> listaFolio = new ArrayList<String>();
             List<String> listaCostCenter = new ArrayList<String>();
             List<String> listaRequestCategory = new ArrayList<String>();
@@ -54,6 +55,7 @@ public class ProofPaymentReportService {
             List<String> listaFechaPago = new ArrayList<String>();
             List<String> listaBankDistributor = new ArrayList<String>();
             for(JsonNode jsonNode : node.get("requestsSelected")) {
+                params.put("empresa", jsonNode.get("distributorCostCenter").get("distributors").get("distributorName").asText());
                 listaFolio.add(jsonNode.get("folio").asText());
                 listaCostCenter.add(jsonNode.get("distributorCostCenter").get("costCenter").get("name").asText());
                 listaRequestCategory.add(jsonNode.get("requestCategory").get("requestCategoryName").asText());
