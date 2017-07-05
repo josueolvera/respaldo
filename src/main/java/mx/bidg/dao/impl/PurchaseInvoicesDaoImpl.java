@@ -65,10 +65,10 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
     }
 
     @Override
-    public List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate){
+    public List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate, Integer status){
         Criteria criteria = createEntityCriteria();
         criteria.createCriteria("request")
-                .add(Restrictions.eq( "idRequestStatus", 3 ));
+                .add(Restrictions.eq( "idRequestStatus", status ));
         return criteria.list();
     }
 

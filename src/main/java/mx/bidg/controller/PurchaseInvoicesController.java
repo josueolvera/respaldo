@@ -403,7 +403,8 @@ public class PurchaseInvoicesController {
     @RequestMapping(value = "/report-payables", method = RequestMethod.GET)
     public ResponseEntity<String> reportPayables(HttpServletResponse response,
                     @RequestParam(name= "startDate", required=true) String startDate,
-                    @RequestParam(name="endDate", required=true) String endDate) throws IOException{
+                    @RequestParam(name="endDate", required=true) String endDate,
+                    @RequestParam(name="status", required=true) Integer status) throws IOException{
 
         LocalDateTime ofDate = (startDate == null || startDate.equals("")) ? null : LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime untilDate = (endDate == null || endDate.equals("")) ? null : LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
@@ -411,7 +412,7 @@ public class PurchaseInvoicesController {
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=\"reporte_cuentas_por_pagar.xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
-        purchaseInvoicesService.payablesRequests(outputStream, ofDate, untilDate);
+        purchaseInvoicesService.payablesRequests(outputStream, ofDate, untilDate, status);
         outputStream.flush();
         outputStream.close();
 

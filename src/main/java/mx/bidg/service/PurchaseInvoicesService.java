@@ -19,5 +19,5 @@ public interface PurchaseInvoicesService {
     PurchaseInvoices findByIdRequest(Integer idRequest);
     List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
     List<PurchaseInvoices> findFolio (String folio);
-    void payablesRequests(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException;
+    void payablesRequests(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate, Integer status) throws IOException;
 }

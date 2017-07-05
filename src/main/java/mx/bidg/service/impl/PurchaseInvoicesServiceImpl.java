@@ -70,9 +70,9 @@ public class PurchaseInvoicesServiceImpl implements PurchaseInvoicesService {
 
 
     @Override
-    public void payablesRequests(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException {
+    public void payablesRequests(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate, Integer status) throws IOException {
         Workbook workbook = new XSSFWorkbook();
-        List<PurchaseInvoices> payables = purchaseInvoicesDao.findBetweenDates(fromDate, toDate);
+        List<PurchaseInvoices> payables = purchaseInvoicesDao.findBetweenDates(fromDate, toDate , status);
 
         Font font = workbook.createFont();
         font.setFontName("Arial");

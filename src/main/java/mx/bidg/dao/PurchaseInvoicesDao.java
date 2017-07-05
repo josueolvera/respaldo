@@ -13,5 +13,5 @@ public interface PurchaseInvoicesDao extends InterfaceDao<PurchaseInvoices> {
     PurchaseInvoices findByIdRequest(Integer idRequest);
     List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
     List<PurchaseInvoices> findFolio (String folio);
-    List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate);
+    List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate, Integer status);
 }
