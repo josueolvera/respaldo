@@ -51,7 +51,7 @@
             },
             ready: function () {
                 this.getUserInSession();
-                this.activateDateTimePickerStart();
+                //this.activateDateTimePickerStart();
                 this.getDistributors();
                 this.obtainDetailBanks();
                 this.obtainDistributorsWithRequests();
@@ -63,6 +63,7 @@
                 totalParcial: 0,
                 userInSession: {},
                 userActive: '',
+                opcionReporte: '',
                 distributors: [],
                 distributorsWithRequests: [],
                 bussinessLine: {
@@ -80,6 +81,8 @@
                 arregloPd: [],
                 application: '',
                 timePickerApplicationDate: '',
+                dateTimePickerStart: null,
+                dateTimePickerEnd: null,
                 request: {},
                 reschedule: {
                     applicationDate: ''
@@ -94,7 +97,26 @@
             },
             methods: {
                 exportReportPayRequests: function () {
-                        window.location = ROOT_URL + "/pay-requests-history/report-pay-requests?startDate="+this.startDate+"&endDate="+this.endDate;
+                    if(this.startDate == '' || this.endDate == '' || this.opcionReporte == '') {
+                        showAlert("Selecciona todos los parametros", {type: 3});
+                    }else{
+                        if(this.opcionReporte == 2) {
+                            this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                            this.endDate = this.dateTimePickerEnd.DateTimePicker.date().toISOString().slice(0, -1);
+                            window.location = ROOT_URL + "/pay-requests-history/report-pay-requests?startDate=" + this.startDate + "&endDate=" + this.endDate;
+                            this.clearReportData();
+                        }else if(this.opcionReporte == 1){
+                            this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                            this.endDate = this.dateTimePickerEnd.DateTimePicker.date().toISOString().slice(0, -1);
+                            window.location = ROOT_URL + "/purchase-invoice/report-payables?startDate=" + this.startDate + "&endDate=" + this.endDate + "&status=" + 8;
+                            this.clearReportData();
+                        }
+                    }
+                },
+                clearReportData: function () {
+                    this.startDate = '';
+                    this.endDate = '';
+                    this.opcionReporte = '';
                 },
                 getDistributors: function () {
                     this.$http.get(ROOT_URL + "/distributors").success(function (data) {
@@ -228,38 +250,38 @@
                     }
                 },
                 activateDateTimePickerStart: function () {
-                    var currentDate = new Date();
+                    //var currentDate = new Date();
 
                     this.dateTimePickerStart = $('#startDate').datetimepicker({
                         locale: 'es',
                         format: 'DD-MM-YYYY',
                         useCurrent: false,
-                        minDate: currentDate
+                        //maxDate: currentDate
                     }).data();
-
-                    var self = this;
-
-                    $('#startDate').on('dp.change', function (e) {
-                        self.onDateChanged();
-                    });
+                    //var self = this;
+                    //$('#startDate').on('dp.change', function (e) {
+                        //self.onDateChanged();
+                    //});
 
                 },
                 activateDateTimePickerEnd: function (startDate) {
-                    var minDate = moment(startDate, 'DD-MM-YYYY')
-                        .format('YYYY-MM-DD');
+                    if(startDate != '') {
+                        var minDate = moment(startDate, 'DD-MM-YYYY')
+                            .format('YYYY-MM-DD');
 
-                    this.dateTimePickerEnd = $('#endDate').datetimepicker({
-                        locale: 'es',
-                        format: 'DD-MM-YYYY',
-                        useCurrent: false,
-                        minDate: minDate
-                    }).data();
-
-                    var self = this;
-
-                    $('#endDate').on('dp.change', function (e) {
-                        self.onDateChanged();
-                    });
+                        this.dateTimePickerEnd = $('#endDate').datetimepicker({
+                            locale: 'es',
+                            format: 'DD-MM-YYYY',
+                            useCurrent: false,
+                            minDate: minDate
+                        }).data();
+                        //var self = this;
+                        //$('#endDate').on('dp.change', function (e) {
+                            //self.onDateChanged();
+                        //});
+                    }else {
+                        showAlert("Primero selecciona la fecha de inicio", {type: 3})
+                    }
                 },
                 destroyDateTimePickerStart: function () {
                     $('#startDate').on('dp.change', function (e) {
@@ -419,12 +441,10 @@
                                 <div class="col-md-12">
                                     <div class="col-md-3">
                                         <label>Selecciona tipo de Cuentas</label>
-                                        <select v-model="selectedOptions.distributor" class="form-control"
-                                                required @change="distributorChanged">
-                                            <option v-for="distributor in distributors"
-                                                    :value="distributor">
-                                                {{ distributor.distributorName }}
-                                            </option>
+                                        <select v-model="opcionReporte" class="form-control">
+                                            <option></option>
+                                            <option :value="1">Cuentas por pagar</option>
+                                            <option :value="2">Cuentas pagadas</option>
                                         </select>
                                     </div>
 
