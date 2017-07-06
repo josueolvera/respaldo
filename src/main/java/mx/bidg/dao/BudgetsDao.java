@@ -49,4 +49,8 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     List<Budgets> findByIdDistributor(Integer idDistributorCostCenter);
 
     List<Integer> findBudgetNatureByType(Integer idBudgetType);
+
+    List<Integer> findAccountingAccountByCCAndNatureAndType(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature);
+
+    List<Budgets> findBudgetByCCAndNatureAndType(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature);
 }

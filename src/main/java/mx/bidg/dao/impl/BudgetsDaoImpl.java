@@ -257,4 +257,29 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
                 .list();
     }
 
+    @Override
+    public List<Integer> findAccountingAccountByCCAndNatureAndType(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .add(Restrictions.eq("idBudgetType", idBudgetType))
+                .add(Restrictions.eq("idBudgetNature", idBudgetNature))
+                .createCriteria("distributorCostCenter", "dCC")
+                .setProjection(Projections.distinct(Projections.property("dCC.idAccountingAccount")))
+                .add(Restrictions.eq("dCC.idCostCenter", idCostCenter))
+                .list();
+    }
+
+    @Override
+    public List<Budgets> findBudgetByCCAndNatureAndType(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .add(Restrictions.eq("idBudgetType", idBudgetType))
+                .add(Restrictions.eq("idBudgetNature", idBudgetNature))
+                .createCriteria("distributorCostCenter", "dCC")
+                .add(Restrictions.eq("dCC.idCostCenter", idCostCenter))
+                .list();
+    }
+
 }
