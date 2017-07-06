@@ -656,4 +656,59 @@ public class BudgetHelper {
         return bussinessLines;
     }
 
+    public List<AccountingAccountPojo> pojoCaptureBudget(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  year){
+
+        List<AccountingAccountPojo> accountingAccountPojos = new ArrayList<>();
+        List<Budgets> budgets = budgetsService.findBudgetByCCAndNatureAndType(idCostCenter, idBudgetType, idBudgetNature);
+        if (!budgets.isEmpty()){
+            for (Budgets budget : budgets){
+                if (budget != null){
+                    if (budget.getDistributorCostCenter() != null){
+                        if (budget.getDistributorCostCenter().getAccountingAccounts() != null){
+                            AccountingAccountPojo accountingAccountPojo = new AccountingAccountPojo();
+                            accountingAccountPojo.setIdAccountingAcount(budget.getDistributorCostCenter().getAccountingAccounts().getIdAccountingAccount());
+                            accountingAccountPojo.setAcronym(budget.getDistributorCostCenter().getAccountingAccounts().getAcronyms());
+                            accountingAccountPojo.setAccountingAccounts(budget.getDistributorCostCenter().getAccountingAccounts());
+                            accountingAccountPojo.setRealBudgetSpendingList(new ArrayList<>());
+
+                            List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
+                            List<RealBudgetSpending> realBudgetSpendings = realBudgetSpendingService.findByBudgetAndYear(budget.getIdBudget(), year);
+                            for (RealBudgetSpending realBudgetSpending : realBudgetSpendings){
+                                BigDecimal realTotalBudgetAmount = realBudgetSpendingHistoryService.getRealTotalBudgetAmount(realBudgetSpending.getIdBudget(),year);
+                                if (realTotalBudgetAmount != null){
+                                    realBudgetSpending.setRealTotalBudgetAmount(realTotalBudgetAmount);
+                                }else {
+                                    realBudgetSpending.setRealTotalBudgetAmount(new BigDecimal(0.00));
+                                }
+                                realBudgetSpendingList.add(realBudgetSpending);
+                            }
+
+                            if (!accountingAccountPojos.contains(accountingAccountPojo)){
+                                accountingAccountPojo.setRealBudgetSpendingList(realBudgetSpendingList);
+                                accountingAccountPojos.add(accountingAccountPojo);
+                            }else {
+                                AccountingAccountPojo oldAccountingAcount =  accountingAccountPojos.get(accountingAccountPojos.indexOf(accountingAccountPojo));
+
+                                if (!realBudgetSpendingList.isEmpty()){
+                                    for (RealBudgetSpending realBudgetSpending : realBudgetSpendingList){
+                                        if (oldAccountingAcount.getRealBudgetSpendingList() != null){
+                                            oldAccountingAcount.getRealBudgetSpendingList().add(realBudgetSpending);
+                                        }else {
+                                            oldAccountingAcount.setRealBudgetSpendingList(new ArrayList<>());
+                                            oldAccountingAcount.getRealBudgetSpendingList().add(realBudgetSpending);
+                                        }
+                                    }
+
+                                    accountingAccountPojos.set(accountingAccountPojos.indexOf(oldAccountingAcount), oldAccountingAcount);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return accountingAccountPojos;
+    }
+
 }
