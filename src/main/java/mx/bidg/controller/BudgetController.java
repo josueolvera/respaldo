@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.sun.org.apache.regexp.internal.RE;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.pojos.*;
@@ -75,6 +76,9 @@ public class BudgetController {
 
     @Autowired
     private AuthorizationCostCenterService authorizationCostCenterService;
+
+    @Autowired
+    private CConceptBudgetService cConceptBudgetService;
 
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudget(@RequestBody String data) throws Exception {
@@ -197,6 +201,7 @@ public class BudgetController {
             HttpServletResponse response
     ) throws Exception {
         List<RealBudgetSpending> budgetCategories = budgetHelper.getOrderedBudget(idCostCenter,idBudgetType,idBudgetNature,year);
+        List<AccountingAccountPojo> accountingAccountPojos = budgetHelper.pojoCaptureBudget(idCostCenter, idBudgetType, idBudgetNature, year);
         if (download) {
 
             String fileName = "Presupuesto";
@@ -224,7 +229,7 @@ public class BudgetController {
             outputStream.close();
         }
 
-        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories));
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccountPojos));
     }
 
     @RequestMapping(value = "/center-year",produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.POST)
@@ -452,12 +457,20 @@ public class BudgetController {
         Users user = (Users) session.getAttribute("user");
         JsonNode node = mapper.readTree(data);
 
+        CConceptBudget cConceptBudget = new CConceptBudget();
+
+        cConceptBudget.setCreationDate(LocalDateTime.now());
+        cConceptBudget.setUsername(user.getUsername());
+        cConceptBudget.setNameConcept(node.get("idConceptBudget").asText());
+
+        cConceptBudget = cConceptBudgetService.save(cConceptBudget);
+
         DistributorCostCenter distributorCostCenter = distributorCostCenterService.findByCostCenterAndAA(node.get("idCostCenter").asInt(), node.get("idAccountingAccount").asInt());
         Budgets budget = new Budgets();
 
         budget.setBudgetNature(new CBudgetNature(node.get("idBudgetNature").asInt()));
         budget.setBudgetType(new CBudgetTypes(node.get("idBudgetType").asInt()));
-        budget.setConceptBudget( new CConceptBudget(node.get("idConceptBudget").asInt()));
+        budget.setConceptBudget(cConceptBudget);
         budget.setCreationDate(LocalDateTime.now());
         budget.setDistributorCostCenter(distributorCostCenter);
         budget.setIdAccessLevel(1);
@@ -504,6 +517,14 @@ public class BudgetController {
         realBudgetSpending = realBudgetSpendingService.save(realBudgetSpending);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(realBudgetSpending), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get-accounting", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAccByCCAndBTAndBN(@RequestParam(name = "idCostCenter", required = true) Integer idCostCenter
+            ,@RequestParam(name = "idBudgetType", required = true) Integer idBudgetType
+            ,@RequestParam(name = "idBudgetNature", required = true) Integer idBudgetNature) throws IOException{
+        List<AccountingAccounts> accountingAccounts = budgetsService.findAccountingAccountByCCAndNatureAndType(idCostCenter, idBudgetType, idBudgetNature);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts), HttpStatus.OK);
     }
 
 }
