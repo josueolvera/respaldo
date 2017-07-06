@@ -40,4 +40,6 @@ public interface BudgetsService {
 
     List<Budgets> findAll();
     List<CBudgetNature> findBudgetNatureByType(Integer idBudgetType);
+    List<AccountingAccounts> findAccountingAccountByCCAndNatureAndType(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature);
+    List<Budgets> findBudgetByCCAndNatureAndType(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature);
 }

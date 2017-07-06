@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.bidg.dao.AccountingAccountsDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CBudgetNatureDao;
 import mx.bidg.model.*;
@@ -34,6 +35,9 @@ public class BudgetsServiceImpl implements BudgetsService {
 
     @Autowired
     CBudgetNatureDao cBudgetNatureDao;
+
+    @Autowired
+    AccountingAccountsDao accountingAccountsDao;
 
     @Override
     public Budgets saveBudget(Budgets budgets) {
@@ -59,6 +63,25 @@ public class BudgetsServiceImpl implements BudgetsService {
             }
         }
         return cBudgetNatureList;
+    }
+
+    @Override
+    public List<AccountingAccounts> findAccountingAccountByCCAndNatureAndType(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        List<Integer> idAAs = budgetsDao.findAccountingAccountByCCAndNatureAndType(idCostCenter, idBudgetType, idBudgetNature);
+
+        List<AccountingAccounts> accountingAccounts = new ArrayList<>();
+
+        for (Integer idAA : idAAs){
+            AccountingAccounts accountingAccount = accountingAccountsDao.findById(idAA);
+            accountingAccounts.add(accountingAccount);
+        }
+
+        return accountingAccounts;
+    }
+
+    @Override
+    public List<Budgets> findBudgetByCCAndNatureAndType(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        return budgetsDao.findBudgetByCCAndNatureAndType(idCostCenter, idBudgetType, idBudgetNature);
     }
 
     @Override
