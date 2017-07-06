@@ -9,14 +9,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.dao.DistributorsDetailBanksDao;
 import mx.bidg.model.CDistributors;
 import mx.bidg.model.Users;
 import mx.bidg.service.CDistributorsService;
+import mx.bidg.service.DistributorsDetailBanksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -40,6 +43,9 @@ public class CDistributorsController {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private DistributorsDetailBanksService distributorsDetailBanksService;
+
     @RequestMapping(value = "/find-budget",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String>findAll()throws Exception{
         List<CDistributors> cDistributorsList = cDistributorsService.findAll();
@@ -53,7 +59,10 @@ public class CDistributorsController {
             @RequestParam(name = "forAgreement", required = false) Boolean forAgreement
     ) throws Exception {
         List<CDistributors> distributors = cDistributorsService.getDistributors(forStock, forBudget, forAgreement);
-
+        for(CDistributors distributor : distributors){
+            BigDecimal amount = distributorsDetailBanksService.sumByDistributor(distributor.getIdDistributor());
+            distributor.setAccountBalance(amount);
+        }
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(distributors);
     }
 
