@@ -227,4 +227,10 @@ public class DistributorCostCenterController {
         List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorCostCenters), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/by-cc-aa/{idCostCenter}/{idAccountingAccount}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findDCCByCCAA(@PathVariable Integer idCostCenter, @PathVariable Integer idAccountingAccount) throws IOException{
+        DistributorCostCenter distributorCostCenter = distributorCostCenterService.findByCostCenterAndAA(idCostCenter, idAccountingAccount);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorCostCenter), HttpStatus.OK);
+    }
 }
