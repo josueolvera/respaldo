@@ -56,7 +56,7 @@ public class DistributorsDetailBanks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String accountClabe;
 
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
@@ -74,7 +74,8 @@ public class DistributorsDetailBanks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String username;
 
-    //RELACIONES ZARCO
+
+    //RELACIONES
 
     @JoinColumn(name = "ID_BANK", referencedColumnName = "ID_BANK")
     @ManyToOne(optional = false)
@@ -91,7 +92,8 @@ public class DistributorsDetailBanks implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CDistributors distributors;
 
-    //CONSTRUNCTORES ZARCO
+
+    //CONSTRUNCTORES
 
     public DistributorsDetailBanks(){
     }
@@ -210,34 +212,39 @@ public class DistributorsDetailBanks implements Serializable {
 
         DistributorsDetailBanks that = (DistributorsDetailBanks) o;
 
-        if (idBank != null ? !idBank.equals(that.idBank) : that.idBank != null) return false;
-        if (idCurrency != null ? !idCurrency.equals(that.idCurrency) : that.idCurrency != null) return false;
-        if (idDistributor != null ? !idDistributor.equals(that.idDistributor) : that.idDistributor != null)
+        if (getIdBank() != null ? !getIdBank().equals(that.getIdBank()) : that.getIdBank() != null) return false;
+        if (getIdCurrency() != null ? !getIdCurrency().equals(that.getIdCurrency()) : that.getIdCurrency() != null)
             return false;
-        if (accountNumber != null ? !accountNumber.equals(that.accountNumber) : that.accountNumber != null)
+        if (getIdDistributor() != null ? !getIdDistributor().equals(that.getIdDistributor()) : that.getIdDistributor() != null)
             return false;
-        if (accountClabe != null ? !accountClabe.equals(that.accountClabe) : that.accountClabe != null) return false;
-        if (amount != null ? !amount.equals(that.amount) : that.amount != null) return false;
-        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-        if (username != null ? !username.equals(that.username) : that.username != null) return false;
-        if (banks != null ? !banks.equals(that.banks) : that.banks != null) return false;
-        if (currencies != null ? !currencies.equals(that.currencies) : that.currencies != null) return false;
-        return distributors != null ? distributors.equals(that.distributors) : that.distributors == null;
+        if (getAccountNumber() != null ? !getAccountNumber().equals(that.getAccountNumber()) : that.getAccountNumber() != null)
+            return false;
+        if (getAccountClabe() != null ? !getAccountClabe().equals(that.getAccountClabe()) : that.getAccountClabe() != null)
+            return false;
+        if (getAmount() != null ? !getAmount().equals(that.getAmount()) : that.getAmount() != null) return false;
+        if (getCreationDate() != null ? !getCreationDate().equals(that.getCreationDate()) : that.getCreationDate() != null)
+            return false;
+        if (getUsername() != null ? !getUsername().equals(that.getUsername()) : that.getUsername() != null)
+            return false;
+        if (getBanks() != null ? !getBanks().equals(that.getBanks()) : that.getBanks() != null) return false;
+        if (getCurrencies() != null ? !getCurrencies().equals(that.getCurrencies()) : that.getCurrencies() != null)
+            return false;
+        return getDistributors() != null ? getDistributors().equals(that.getDistributors()) : that.getDistributors() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = idBank != null ? idBank.hashCode() : 0;
-        result = 31 * result + (idCurrency != null ? idCurrency.hashCode() : 0);
-        result = 31 * result + (idDistributor != null ? idDistributor.hashCode() : 0);
-        result = 31 * result + (accountNumber != null ? accountNumber.hashCode() : 0);
-        result = 31 * result + (accountClabe != null ? accountClabe.hashCode() : 0);
-        result = 31 * result + (amount != null ? amount.hashCode() : 0);
-        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (banks != null ? banks.hashCode() : 0);
-        result = 31 * result + (currencies != null ? currencies.hashCode() : 0);
-        result = 31 * result + (distributors != null ? distributors.hashCode() : 0);
+        int result = getIdBank() != null ? getIdBank().hashCode() : 0;
+        result = 31 * result + (getIdCurrency() != null ? getIdCurrency().hashCode() : 0);
+        result = 31 * result + (getIdDistributor() != null ? getIdDistributor().hashCode() : 0);
+        result = 31 * result + (getAccountNumber() != null ? getAccountNumber().hashCode() : 0);
+        result = 31 * result + (getAccountClabe() != null ? getAccountClabe().hashCode() : 0);
+        result = 31 * result + (getAmount() != null ? getAmount().hashCode() : 0);
+        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
+        result = 31 * result + (getUsername() != null ? getUsername().hashCode() : 0);
+        result = 31 * result + (getBanks() != null ? getBanks().hashCode() : 0);
+        result = 31 * result + (getCurrencies() != null ? getCurrencies().hashCode() : 0);
+        result = 31 * result + (getDistributors() != null ? getDistributors().hashCode() : 0);
         return result;
     }
 

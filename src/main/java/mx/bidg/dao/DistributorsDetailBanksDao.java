@@ -14,4 +14,5 @@ public interface DistributorsDetailBanksDao extends InterfaceDao<DistributorsDet
     List<DistributorsDetailBanks> getByDistributor(int id);
     DistributorsDetailBanks findByAccountNumber(String accountNumber);
     BigDecimal sumByDistributor(Integer idDistributor);
+    DistributorsDetailBanks findLikeAccountNumber(String accountNumber);
 }
