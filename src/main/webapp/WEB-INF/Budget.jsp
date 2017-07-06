@@ -206,6 +206,7 @@
                         this.getBudgets(year, budgetType, budgetNature, budgetCategory);
                     },
                     getBudgets: function (year, budgetType, budgetNature, budgetCategory) {
+                        this.searching = true;
                         var url = ROOT_URL +
                             '/budgets?cost_center=' + this.selected.costCenter.idCostCenter;
                         if (this.selected.year != null) {
@@ -472,7 +473,7 @@
                         this.budgets.forEach(function (budget) {
                             if (budget == null) {
                             } else {
-                                self.totalCostCenter += budget.totalBudgetAmount;
+                                self.totalCostCenter += budget.totalSubSubcategoryAmount;
                             }
                         });
                     },
@@ -572,7 +573,14 @@
                         $("#budgetInformation").modal("show");
                     },
                     findDisCCByCC: function () {
-                        this.$http.get(ROOT_URL + "/distributor-cost-center/cost-center/" + this.selected.costCenter.idCostCenter).success(function (data) {
+                        this.conceptBudgetData.idCostCenter = this.selected.costCenter.idCostCenter;
+                        this.conceptBudgetData.idBudgetNature = this.selected.budgetNature.idBudgetNature;
+                        this.conceptBudgetData.idBudgetType = this.selected.budgetType.idBudgetType;
+
+                        if (this.selected.budgetType.idBudgetType == 2) {
+                            this.conceptBudgetData.idBudgetNature = 0;
+                        }
+                        this.$http.get(ROOT_URL + "/budgets/get-accounting?idCostCenter=" + this.conceptBudgetData.idCostCenter + "&idBudgetNature=" + this.conceptBudgetData.idBudgetNature + "&idBudgetType=" + this.conceptBudgetData.idBudgetType).success(function (data) {
                             this.distributorCostCenter = data;
                         });
                     },
@@ -581,6 +589,7 @@
                         this.conceptBudgetData.idAccountingAccount = null;
                         this.conceptBudgetData.idBudgetNature = null;
                         this.conceptBudgetData.idBudgetType = null;
+                        this.conceptBudgetData.idConceptBudget = null;
                         this.findDisCCByCC();
                         this.findAllConcept();
                         $("#modalConcept").modal("show");
@@ -624,7 +633,6 @@
                         this.conceptBudgetData.idCostCenter = this.selected.costCenter.idCostCenter;
                         this.conceptBudgetData.idBudgetNature = this.selected.budgetNature.idBudgetNature;
                         this.conceptBudgetData.idBudgetType = this.selected.budgetType.idBudgetType;
-                        this.conceptBudgetData.idConceptBudget = this.conceptsSelectize[0].value;
 
                         if (this.selected.budgetType.idBudgetType == 2) {
                             this.conceptBudgetData.idBudgetNature = 0;
@@ -881,179 +889,313 @@
                     </form>
                 </div>
 
-                <div v-if="searching" class="col-md-12"
+                <div v-if="searching == true" class="loading"
                      style="height: 6rem; padding: 2rem 0;">
-                    <div class="loader">Cargando...</div>
+                    <div >Cargando...</div>
                 </div>
-                <div v-else="!searching">
-                    <div class="row" v-for="(indexOfBudget, budget) in budgets | filterBy selected.concept in 'budget'"
-                         style="margin-left: 0px; margin-right: 0px" v-if="budgets.length > 0 && budget!=null">
-                        <div class="col-xs-12" style="background: darkgray">
-                            <div class="row">
+                <div v-else="searching == false">
+                    <div class="col-md-12" v-if="budgets.length > 0">
+                        <div class="row" v-for="(indexOfBudget, accountingAccount) in budgets" style="margin-left: 0px; margin-right: 0px; background: darkgray">
+                            <div class="col-md-12"  style="background: darkgray">
                                 <div class="col-md-7">
-                                    <h4><b>{{budget.budget.conceptBudget.nameConcept}}</b></h4>
+                                    <h4><b>{{accountingAccount.acronym}}</b></h4>
                                 </div>
                                 <div class="col-md-5 text-right">
-                                    <h4 style="color: black">Total: <b class="text-primary" style="color: black">{{budget.totalBudgetAmount
+                                    <h4 style="color: black">Total: <b class="text-primary" style="color: black">{{accountingAccount.totalSubSubcategoryAmount
                                         |currency}}</b></h4>
                                 </div>
                             </div>
-                            <div class="row"
-                                 style="margin-left: 0px; margin-right: 0px">
-                                <div class="well">
-                                    <div class="row" style="margin-left: 0px">
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Ene</label>
-                                            <input style="border-color: #61c4b8; font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.januaryBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Feb</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.februaryBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Mar</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.marchBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Abr</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.aprilBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>May</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.mayBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Jun</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.juneBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Jul</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.julyBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Ago</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.augustBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Sep</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.septemberBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Oct</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.octoberBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Nov</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.novemberBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Dic</label>
-                                            <input style="font-size: 11px" type="text" class="form-control"
-                                                   v-model="budget.decemberBudgetAmount | currencyDisplay"
-                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onclick="return cleanField(this)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onInput="format(this)" onblur="ponerCeros(this)"
-                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
-                                        </div>
-                                        <br>
-                                        <div class="col-md-8"
-                                             v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
-                                            <div class="checkbox">
-                                                <label style="margin-top: 27px">
-                                                    <input style="border-color: #61c4b8" type="checkbox"
-                                                           v-model="budget.equals"
-                                                           @change="equalsImport(indexOfBudget,budget)"> Aplicar a
-                                                    todos
-                                                </label>
+                            <div class="col-md-12">
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Ene</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.januarySubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Feb</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.februarySubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Mar</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.marchSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Abr</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.aprilSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>May</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.maySubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Jun</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.juneSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Jul</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.julySubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Ago</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.augustSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Sep</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.septemberSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Oct</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.octoberSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Nov</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.novemberSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <label>Dic</label>
+                                        <input style="font-size: 11px" type="text" class="form-control"
+                                               v-model="accountingAccount.decemberSubSubcategoryAmount | currencyDisplay"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                               disabled>
+                                    </div>
+                            </div>
+                            <br>
+                            <div class="col-md-12">
+                                <br>
+                                <div class="row" v-for="(indexOfBudget, budget) in accountingAccount.realBudgetSpendingList | filterBy selected.concept in 'budget'"
+                                     style="margin-left: 0px; margin-right: 0px">
+                                    <div class="col-xs-12" style="background: lightgray">
+                                        <div class="row">
+                                            <div class="col-md-7">
+                                                <h4><b>{{budget.budget.conceptBudget.nameConcept}}</b></h4>
+                                            </div>
+                                            <div class="col-md-5 text-right">
+                                                <h4 style="color: black">Total: <b class="text-primary" style="color: black">{{budget.totalBudgetAmount
+                                                    |currency}}</b></h4>
                                             </div>
                                         </div>
-                                        <div class="col-md-2" align="right" style="width: 25%"
-                                             v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
-                                            <button style="margin-top: 27px" type="button" class="btn btn-warning"
-                                                    @click="deleteBudget(budget, budget.budget.idBudget)">
-                                                <!--@click="deleteBudget(subbudget, subbudget.budget.idBudget)">-->
-                                                Borrar datos
-                                            </button>
-                                        </div>
-                                        <div class="col-md-1" aria-hidden="true" align="right" style="width: 5%"
-                                             v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
-                                            <button style="margin-top: 27px" type="button" class="btn btn-success"
-                                                    @click="saveBudget(budget, budget.budget.idBudget)">
-                                                Guardar
-                                            </button>
+                                        <div class="row"
+                                             style="margin-left: 0px; margin-right: 0px">
+                                            <div class="well">
+                                                <div class="row" style="margin-left: 0px">
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Ene</label>
+                                                        <input style="border-color: #61c4b8; font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.januaryBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Feb</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.februaryBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Mar</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.marchBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Abr</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.aprilBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>May</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.mayBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Jun</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.juneBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Jul</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.julyBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Ago</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.augustBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Sep</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.septemberBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Oct</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.octoberBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Nov</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.novemberBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                        <label>Dic</label>
+                                                        <input style="font-size: 11px" type="text" class="form-control"
+                                                               v-model="budget.decemberBudgetAmount | currencyDisplay"
+                                                               @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                               onclick="return cleanField(this)"
+                                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                                               onInput="format(this)" onblur="ponerCeros(this)"
+                                                               :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                    </div>
+                                                    <br>
+                                                    <div class="col-md-8"
+                                                         v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
+                                                        <div class="checkbox">
+                                                            <label style="margin-top: 27px">
+                                                                <input style="border-color: #61c4b8" type="checkbox"
+                                                                       v-model="budget.equals"
+                                                                       @change="equalsImport(indexOfBudget,budget)"> Aplicar a
+                                                                todos
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-2" align="right" style="width: 25%"
+                                                         v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
+                                                        <button style="margin-top: 27px" type="button" class="btn btn-warning"
+                                                                @click="deleteBudget(budget, budget.budget.idBudget)">
+                                                            <!--@click="deleteBudget(subbudget, subbudget.budget.idBudget)">-->
+                                                            Borrar datos
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-md-1" aria-hidden="true" align="right" style="width: 5%"
+                                                         v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
+                                                        <button style="margin-top: 27px" type="button" class="btn btn-success"
+                                                                @click="saveBudget(budget, budget.budget.idBudget)">
+                                                            Guardar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <br>
+                            <br>
+                            <br>
                         </div>
+                        <br>
+                        <br>
+                        <br>
                     </div>
+                    <br>
                 </div>
                 <br>
                 <!--Dialogs-->
@@ -1450,16 +1592,15 @@
                                         </div>
                                         <div class="col-md-4">
                                             <label>Cuenta contable</label>
-                                            <select class="form-control"v-model="conceptBudgetData.idAccountingAccount">
+                                            <select class="form-control" v-model="conceptBudgetData.idAccountingAccount">
                                                 <option v-for="disCC in distributorCostCenter" :value="disCC.idAccountingAccount">
-                                                    {{disCC.accountingAccounts.acronyms}}
+                                                    {{disCC.acronyms}}
                                                 </option>
                                             </select>
                                         </div>
                                         <div class="col-md-4">
                                             <label>Concepto</label>
-                                            <select class="form-control" id="concept-budget">
-                                            </select>
+                                            <input class="form-control" v-model="conceptBudgetData.idConceptBudget">
                                         </div>
                                     </div>
                                 </div>
