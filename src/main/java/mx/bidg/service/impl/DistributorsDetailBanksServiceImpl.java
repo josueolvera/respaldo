@@ -82,12 +82,12 @@ public class DistributorsDetailBanksServiceImpl implements DistributorsDetailBan
         Font font = workbook.createFont();
         font.setFontName("Arial");
         font.setBold(true);
-        font.setFontHeightInPoints((short) 12);
-        font.setColor(IndexedColors.BLACK.getIndex());
+        font.setFontHeightInPoints((short) 14);
+        font.setColor(IndexedColors.WHITE.getIndex());
         CellStyle style = workbook.createCellStyle();
         style.setFont(font);
         style.setAlignment(CellStyle.ALIGN_CENTER);
-        style.setFillForegroundColor(IndexedColors.ROYAL_BLUE.getIndex());
+        style.setFillForegroundColor(IndexedColors.BLACK.getIndex());
         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
         style.setBorderBottom(CellStyle.BORDER_THIN);
         style.setBottomBorderColor(IndexedColors.BLACK.getIndex());

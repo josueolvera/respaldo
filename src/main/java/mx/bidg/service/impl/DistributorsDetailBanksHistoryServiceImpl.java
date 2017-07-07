@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -32,7 +33,8 @@ public class DistributorsDetailBanksHistoryServiceImpl implements DistributorsDe
         DistributorsDetailBanksHistory distributorsDetailBanksHistory = new DistributorsDetailBanksHistory();
 
             distributorsDetailBanksHistory.setIdDistributorDetailBank(idDistributor);
-            distributorsDetailBanksHistory.setAmount(node.get("amount").decimalValue());
+            String amount = node.get("amount").asText().replace(",","");
+            distributorsDetailBanksHistory.setAmount(new BigDecimal(amount));
             distributorsDetailBanksHistory.setUsername(user.getUsername());
             distributorsDetailBanksHistory.setCreationDate(LocalDateTime.now());
 

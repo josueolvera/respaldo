@@ -79,7 +79,10 @@ public class DistributorsDetailBanksController {
 
         DistributorsDetailBanks distributorsDetailBanks = distributorsDetailBanksService.findByAccountNumber(node.get("accountNumber").asText());
         Integer idDistributor = distributorsDetailBanks.getIdDistributor();
-        BigDecimal newAmount = distributorsDetailBanks.getAmount().add(node.get("amount").decimalValue());
+
+        String amount = node.get("amount").asText().replace(",", "");
+        BigDecimal newAmount = distributorsDetailBanks.getAmount().add(new BigDecimal(amount));
+
         distributorsDetailBanks.setAmount(newAmount);
         distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
 
