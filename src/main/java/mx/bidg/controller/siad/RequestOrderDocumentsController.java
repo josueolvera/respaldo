@@ -4,20 +4,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
+import mx.bidg.reports.PurchaseOrderReportService;
 import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,6 +47,9 @@ public class RequestOrderDocumentsController {
 
     @Autowired
     private CDistributorsService cDistributorsService;
+
+    @Autowired
+    private PurchaseOrderReportService purchaseOrderReportService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException {
@@ -138,5 +140,14 @@ public class RequestOrderDocumentsController {
         boolean status = requestOrderDocumentsService.delete(requestOrderDocuments);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(status), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/purchase-order-report", method = RequestMethod.GET, produces = "application/pdf")
+    public @ResponseBody byte[] getReport() throws ParseException {
+
+        //PurchaseOrderReportService prueba = new PurchaseOrderReportService();
+
+        return purchaseOrderReportService.getReportPurchaseOrder();
+
     }
 }
