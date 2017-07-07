@@ -111,7 +111,9 @@ public class DistributorsDetailBanksServiceImpl implements DistributorsDetailBan
         row.createCell(3).setCellValue("NUMERO DE CUENTA");
         row.createCell(4).setCellValue("TIPO DE MONEDA");
         row.createCell(5).setCellValue("MONTO");
-        row.createCell(6).setCellValue("FECHA DE INGRESO");
+        row.createCell(6).setCellValue("TIPO DE CAMBIO");
+        row.createCell(7).setCellValue("TOTAL EN PESOS");
+        row.createCell(8).setCellValue("FECHA DE INGRESO");
 
         for (Cell cell : row) {
             cell.setCellStyle(style);
@@ -127,14 +129,17 @@ public class DistributorsDetailBanksServiceImpl implements DistributorsDetailBan
             row.createCell(3).setCellValue(distributorsDetailBanks.getAccountNumber());
             row.createCell(4).setCellValue(distributorsDetailBanks.getCurrencies().getCurrency());
             row.createCell(5).setCellValue(distributorsDetailBanks.getAmount().doubleValue());
+            row.createCell(6).setCellValue(distributorsDetailBanks.getCurrencies().getRate().doubleValue());
+            BigDecimal amount = distributorsDetailBanks.getAmount().multiply(distributorsDetailBanks.getCurrencies().getRate());
+            row.createCell(7).setCellValue(amount.doubleValue());
 
             if (distributorsDetailBanks.getCreationDate() != null) {
                 Date fecha = Date.from(distributorsDetailBanks.getCreationDate().atZone(ZoneId.systemDefault()).toInstant());
 
                 if (fecha != null) {
-                    row.createCell(6);
-                    row.getCell(6).setCellValue(fecha);
-                    row.getCell(6).setCellStyle(cellDateStyle);
+                    row.createCell(8);
+                    row.getCell(8).setCellValue(fecha);
+                    row.getCell(8).setCellStyle(cellDateStyle);
                 }
             }
             aux++;
