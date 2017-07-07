@@ -132,7 +132,6 @@
                               })
                           } else {
                               showAlert("Debes ingresar los datos requeridos: Empresa, Banco, Cantidad ", {type: 3})
-
                           }
                       },
                       validateAccountEmployee: function (account, clabe) {
