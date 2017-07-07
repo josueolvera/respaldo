@@ -303,15 +303,20 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-3">
+                        <label>Linea de negocio: </label>
+                        <u>{{request.distributorCostCenter.cBussinessLine.acronym}}</u>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Empresa: </label>
+                        <u>{{request.distributorCostCenter.distributors.acronyms}}</u>
+                    </div>
+                    <div class="col-md-3">
                         <label>Centro de costos: </label>
                         <u>{{request.distributorCostCenter.costCenter.name}}</u>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Concepto: </label>
                         <u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u>
-                    </div>
-                    <div class="col-md-4">
-
                     </div>
                 </div>
             </div>
