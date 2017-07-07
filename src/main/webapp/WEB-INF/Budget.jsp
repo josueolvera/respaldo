@@ -217,6 +217,8 @@
                         }
                         if (this.selected.budgetNature.idBudgetNature != null) {
                             url += '&budget_nature=' + this.selected.budgetNature.idBudgetNature;
+                        }else{
+                            url += '&budget_nature=' + 0;
                         }
                         this.$http.get(url)
                             .success(function (data) {
@@ -796,7 +798,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <label>Tipo de gasto</label>
                                 <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter"
                                         :disabled="disableNature">
@@ -813,8 +815,14 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-1">
                                 <button type="submit" style="margin-top: 25px" class="btn btn-info">Seleccionar</button>
+                            </div>
+                            <div class="col-md-2" v-if="selected.budgetType.idBudgetType != null && (selected.budgetNature.idBudgetNature != null || selected.budgetNature.idBudgetNature == null)">
+                                <button style="margin-top: 25px" class="btn btn-success" type="button"
+                                        @click="openModalHighConcept()">
+                                    Alta de concepto
+                                </button>
                             </div>
                         </div>
                         <br>
@@ -862,7 +870,7 @@
                             </div>
                             <div class="col-md-2 pull-right"
                                  v-if="(authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1) && budgets.length > 0">
-                                <button style="margin-top: 25px; margin-left: 13px" class="btn btn-success" @click="showSendValidation">
+                                <button style="margin-top: 25px; margin-left: 5px" class="btn btn-success" @click="showSendValidation">
                                     Enviar a validación
                                 </button>
                             </div>
@@ -872,11 +880,7 @@
                                 <h3 align="right">Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b>
                                 </h3>
                             </div>
-                            <div class="col-md-2" v-if="budgets.length > 0">
-                                <button style="margin-top: 15px" class="btn btn-info" type="button"
-                                        @click="openModalHighConcept()">
-                                    Alta de concepto
-                                </button>
+                            <div class="col-md-2">
                             </div>
 
                            <!-- <div class="col-md-2"
