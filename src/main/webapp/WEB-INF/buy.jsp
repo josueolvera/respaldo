@@ -83,6 +83,14 @@
                                 }
                             });
 
+                            data.forEach(function (requests) {
+                                if (isNaN(requests.distributorCostCenter.distributors)) {
+                                    jsonObjectIndex[requests.distributorCostCenter.distributors._id] = requests.distributorCostCenter.distributors;
+                                } else {
+                                    requests.distributorCostCenter.distributors = jsonObjectIndex[requests.distributorCostCenter.distributors];
+                                }
+                            });
+
                             this.requestInForce = data;
                         }).error(function () {
                             showAlert("Error al obtener información de s. vigentes", {type: 3});
@@ -281,16 +289,20 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <tr>
+                                                <td class="col-md-2 text-center"><b>Empresa</b></td>
+                                                <td class="col-md-2 text-center"><b>Centro de costos</b></td>
                                                 <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
-                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                                <td class="col-md-2 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             <tr v-for="request in requestInForce">
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.distributors.acronyms}}</td>
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.costCenter.name}}</td>
                                                 <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
+                                                <td class="col-md-2 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">{{request.folio}}</td>
+                                                <td class="col-md-1 text-center">
                                                     <a class="btn btn-default btn-sm"
                                                        :href="detailUrl + request.idRequest"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
@@ -329,17 +341,20 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <tr>
+                                                <td class="col-md-2 text-center"><b>Empresa</b></td>
+                                                <td class="col-md-2 text-center"><b>Centro de costos</b></td>
                                                 <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Fecha de solicitud</b></td>
                                                 <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             <tr v-for="request in requestFinished">
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.distributors.acronyms}}</td>
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.costCenter.name}}</td>
                                                 <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
+                                                <td class="col-md-2 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">{{request.folio}}</td>
+                                                <td class="col-md-1 text-center">
                                                     <a class="btn btn-default btn-sm"
                                                        :href="detailUrl + request.idRequest"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
@@ -379,16 +394,20 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <tr>
+                                                <td class="col-md-2 text-center"><b>Empresa</b></td>
+                                                <td class="col-md-2 text-center"><b>Centro de costos</b></td>
                                                 <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
-                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                                <td class="col-md-2 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-2 text-center"><b>Folio</b></td>
+                                                <td class="col-md-1 text-center"><b>Detalle</b></td>
                                             </tr>
                                             <tr v-for="request in requestRejected">
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.distributors.acronyms}}</td>
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.costCenter.name}}</td>
                                                 <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
+                                                <td class="col-md-2 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">{{request.folio}}</td>
+                                                <td class="col-md-1 text-center">
                                                     <a class="btn btn-default btn-sm"
                                                        :href="detailUrl + request.idRequest"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
@@ -427,16 +446,20 @@
                                     <div class="col-md-12">
                                         <table class="table table-striped">
                                             <thead>
+                                            <th class="col-md-2 text-center"><b>Empresa</b></th>
+                                            <th class="col-md-2 text-center"><b>Centro de costos</b></th>
                                             <th class="col-md-3 text-center"><b>Concepto de solicitud</b></th>
-                                            <th class="col-md-3 text-center"><b>Fecha de solicitud</b></th>
-                                            <th class="col-md-3 text-center"><b>Folio</b></th>
-                                            <th class="col-md-3 text-center"><b>Detalle</b></th>
+                                            <th class="col-md-2 text-center"><b>Fecha de solicitud</b></th>
+                                            <th class="col-md-2 text-center"><b>Folio</b></th>
+                                            <th class="col-md-1 text-center"><b>Detalle</b></th>
                                             </thead>
                                             <tr>
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.distributors.acronyms}}</td>
+                                                <td class="col-md-2 text-center">{{request.distributorCostCenter.costCenter.name}}</td>
                                                 <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
+                                                <td class="col-md-2 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">{{request.folio}}</td>
+                                                <td class="col-md-1 text-center">
                                                     <a class="btn btn-default btn-sm"
                                                        :href="detailUrl + request.idRequest"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
