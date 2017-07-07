@@ -114,7 +114,9 @@
                     amount3: '',
                     button1: false,
                     button2: false,
-                    button3: false
+                    button3: false,
+                    picked: 'no',
+                    distributorCC: null
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -165,6 +167,12 @@
                             this.selected.costCenter.idCostCenter + '/' + this.selected.concept.idAccountingAccount)
                             .success(function (data) {
                                 this.requestCaptureProduct = data;
+                            });
+
+                        this.$http.get(ROOT_URL + '/distributor-cost-center/by-cc-aa/' +
+                            this.selected.costCenter.idCostCenter + '/' + this.selected.concept.idAccountingAccount)
+                            .success(function (data) {
+                                this.distributorCC = data;
                             });
                     },
                     getProducts: function () {
@@ -241,23 +249,36 @@
                         this.requestBody.request.idAccountingAccount = this.selected.concept.idAccountingAccount;
                         this.requestBody.request.userResponsible = this.user;
 
-                        if(this.estimations.length == 3){
+                        if (this.picked == 'yes'){
+                            if(this.estimations.length == 3){
+                                this.$http.post(ROOT_URL + '/requests', this.requestBody)
+                                    .success(function (data) {
+                                        USER_VM.fetchApp();
+                                        $("#modalSolicitud").modal("hide");
+                                        this.saveEstimations(data);
+                                        this.clearRequest();
+                                    })
+                                    .error(function (data) {
+                                        showAlert("Error al generar la solicitud", {type: 3});
+                                    });
+                            }else {
+                                showAlert("Es necesario llenar todas las cotizaciones", {type: 3});
+                            }
+                        }else {
                             this.$http.post(ROOT_URL + '/requests', this.requestBody)
                                 .success(function (data) {
                                     USER_VM.fetchApp();
                                     $("#modalSolicitud").modal("hide");
-                                    this.saveEstimations(data);
                                     this.clearRequest();
+                                    showAlert("Solicitud enviada");
+                                    location.href = ROOT_URL + "/siad/request-spending";
                                 })
                                 .error(function (data) {
                                     showAlert("Error al generar la solicitud", {type: 3});
                                 });
-                        }else {
-                            showAlert("Es necesario llenar todas las cotizaciones", {type: 3});
                         }
 
-                    }
-                    ,
+                    },
                     saveEstimations: function (data) {
                         var self = this;
                         this.estimations.forEach(function (estimation) {
@@ -592,6 +613,12 @@
                     </div>
                 </div>
             </div>
+            <br>
+            <div class="row" v-if="requestCaptureProduct.length > 0">
+                <div class="col-md-12">
+                    <p style="text-align: center; color: grey">La solicitud sera realizada sobre la linea de negocio <label>{{distributorCC.cBussinessLine.acronym}}</label>, distribuidor <label>{{distributorCC.distributors.acronyms}}</label> y centro de costos <label>{{distributorCC.costCenter.name}}</label></p>
+                </div>
+            </div>
                 <%--tabla de cotenido de productos--%>
             <div class="row" v-if="requestBody.products.length > 0">
                 <div class="col-md-12">
@@ -634,8 +661,26 @@
 
                 <%--tabla de contenidos de productos--%>
             <br>
-                <%-- subir arhivos de cotizacion--%>
+
             <div class="panel panel-default" v-if="requestBody.products.length > 0">
+                <div class="panel-heading">Cotización</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="radio" id="one" value="yes" v-model="picked">
+                            <label for="one">Con cotizaciones</label>
+
+                            <input type="radio" id="two" value="no" v-model="picked">
+                            <label for="two">Sin cotizaciones</label>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+                <%-- subir arhivos de cotizacion--%>
+            <div class="panel panel-default" v-if="picked == 'yes'">
                 <div class="panel-heading">Documentación</div>
                 <div class="panel-body">
                     <div class="col-md-12">
@@ -715,15 +760,19 @@
                             </table>
 
                         </div>
-                        <div style="margin-left: 84%">
-                            <button @click="showModalSolicitud()" class="btn btn-success">Solicitar</button>
-                            <a href="javascript:window.history.back();">
-                                <button type="button" class="btn btn-default" >Cancelar</button>
-                            </a>
-                        </div>
                     </div>
                 </div>
 
+            </div>
+            <br>
+
+            <div class="row" v-if="requestBody.products.length > 0">
+                <div style="margin-left: 84%">
+                    <button @click="showModalSolicitud()" class="btn btn-success">Solicitar</button>
+                    <a href="javascript:window.history.back();">
+                        <button type="button" class="btn btn-default" >Cancelar</button>
+                    </a>
+                </div>
             </div>
                 <%--modal solicitar--%>
             <div class="modal fade" id="modalSolicitud" tabindex="-1" role="dialog" aria-labelledby=""
