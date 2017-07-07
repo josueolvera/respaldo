@@ -412,16 +412,17 @@
                             <h5><b style="color: black">Datos de solicitud</b></h5>
                             <table class="table table-striped">
                                 <thead style="background-color: #BDBDBD">
-                                <th class="col-md-4">Centro de costos</th>
-                                <th class="col-md-4">Concepto</th>
-                                <th class="col-md-4"></th>
+                                <th class="col-md-3">Linea de negocio</th>
+                                <th class="col-md-3">Empresa</th>
+                                <th class="col-md-3">Centro de costos</th>
+                                <th class="col-md-3">Concepto</th>
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.cBussinessLine.acronym}}</u></td>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.distributors.acronyms}}</u></td>
                                     <td class="col-md-3"><u>{{request.distributorCostCenter.costCenter.name}}</u></td>
-                                    <td class="col-md-1"><u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u>
-                                    </td>
-                                    <td class="col-md-8"></td>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u></td>
                                 </tr>
                                 </tbody>
                             </table>
