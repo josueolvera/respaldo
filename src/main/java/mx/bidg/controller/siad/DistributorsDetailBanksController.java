@@ -40,40 +40,43 @@ public class DistributorsDetailBanksController {
     private DistributorsDetailBanksHistoryService distributorsDetailBanksHistoryService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public
-    ResponseEntity<String> findAll() throws Exception {
+    public ResponseEntity<String> findAll() throws Exception {
         List<DistributorsDetailBanks> distributorsDetailBanksList = distributorsDetailBanksService.findAll();
-        return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/distributor/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByDistributor(@PathVariable Integer idDistributor) throws Exception{
+    public ResponseEntity<String> findByDistributor(@PathVariable Integer idDistributor) throws Exception {
         List<DistributorsDetailBanks> distributorsDetailBanksList = distributorsDetailBanksService.getByDistributor(idDistributor);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws IOException{
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws IOException {
         Users user = (Users) session.getAttribute("user");
         JsonNode node = mapper.readTree(data);
-            DistributorsDetailBanks distributorsDetailBanks = new DistributorsDetailBanks();
-            distributorsDetailBanks.setBanks(new CBanks(node.get("idBank").asInt()));
-            distributorsDetailBanks.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
-            distributorsDetailBanks.setDistributors(new CDistributors(node.get("idDistributor").asInt()));
-            distributorsDetailBanks.setAccountClabe(node.get("accountclabe").asText());
-            distributorsDetailBanks.setAccountNumber(node.get("accountnumber").asText());
-            distributorsDetailBanks.setAmount(node.get("amount").decimalValue());
-            distributorsDetailBanks.setCreationDate(LocalDateTime.now());
-            distributorsDetailBanks.setUsername(user.getUsername());
 
-            distributorsDetailBanksService.save(distributorsDetailBanks);
 
-            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class)
-                    .writeValueAsString(distributorsDetailBanksService.findAll()), HttpStatus.OK);
+        DistributorsDetailBanks distributorsDetailBanks = new DistributorsDetailBanks();
+        distributorsDetailBanks.setBanks(new CBanks(node.get("idBank").asInt()));
+        distributorsDetailBanks.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
+        distributorsDetailBanks.setDistributors(new CDistributors(node.get("idDistributor").asInt()));
+        distributorsDetailBanks.setAccountClabe(node.get("accountclabe").asText());
+        distributorsDetailBanks.setAccountNumber(node.get("accountnumber").asText());
+        String amount = node.get("amount").asText().replace(",", "");
+        distributorsDetailBanks.setAmount(new BigDecimal(amount));
+        distributorsDetailBanks.setCreationDate(LocalDateTime.now());
+        distributorsDetailBanks.setUsername(user.getUsername());
+
+
+        distributorsDetailBanksService.save(distributorsDetailBanks);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class)
+                .writeValueAsString(distributorsDetailBanksService.findAll()), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/account-number", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> updateAmount(@RequestBody String  data, HttpSession session) throws IOException{
+    public ResponseEntity<String> updateAmount(@RequestBody String data, HttpSession session) throws IOException {
         JsonNode node = mapper.readTree(data);
         Users user = (Users) session.getAttribute("user");
 
@@ -92,7 +95,7 @@ public class DistributorsDetailBanksController {
     }
 
     @RequestMapping(value = "/find-account-number", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findLikeAccountNumber(@RequestParam(name = "accountNumber", required = false) String accountNumber) throws IOException{
+    public ResponseEntity<String> findLikeAccountNumber(@RequestParam(name = "accountNumber", required = false) String accountNumber) throws IOException {
         DistributorsDetailBanks distributorsDetailBanks = distributorsDetailBanksService.findLikeAccountNumber(accountNumber);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanks), HttpStatus.OK);
@@ -100,21 +103,21 @@ public class DistributorsDetailBanksController {
 
     @RequestMapping(value = "/report-distributors-detail-banks", method = RequestMethod.GET)
     public ResponseEntity<String> reporteSemanal(HttpServletResponse response, @RequestParam(name = "startDate", required = true) String startDate
-        , @RequestParam(name = "endDate", required = true) String endDate ) throws IOException {
+            , @RequestParam(name = "endDate", required = true) String endDate) throws IOException {
 
-    LocalDateTime ofDate = (startDate == null || startDate.equals("")) ? null :
-            LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
-    LocalDateTime untilDate = (endDate == null || endDate.equals("")) ? null :
-            LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime ofDate = (startDate == null || startDate.equals("")) ? null :
+                LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime untilDate = (endDate == null || endDate.equals("")) ? null :
+                LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
 
-    response.setContentType("application/octet-stream");
-    response.setHeader("Content-Disposition", "attachment; filename=\"ReporteDetalleDeBanco.xls"+ "\"");
-    OutputStream outputStream = response.getOutputStream();
-    distributorsDetailBanksService.exportFile(outputStream, ofDate, untilDate);
-    outputStream.flush();
-    outputStream.close();
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"ReporteDetalleDeBanco.xls" + "\"");
+        OutputStream outputStream = response.getOutputStream();
+        distributorsDetailBanksService.exportFile(outputStream, ofDate, untilDate);
+        outputStream.flush();
+        outputStream.close();
 
-    return  ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksService.findAll()));
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksService.findAll()));
     }
 
 }
