@@ -23,7 +23,6 @@
                 }
                 return true;
             }
-
             function getSelectionStart(o) {
                 if (o.createTextRange) {
                     var r = document.selection.createRange().duplicate();
@@ -58,6 +57,7 @@
                       totalisimo: 0.00,
                       currencies: [],
                       distributorSelected: {},
+                      optionSelected: {},
                       user: {},
                       prueba: [],
                       updateAmount: {
@@ -274,9 +274,9 @@
                                   {type: 3});
                           });
                       },
-                      showMoreAmount: function () {
+                      showMoreAmount: function (detailBank) {
                           this.updateAmount.amount = '';
-                          this.updateAmount.accountNumber = '';
+                          this.updateAmount.accountNumber = detailBank.accountNumber;
                           $("#moreAmount").modal("show");
                       },
                       saveMoreAmount: function () {
@@ -296,7 +296,12 @@
                                   showAlert("El dinero se agrego correctamente");
                                   this.distributorSelected = '';
                                   this.updateAmount = '';
-                              })
+                                  setTimeout(function () {
+                                      location.reload();
+                                  }, 3000)
+                              }).error(function () {
+                                  showAlert("Error al generar la solicitud", {type: 3});
+                              });
                           } else {
                               showAlert("Es necesario llenar todos los campos", {type: 3})
                           }
@@ -677,10 +682,7 @@
                                     </form>
                                     <br>
                                 </div>
-
-                                <br>
-                                <br>
-
+                                <br><br>
                                 <div class="col-md-4">
                                     <form>
                                         <label><h6><b style="color: black">CLABE</b></h6>
@@ -699,7 +701,6 @@
                                         </div>
                                     </form>
                                 </div>
-
                                 <div class="col-md-4">
                                     <label><h6><b style="color: black">Tipo de moneda</b></h6></label>
                                     <select v-model="detailsBank.idCurrency" class="form-control"
@@ -785,9 +786,9 @@
                                                 </div>
                                                 <div class="col-xs-2 text-center">
                                                     <button type="button" class="btn btn-success"
-                                                            style="text-align: center"
-                                                            @click="showMoreAmount()">
-                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                            @click="showMoreAmount(detailsBank)">
+                                                        <span class="glyphicon glyphicon-plus"
+                                                              style="margin-left: 7px"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -816,7 +817,7 @@
                                 </div>
                                 <div class="col-md-10">
                                     <select class="form-control"
-                                            v-model="updateAmount.accountNumber"> >
+                                            v-model="updateAmount.accountNumber" disabled>
                                         <option></option>
                                         <option v-for="bank in detailsBanks"
                                                 :value="bank.accountNumber">
