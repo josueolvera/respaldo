@@ -148,7 +148,14 @@
                 billInformation: null
             },
             purchaseInvoice: null,
-            requestHistory: []
+            amount1: '',
+            amount2: '',
+            amount3: '',
+            button1: false,
+            button2: false,
+            button3: false,
+            requestHistory: [],
+            estimations: []
         },
         methods: {
             getRequestHistory: function () {
@@ -719,6 +726,122 @@
                    showAlert("Error al eliminar el comprobante", {type: 3});
                 });
             },
+            setFile1: function (event) {
+                this.clearEstimation();
+                var self = this;
+                var file = event.target.files[0];
+                var object = {
+                    identificador: '',
+                    file: "",
+                    amount: ""
+                };
+
+                if (this.validateFilePDF(file)) {
+
+                    var reader = new FileReader();
+
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            object.file = {
+                                name: theFile.name,
+                                size: theFile.size,
+                                type: theFile.type,
+                                dataUrl: e.target.result
+                            };
+                        };
+                    })(file);
+                    reader.readAsDataURL(file);
+                    object.identificador = 1;
+                    object.amount = this.amount1;
+
+                    this.estimations.push(object);
+                    this.button1 = true;
+                }
+            },
+            setFile2: function (event) {
+                this.clearEstimation();
+                var self = this;
+                var file = event.target.files[0];
+                var object = {
+                    identificador: '',
+                    file: "",
+                    amount: ""
+                };
+
+                if (this.validateFilePDF(file)) {
+
+                    var reader = new FileReader();
+
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            object.file = {
+                                name: theFile.name,
+                                size: theFile.size,
+                                type: theFile.type,
+                                dataUrl: e.target.result
+                            };
+                        };
+                    })(file);
+                    reader.readAsDataURL(file);
+                    object.identificador = 2;
+                    object.amount = this.amount2;
+
+                    this.estimations.push(object);
+                    this.button2 = true;
+                }
+            },
+            setFile3: function (event) {
+                this.clearEstimation();
+                var self = this;
+                var file = event.target.files[0];
+                var object = {
+                    identificador: '',
+                    file: "",
+                    amount: ""
+                };
+
+                if (this.validateFilePDF(file)) {
+
+                    var reader = new FileReader();
+
+                    reader.onload = (function (theFile) {
+                        return function (e) {
+                            object.file = {
+                                name: theFile.name,
+                                size: theFile.size,
+                                type: theFile.type,
+                                dataUrl: e.target.result
+                            };
+                        };
+                    })(file);
+                    reader.readAsDataURL(file);
+                    object.identificador = 3;
+                    object.amount = this.amount3;
+
+                    this.estimations.push(object);
+                    this.button3 = true;
+                }
+            },
+            removeDocument: function (id) {
+                var self = this;
+                this.estimations.forEach(function (fileEstimations) {
+                    if(id == fileEstimations.identificador){
+                        self.estimations.$remove(fileEstimations);
+                    }
+                });
+
+                switch (id){
+                    case 1:
+                        this.button1 =  false;
+                        break;
+                    case 2:
+                        this.button2 =  false;
+                        break;
+                    case 3:
+                        this.button3 =  false;
+                        break;
+                }
+            },
             sendToPaymanagment:function(){
                 this.$http.get(ROOT_URL + "/requests/send-to-paymanagement?idRequest="+this.idRequest).success(function () {
                     showAlert("La solicitud sera enviada al administrador se pago");
@@ -727,6 +850,30 @@
                 }).error(function () {
                     showAlert("Error al enviar", {type: 3});
                 });
+            },
+            clearEstimation: function () {
+                this.estimation = {
+                    amount: '',
+                    provider: '',
+                    account: '',
+                    currency: '',
+                    rate: '',
+                    file: ''
+                };
+            },
+            saveEstimations: function () {
+                var self = this;
+                this.estimations.forEach(function (estimation) {
+                    self.saveEstimation(estimation);
+                });
+                showAlert("Cotizaciones cargadas exitosamente");
+                setTimeout(function(){ location.reload(); }, 3000);
+            },
+            saveEstimation: function (estimation) {
+                this.$http.post(ROOT_URL + '/estimations/request/' + this.idRequest, estimation).success(function (data) {
+                }).error(function () {
+                    showAlert("Error al agregar cotización", {type: 3});
+                })
             }
         },
         filters: {
@@ -952,16 +1099,17 @@
                             <h5><b style="color: black">Datos de solicitud</b></h5>
                             <table class="table table-striped">
                                 <thead style="background-color: #BDBDBD">
-                                <th class="col-md-4">Centro de costos</th>
-                                <th class="col-md-4">Concepto</th>
-                                <th class="col-md-4"></th>
+                                <th class="col-md-3">Linea de negocio</th>
+                                <th class="col-md-3">Empresa</th>
+                                <th class="col-md-3">Centro de costos</th>
+                                <th class="col-md-3">Concepto</th>
                                 </thead>
                                 <tbody>
                                 <tr>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.cBussinessLine.acronym}}</u></td>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.distributors.acronyms}}</u></td>
                                     <td class="col-md-3"><u>{{request.distributorCostCenter.costCenter.name}}</u></td>
-                                    <td class="col-md-1"><u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u>
-                                    </td>
-                                    <td class="col-md-8"></td>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -997,6 +1145,100 @@
             </div>
 
             <br>
+
+            <div class="panel panel-default" style="background-color: #F2F2F2" v-if="request.priceEstimationsList == null">
+                <div class="panel-heading"><b style="color: black">Cotizaciones</b></div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <table class="table table-striped">
+                                <tr class="col-md-12">
+                                    <td class="col-md-2"><b>Cotización 1</b></td>
+                                    <td class="col-md-5"></td>
+                                    <td class="col-md-3">Monto cotización sin IVA</td>
+                                    <td class="col-md-2">
+                                        <input v-model="amount1 | currencyDisplay" class="form-control" type="text" placeholder="$"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               oninput="format(this)" onblur="ponerCeros(this)"
+                                               maxlength="14" :disabled="button1 == true" />
+                                    </td>
+                                </tr>
+                                <tr class="col-md-12">
+                                    <td class="col-md-2">Documento</td>
+                                    <td class="col-md-6">
+                                        <input @change="setFile1($event)" type="file"
+                                               class="form-control" :disabled="amount1 == '' || button1 == true"
+                                               required />
+                                    </td>
+                                    <td class="col-md-3"></td>
+                                    <td class="col-md-1" v-if="button1 == true">
+                                        <button type="button" class="btn btn-warning" @click="removeDocument(1)">Cambiar factura</button>
+                                    </td>
+                                </tr>
+                                <tr class="col-md-12">
+                                    <td class="col-md-2"><b>Cotización 2</b></td>
+                                    <td class="col-md-5"></td>
+                                    <td class="col-md-3">Monto cotización sin IVA</td>
+                                    <td class="col-md-2">
+                                        <input v-model="amount2 | currencyDisplay" class="form-control" type="text" placeholder="$"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               oninput="format(this)" onblur="ponerCeros(this)"
+                                               maxlength="14" :disabled="button2 == true"/></td>
+                                </tr>
+                                <tr class="col-md-12">
+                                    <td class="col-md-2">Documento</td>
+                                    <td class="col-md-6">
+                                        <input @change="setFile2($event)" type="file"
+                                               class="form-control" :disabled="amount2 == '' || button2 == true"
+                                               required />
+                                    </td>
+                                    <td class="col-md-3"></td>
+                                    <td class="col-md-1" v-if="button2 == true">
+                                        <button type="button" class="btn btn-warning" @click="removeDocument(2)">Cambiar factura</button>
+                                    </td>
+                                </tr>
+                                <tr class="col-md-12">
+                                    <td class="col-md-2"><b>Cotización 3</b></td>
+                                    <td class="col-md-5"></td>
+                                    <td class="col-md-3">Monto cotización sin IVA</td>
+                                    <td class="col-md-2">
+                                        <input v-model="amount3 | currencyDisplay" class="form-control" type="text" placeholder="$"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               oninput="format(this)" onblur="ponerCeros(this)"
+                                               maxlength="14" :disabled="button3 == true"/></td>
+                                </tr>
+                                <tr class="col-md-12">
+                                    <td class="col-md-2">Documento</td>
+                                    <td class="col-md-6">
+                                        <input @change="setFile3($event)" type="file"
+                                               class="form-control" :disabled="amount3 == '' || button3 == true"
+                                               required />
+                                    </td>
+                                    <td class="col-md-3"></td>
+                                    <td class="col-md-1" v-if="button3 == true">
+                                        <button type="button" class="btn btn-warning" @click="removeDocument(3)">Cambiar factura</button>
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" v-if="estimations.length == 3">
+                <div class="col-md-12">
+                    <div class="col-md-10">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-success" @click="saveEstimations()">Agregar cotizaciones</button>
+                    </div>
+                </div>
+            </div>
 
             <div class="panel panel default" style="background-color: #F2F2F2" v-if="request.idRequestStatus != 1 && request.idRequestStatus != 2">
                 <div class="row">
@@ -1206,7 +1448,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" v-if="request.priceEstimationsList != null">
                 <div class="col-md-12">
                     <div class="col-md-7"></div>
                     <div class="col-md-2">
