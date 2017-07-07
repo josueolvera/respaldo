@@ -124,10 +124,18 @@
                     })
                 },
                 findByFolio: function () {
-                    this.requestsPD = [];
-                    this.$http.get(ROOT_URL + "/requests/folios?folio=" + this.folio).success(function (data) {
-                        this.requestsPD = data;
-                    })
+                    if(this.folio == ''){
+                        showAlert("Debes ingresar un folio", {type: 3});
+                    }else {
+                        this.requestsPD = [];
+                        this.$http.get(ROOT_URL + "/requests/folios?folio=" + this.folio).success(function (data) {
+                            if(data.length == 0){
+                                showAlert("Este folio no existe", {type: 3});
+                            }else {
+                                this.requestsPD = data;
+                            }
+                        })
+                    }
                 },
                 obtainCurrentRequests: function () {
                     this.requestsPD = [];
@@ -408,7 +416,7 @@
                         </form>
                     </div>
                     <div class="col-md-2">
-                        <button style="margin-top: 20%" class="btn btn-info" @click="findByFolio()">Buscar</button>
+                        <button style="margin-top: 16%" class="btn btn-info" @click="findByFolio()">Buscar</button>
                     </div>
                     <div class="col-md-3 text-right" style="margin-top: 10px">
                         <label>Solicitante</label>
@@ -516,16 +524,13 @@
                     <div class="panel panel-default">
                         <div class="card">
                             <div class="card-header" role="tab" id="headingOne">
-                                <div class="panel-heading" style="background-color: #83d386">
+                                <div class="panel-heading" style="background-color: #7a8dc5">
                                     <a class="collapsed" data-toggle="collapse" data-parent="#collapseOne" href="#collapseOne"
-                                       aria-expanded="false" aria-controls="collapseOne">
+                                       aria-expanded="true" aria-controls="collapseOne">
                                         <div class="col-md-11 text-center">
                                             <b style="color: #ffffff">BUZÓN DE SOLICITUDES</b>
                                         </div>
                                     </a>
-                                    <div class="col-md-1 text-right">
-                                        <label class="circleyel"></label>
-                                    </div>
                                     <br>
                                 </div>
                             </div>
@@ -563,16 +568,13 @@
                 <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingThree">
-                            <div class="panel-heading" style="background-color: #95f09c">
+                            <div class="panel-heading" style="background-color: #3b4e87">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#collapseThree" href="#collapseThree"
                                    aria-expanded="false" aria-controls="collapseThree">
                                     <div class="col-md-11 text-center">
-                                        <b style="color: #000000">Pago de solicitudes de la empresa: {{distributorSelected.distributorName}}</b>
+                                        <b style="color: #ffffff">Pago de solicitudes de la empresa: {{distributorSelected.distributorName}}</b>
                                     </div>
                                 </a>
-                                <div class="col-md-1 text-right">
-                                    <label class="circleyel"></label>
-                                </div>
                                 <br>
                             </div>
                         </div>
@@ -618,11 +620,11 @@
                                                 </div>
                                                 <div class="col-xs-1 text-center"><input type="checkbox" :value="pd" v-model="pD2.requestsSelected" @change="obtainTotalParcial()"></div>
                                                 <div class="col-xs-1 text-center">
-                                                    <button class="btn btn-default btn-sm"
+                                                    <a class="btn btn-lg" style="color:black"
                                                             data-toggle="tooltip" data-placement="top" title="Reprogramar"
                                                             @click="getRescheduleData(pd)">
                                                         <span class="glyphicon glyphicon-time"></span>
-                                                    </button>
+                                                    </a>
                                                 </div>
 
                                             </div>
@@ -655,7 +657,7 @@
                                 <div class="col-xs-6">
                                     <label>Fecha para reprogramar</label>
                                     <div class='input-group date' id='dateApplication'>
-                                        <input type='text' class="form-control" v-model="application">
+                                        <input type='text' class="form-control" v-model="application" required onkeypress="return keyCaracteres(this)">
                                         <span class="input-group-addon" @click="activarTimePickerApplicationDate()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>

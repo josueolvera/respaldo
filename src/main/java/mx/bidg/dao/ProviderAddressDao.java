@@ -11,4 +11,5 @@ import java.util.List;
 public interface ProviderAddressDao extends InterfaceDao<ProviderAddress> {
     Long countAddress(Providers provider);
     List<ProviderAddress> findByProvider (Providers p);
+    ProviderAddress findByIdProvider(Integer idProvider);
 }

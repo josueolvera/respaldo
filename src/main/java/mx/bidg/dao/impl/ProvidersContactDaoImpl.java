@@ -58,4 +58,10 @@ public class ProvidersContactDaoImpl extends AbstractDao<Integer,ProvidersContac
                 .setInteger("idProvider", provider.getIdProvider())
                 .uniqueResult();
     }
+
+    @Override
+    public ProvidersContact findByIdProvider(Integer idProvider){
+        Criteria criteria = createEntityCriteria();
+        return (ProvidersContact) criteria.add(Restrictions.eq("idProvider", idProvider)).uniqueResult();
+    }
 }
