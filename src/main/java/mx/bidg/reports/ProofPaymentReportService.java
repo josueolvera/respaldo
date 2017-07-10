@@ -29,7 +29,7 @@ public class ProofPaymentReportService {
     @Autowired
     private ObjectMapper mapper;
 
-    public byte [] getReportePrueba(String data) {
+    public byte [] getProofPaymentReport(String data) {
         try {
             JsonNode node = mapper.readTree(data);
             InputStream resource = this.getClass().getResourceAsStream("/reports/ComprobantePago.jasper");
@@ -81,9 +81,8 @@ public class ProofPaymentReportService {
             params.put("bancoProveedor", listaBankDistributor);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\User\\Desktop\\comprobantePago_"+hourdateFormat.format(date)+".pdf");
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\Users\\User\\Documents\\comprobantePago_"+hourdateFormat.format(date)+".pdf");
-            JasperViewer.viewReport(jasperPrint,true);
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "\\run\\media\\Centos\\Storage\\SIAD\\treasury\\ComprobantePago_"+hourdateFormat.format(date)+".pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\ComprobantePago_"+hourdateFormat.format(date)+".pdf");
             return JasperExportManager.exportReportToPdf(jasperPrint);
 
         } catch (Exception ex) {

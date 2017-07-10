@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -276,10 +277,19 @@ public class RequestsController {
             distributorsDetailBanks.setAmount(resta);
             distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
         }
-        proofPaymentReportService.getReportePrueba(data);
+        proofPaymentReportService.getProofPaymentReport(data);
         List<PayRequestsHistory> payRequestsHistories = payRequestsHistoryService.saveData(data, user);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(payRequestsHistories), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/proof-payment-report", method = RequestMethod.GET, produces = "application/pdf")
+    public @ResponseBody byte[] getProofPaymentReport(@RequestBody String data) throws ParseException {
+
+        //PurchaseOrderReportService prueba = new PurchaseOrderReportService();
+
+        return proofPaymentReportService.getProofPaymentReport(data);
+
     }
 
     @RequestMapping(value =  "/folios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

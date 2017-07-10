@@ -158,6 +158,9 @@
             estimations: []
         },
         methods: {
+            descarga: function (id) {
+                window.open (ROOT_URL + "/order-documents-request/purchase-order-report?idRequestOrderDocument=" + id);
+            },
             getRequestHistory: function () {
                 this.$http.get(ROOT_URL + "/request-history/request/" + this.idRequest)
                     .success(function (data) {
@@ -1385,7 +1388,7 @@
                                                 @click="cancelRequestOrder()">Cancelar
                                         </button>
                                         <button type="button" v-if="purchaseInvoice != null" class="btn btn-info btn-sm"
-                                                @click="descarga()">Descargar
+                                                @click="descarga(requestOrder.idRequestOrderDocument)">Descargar
                                         </button>
                                     </td>
                                 </tr>

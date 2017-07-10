@@ -40,12 +40,12 @@ public class PurchaseOrderReportService {
     @Autowired
     RequestOrderDetailDao requestOrderDetailDao;
 
-    public byte [] getReportPurchaseOrder() {
+    public byte [] getReportPurchaseOrder(Integer idRequestOrderDocument) {
         try {
             InputStream resource = this.getClass().getResourceAsStream("/reports/Orden_Compra.jasper");
             JasperReport jasperReport = (JasperReport) JRLoader.loadObject(resource);
             HashMap<String, Object> params = new HashMap<String, Object>();
-            RequestOrderDocuments request = requestOrderDocumentsDao.findByIdRequest(45);
+            RequestOrderDocuments request = requestOrderDocumentsDao.findById(idRequestOrderDocument);
 
             String url1 = getClass().getResource("/BID_GROUP.png").toString();
             params.put("logo",  url1);

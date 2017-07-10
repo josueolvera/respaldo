@@ -60,7 +60,6 @@
                 startDate: '',
                 endDate: '',
                 total: 0.00,
-                totalParcial: 0,
                 userInSession: {},
                 userActive: '',
                 opcionReporte: '',
@@ -177,23 +176,22 @@
                 },
                 payRequestsSelected: function () {
                     this.requestsPD = [];
+                    //window.open (ROOT_URL + "/requests/proof-payment-report", JSON.stringify(this.pD2));
                     this.$http.post(ROOT_URL + "/requests/pay-selected", JSON.stringify(this.pD2)).success(function (data) {
                         this.arregloPd = data;
-                        var self = this;
                         this.obtainCurrentRequests(this.distributorSelected.idDistributor);
-                        $("#modalPagar").modal("hide");
-                        this.total = 0;
                         this.obtainDetailBanks();
-                        this.totalParcial = 0;
                         this.pD2.requestsSelected = [];
                         this.obtainDistributorsWithRequests();
                         showAlert("Se pagaron con éxito las solicitudes!");
+                        $("#modalPagar").modal("hide");
                     }).error(function () {
                         showAlert("Error en la solicitud, vuelva a intentarlo", {type: 3});
                     });
                 },
                 obtainDetailBanks: function () {
                     var self = this;
+                    this.total = 0;
                     this.$http.get(ROOT_URL + "/distributors-detail-banks").success(function (data) {
                         this.detailBanks = data;
                         var self = this;
@@ -201,13 +199,6 @@
                             element.amount = element.amount * element.currencies.rate;
                             self.total += element.amount;
                         });
-                    });
-                },
-                obtainTotalParcial: function () {
-                    var self = this;
-                    self.totalParcial = 0;
-                    this.pD2.requestsSelected.forEach(function (element) {
-                        self.totalParcial += element.purchaseInvoices.amountWithIva
                     });
                 },
                 confirmSelection: function () {
@@ -618,7 +609,7 @@
                                                         </option>
                                                     </select>
                                                 </div>
-                                                <div class="col-xs-1 text-center"><input type="checkbox" :value="pd" v-model="pD2.requestsSelected" @change="obtainTotalParcial()"></div>
+                                                <div class="col-xs-1 text-center"><input type="checkbox" :value="pd" v-model="pD2.requestsSelected"></div>
                                                 <div class="col-xs-1 text-center">
                                                     <a class="btn btn-lg" style="color:black"
                                                             data-toggle="tooltip" data-placement="top" title="Reprogramar"
@@ -721,12 +712,11 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button type="button" id="boton-pagar" class="btn btn-success" @click="payRequestsSelected()">Pagar</button>
+                            <button type="button" id="boton-pagar" class="btn btn-success" @click="payRequestsSelected()">Pagar y generar comprobantes</button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
         <%--termina archivos de cotizacion--%>
     </jsp:body>

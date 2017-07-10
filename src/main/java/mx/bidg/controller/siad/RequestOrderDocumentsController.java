@@ -143,11 +143,11 @@ public class RequestOrderDocumentsController {
     }
 
     @RequestMapping(value = "/purchase-order-report", method = RequestMethod.GET, produces = "application/pdf")
-    public @ResponseBody byte[] getReport() throws ParseException {
+    public @ResponseBody byte[] getReport(@RequestParam(name= "idRequestOrderDocument", required=true) Integer idRequestOrderDocument) throws ParseException {
 
         //PurchaseOrderReportService prueba = new PurchaseOrderReportService();
 
-        return purchaseOrderReportService.getReportPurchaseOrder();
+        return purchaseOrderReportService.getReportPurchaseOrder(idRequestOrderDocument);
 
     }
 }
