@@ -81,8 +81,8 @@ public class ProofPaymentReportService {
             params.put("bancoProveedor", listaBankDistributor);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "\\run\\media\\Centos\\Storage\\SIAD\\treasury\\ComprobantePago_"+hourdateFormat.format(date)+".pdf");
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\ComprobantePago_"+hourdateFormat.format(date)+".pdf");
+            JasperExportManager.exportReportToPdfFile(jasperPrint, "/run/media/Centos/Storage/SIAD/treasury/ComprobantePago_"+hourdateFormat.format(date)+".pdf");
+            //JasperExportManager.exportReportToPdfFile(jasperPrint, "C:\\ComprobantePago_"+hourdateFormat.format(date)+".pdf");
             return JasperExportManager.exportReportToPdf(jasperPrint);
 
         } catch (Exception ex) {
