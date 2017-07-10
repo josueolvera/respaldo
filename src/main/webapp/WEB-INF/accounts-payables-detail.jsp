@@ -94,7 +94,7 @@
                     requestsDateProg: [],
                     descargaAr: [],
                     requestsDateProgrammer: [],
-                    fileUrl: ROOT_URL + "/purchase-invoices-files/attachment/download/" ,
+                    fileUrl: ROOT_URL +'/purchase-invoices-files/attachment/download/',
                     branchDistributor: [],
                     rolesEmplo: [],
                     proveContact: [],
@@ -338,7 +338,7 @@
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
                                 showAlert("Registro guardado con exito");
-                                setTimeout("location.href = '../siad/accounts-payables'",3000);
+                                setTimeout("location.href = '../siad/accounts-payables'",2000);
 
                             }).error(function () {
                                 showAlert("Fecha invalida.", {type: 3});
@@ -351,7 +351,7 @@
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
                                 showAlert("Registro guardado con exito");
-                                setTimeout("location.href = '../siad/accounts-payables'",3000);
+                                setTimeout("location.href = '../siad/accounts-payables'",2000);
                             }).error(function () {
                                 showAlert("Fecha invalida", {type: 3});
                             })
@@ -617,29 +617,18 @@
                                 <td class="col-md-2"><b>Banco</b></td>
                                 <td class="col-md-3"><b>Cuenta bancaria</b></td>
                                 <td class="col-md-2"><b>Monto total</b></td>
-                                <td class="col-md-1 text-center"><b>PDF</b></td>
-                                <td class="col-md-1 text-center"><b>XML</b></td>
+                                <td class="col-md-2 text-center"><b>Nombre del archivo</b></td>
                                 <td class="col-md-2 text-center"><b>Descargar</b></td>
                             </tr>
                             <tr v-for="purch in purchaseInvoicex" v-if="this.idPurcha == purch.idPurchaseInvoices">
                                 <td class="col-md-2">{{purch.account.bank.acronyms}}</td>
                                 <td class="col-md-3">{{purch.account.accountNumber}}</td>
                                 <td class="col-md-2">{{purch.amountWithIva | currency}}</td>
-                                <td class="col-md-1 text-center">
-                                    <a class="btn btn-md btn-hover btn-danger"
-                                       data-toggle="tooltip" data-placement="top">
-                                        <span class="glyphicon glyphicon-file"></span>
-                                    </a>
+                                <td class="col-md-2 text-center" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
+                                    {{files.fileName}}
                                 </td>
-                                <td class="col-md-1 text-center">
-                                    <a class="btn btn-md btn-hover btn-info"
-                                       data-toggle="tooltip" data-placement="top">
-                                        <span class="glyphicon glyphicon-file"></span>
-                                    </a>
-                                </td>
-                                <td class="col-md-2 text-center" v-for="files in descargaAr"
-                                    v-if="this.idPurcha == files.idPurchaseInvoices">
-                                    <a class="btn btn-md btn-success" data-toggle="tooltip" data-placement="top" title="Descargar"
+                                <td class="col-md-2 text-center" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
+                                    <a class="btn btn-md btn-info" data-toggle="tooltip" data-placement="top" title="Descargar"
                                         :href="fileUrl + files.idPurchaseInvoicesFiles">
                                         <span class="glyphicon glyphicon-download-alt"></span>
                                     </a>
