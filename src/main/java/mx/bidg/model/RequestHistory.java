@@ -82,8 +82,6 @@ public class RequestHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String folio;
 
-    @Basic
-    @NotNull
     @Size(min = 1, max = 200)
     @Column(name = "REASON_REQUEST")
     @JsonView(JsonViews.Root.class)
