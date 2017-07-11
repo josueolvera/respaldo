@@ -551,8 +551,8 @@
     </jsp:attribute>
     <jsp:body>
         <div id="content">
-        <%--<div class="loading" v-if="dwEmpleado.length==0">--%>
-        <%--</div>--%>
+        <div class="loading" v-if="dwEmpleado.length==0">
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-5">
@@ -623,7 +623,7 @@
                             <tr v-for="purch in purchaseInvoicex" v-if="this.idPurcha == purch.idPurchaseInvoices">
                                 <td class="col-md-2" rowspan="2" style="margin-top: 10px">{{purch.account.bank.acronyms}}</td>
                                 <td class="col-md-3" rowspan="2" style="margin-top: 10px">{{purch.account.accountNumber}}</td>
-                                <td class="col-md-2" rowspan="2" style="margin-top: 10px">{{purch.amountWithIva | currency}}</td>
+                                <td class="col-md-2" rowspan="2" style="margin-top: 10px">{{purch.totalAmount | currency}}</td>
                                 <td class="col-md-2" style="margin-top: 3px">
                                     <div class="col-md-12 text-center" style="margin-top: 1px"
                                          v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">

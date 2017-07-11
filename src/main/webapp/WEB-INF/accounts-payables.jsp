@@ -796,7 +796,7 @@
                                                 <td class="col-md-2 text-center">
                                                     {{folio.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{folio.amountWithIva | currency}}</td>
+                                                    {{folio.totalAmount | currency}}</td>
                                                 <td class="col-md-1 text-center">
                                                     <a class="glyphicon glyphicon-new-window"
                                                        :href="detailUrl + folio.idRequest +
@@ -883,7 +883,7 @@
                                                     </td>
                                                     <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}
+                                                        {{purchose.totalAmount | currency}}
                                                     </td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
@@ -1008,7 +1008,7 @@
                                                     </td>
                                                     <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}
+                                                        {{purchose.totalAmount | currency}}
                                                     </td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
@@ -1080,7 +1080,7 @@
                                                     </td>
                                                     <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}
+                                                        {{purchose.totalAmount | currency}}
                                                     </td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
@@ -1152,7 +1152,7 @@
                                                     </td>
                                                     <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}
+                                                        {{purchose.totalAmount | currency}}
                                                     </td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
@@ -1236,7 +1236,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1309,7 +1309,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1382,7 +1382,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1455,7 +1455,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1528,7 +1528,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1611,7 +1611,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1684,7 +1684,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1757,7 +1757,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1831,7 +1831,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
@@ -1905,7 +1905,7 @@
                                                     <td class="col-md-2 text-center">
                                                         {{purchose.request.folio}}</td>
                                                     <td class="col-md-2 text-center">
-                                                        {{purchose.amountWithIva | currency}}</td>
+                                                        {{purchose.totalAmount | currency}}</td>
                                                     <td class="col-md-1 text-center">
                                                         <a class="glyphicon glyphicon-new-window"
                                                            :href="detailUrl + purchose.idRequest +
