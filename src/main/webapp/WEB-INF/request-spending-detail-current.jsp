@@ -1278,6 +1278,9 @@
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #66afe9;  font-size: 200%"
                                               v-if="history.cRequestStatus.idRequestStatus == 3"></span>
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #00FF00;  font-size: 200%"
+                                              v-if="history.cRequestStatus.idRequestStatus == 6"></span>
                                     </td>
                                     <td class="col-md-6">{{history.cRequestStatus.requestStatus}}</td>
                                 </tr>
