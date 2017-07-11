@@ -181,13 +181,13 @@ public class PurchaseInvoicesController {
         } else {
 
 
-            purchaseInvoice.setAmount(node.get("billInformation").get("amountNotIva").decimalValue());
-            purchaseInvoice.setAmountWithIva(node.get("billInformation").get("amountWithIva").decimalValue());
-            purchaseInvoice.setTotalAmount(node.get("billInformation").get("total").decimalValue());
+            purchaseInvoice.setAmount(new BigDecimal(node.get("billInformation").get("amountNotIva").asText()));
+            purchaseInvoice.setAmountWithIva(new BigDecimal(node.get("billInformation").get("amountWithIva").asText()));
+            purchaseInvoice.setTotalAmount(new BigDecimal(node.get("billInformation").get("total").asText()));
             purchaseInvoice.setCreationDate(LocalDateTime.now());
             purchaseInvoice.setFolio(node.get("billInformation").get("folio").asText());
             purchaseInvoice.setCurrencyType(node.get("billInformation").get("moneda").asText());
-            purchaseInvoice.setRate(node.get("billInformation").get("tipoCambio").decimalValue());
+            purchaseInvoice.setRate(new BigDecimal(node.get("billInformation").get("tipoCambio").asText()));
             purchaseInvoice.setConceptName(node.get("billInformation").get("concept").asText());
             purchaseInvoice.setUsername(user.getUsername());
 
@@ -349,9 +349,9 @@ public class PurchaseInvoicesController {
                 Integer limitDay = purchaseInvoices.getProvider().getCreditDays();
                 LocalDateTime requestDate = LocalDateTime.parse(purchaseInvoices.getRequest().getCreationDateFormats().getIso(),
                         DateTimeFormatter.ISO_DATE_TIME);
-                if (idRequ == idReqInv && count == 1 && idRequestCategory == purchaseInvoices.getRequest().getIdRequestCategory().intValue()
-                        && idRequestType == purchaseInvoices.getRequest().getIdRequestType().intValue()
-                        && idRequestStatus == purchaseInvoices.getRequest().getIdRequestStatus().intValue()) {
+                if (idRequ.equals(idReqInv) && count == 1 && idRequestCategory.equals(purchaseInvoices.getRequest().getIdRequestCategory())
+                        && idRequestType.equals( purchaseInvoices.getRequest().getIdRequestType())
+                        && idRequestStatus.equals( purchaseInvoices.getRequest().getIdRequestStatus())) {
                     LocalDateTime limitD = (requestDate.plusDays(limitDay));
                     purchaseInvoices.setCountUpdate(count);
                     purchaseInvoices.setLimitDay(limitD);
