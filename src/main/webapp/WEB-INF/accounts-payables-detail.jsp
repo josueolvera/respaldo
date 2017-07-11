@@ -611,7 +611,7 @@
             <div class="panel-heading"><b>Información de pago</b></div>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <div class="row">
+                    <div class="row" style="height: 120px">
                         <table class="table table-striped">
                             <tr>
                                 <td class="col-md-2"><b>Banco</b></td>
@@ -621,22 +621,24 @@
                                 <td class="col-md-2 text-center"><b>Descargar</b></td>
                             </tr>
                             <tr v-for="purch in purchaseInvoicex" v-if="this.idPurcha == purch.idPurchaseInvoices">
-                                <td class="col-md-2">{{purch.account.bank.acronyms}}</td>
-                                <td class="col-md-3">{{purch.account.accountNumber}}</td>
-                                <td class="col-md-2">{{purch.amountWithIva | currency}}</td>
-                            <tr>
-                                <td class="col-md-2 text-center" rowspan="2" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
-                                    {{files.fileName}}
+                                <td class="col-md-2" rowspan="2" style="margin-top: 10px">{{purch.account.bank.acronyms}}</td>
+                                <td class="col-md-3" rowspan="2" style="margin-top: 10px">{{purch.account.accountNumber}}</td>
+                                <td class="col-md-2" rowspan="2" style="margin-top: 10px">{{purch.amountWithIva | currency}}</td>
+                                <td class="col-md-2" style="margin-top: 3px">
+                                    <div class="col-md-12 text-center" style="margin-top: 1px"
+                                         v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
+                                            {{files.fileName}} <br><br>
+                                    </div>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td class="col-md-2 text-center" rowspan="2" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
-                                    <a class="btn btn-md btn-info" data-toggle="tooltip" data-placement="top" title="Descargar"
-                                        :href="fileUrl + files.idPurchaseInvoicesFiles">
-                                        <span class="glyphicon glyphicon-download-alt"></span>
-                                    </a>
+                                <td class="col-md-2">
+                                    <div class="col-md-12 text-center" v-for="files in descargaAr"
+                                         v-if="this.idPurcha == files.idPurchaseInvoices">
+                                            <a class="btn btn-md btn-info" data-toggle="tooltip" data-placement="top" title="Descargar"
+                                               :href="fileUrl + files.idPurchaseInvoicesFiles" style="margin-top: 2px">
+                                                <span class="glyphicon glyphicon-download-alt"></span>
+                                            </a>
+                                    </div>
                                 </td>
-                            </tr>
                             </tr>
                         </table>
                     </div>
