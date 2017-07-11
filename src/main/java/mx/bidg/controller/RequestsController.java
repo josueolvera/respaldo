@@ -271,7 +271,7 @@ public class RequestsController {
         Users user = (Users) session.getAttribute("user");
         List<Requests> requestsList = new ArrayList<>();
         for(JsonNode jsonNode : node.get("requestsSelected")){
-            requestsList.add(requestsService.payRequest(jsonNode.get("idRequest").asInt()));
+            requestsList.add(requestsService.payRequest(jsonNode.get("idRequest").asInt(), user));
             DistributorsDetailBanks distributorsDetailBanks = distributorsDetailBanksService.findById(jsonNode.get("bank").get("idDistributorDetailBank").asInt());
             BigDecimal resta = distributorsDetailBanks.getAmount().subtract(jsonNode.get("purchaseInvoices").get("totalAmount").decimalValue());
             distributorsDetailBanks.setAmount(resta);

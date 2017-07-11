@@ -51,7 +51,7 @@ public interface RequestsService {
 
     List<Requests> findByDCC(List<Integer> idDCCs);
     List<Requests> findAll();
-    Requests payRequest(Integer idRequest);
+    Requests payRequest(Integer idRequest, Users user);
     List<Requests> findListByFolio(String folio);
     List<Requests> findByStatus(Integer idRequestStatus);
     Requests sendToBuyMAnagementRequest(Integer idRequest, Users user);

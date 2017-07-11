@@ -420,13 +420,15 @@ public class RequestsServiceImpl implements RequestsService {
     }
 
     @Override
-    public Requests payRequest(Integer idRequest) {
+    public Requests payRequest(Integer idRequest, Users user) {
         Requests request = requestsDao.findById(idRequest);
-        CRequestStatus cRequestStatus = cRequestStatusDao.findById(6);
 
         if (request != null) {
-            request.setRequestStatus(cRequestStatus);
+            request.setRequestStatus(CRequestStatus.PAGADA);
+            request.setRequestType(CRequestTypes.FINALIZADA);
             request = requestsDao.update(request);
+
+            requestHistoryService.saveRequest(request, user);
         }
 
         return request;
