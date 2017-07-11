@@ -126,7 +126,7 @@ public class PurchaseInvoicesServiceImpl implements PurchaseInvoicesService {
             row.createCell(3).setCellValue(request.getProvider().getProviderName());
             row.createCell(4).setCellValue(request.getProvider().getRfc());
             row.createCell(5).setCellValue(request.getProvider().getCreditDays());
-            row.createCell(6).setCellValue(request.getRequest().getTotalExpended().doubleValue());
+            row.createCell(6).setCellValue(request.getTotalAmount().doubleValue());
             row.createCell(7).setCellValue(request.getRequest().getRequestCategory().getRequestCategoryName());
             row.createCell(8).setCellValue(request.getRequest().getRequestStatus().getRequestStatus());
             row.createCell(9).setCellValue(request.getRequest().getEmployees().getFullName());
