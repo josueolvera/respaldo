@@ -68,17 +68,15 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String folio;
 
-    @Basic
-    @NotNull
-    @Size(min = 1, max = 200)
-    @Column(name = "REASON")
-    @JsonView(JsonViews.Root.class)
-    private String reason;
-
     @Size(min = 1, max = 200)
     @Column(name = "REASON_RESPOSINBLE")
     @JsonView(JsonViews.Root.class)
     private String reasonResponsible;
+
+    @Size(min = 1, max = 200)
+    @Column(name = "REASON")
+    @JsonView(JsonViews.Root.class)
+    private String reason;
 
     @Column(name = "TOTAL_EXPENDED")
     @JsonView(JsonViews.Root.class)
@@ -194,14 +192,6 @@ public class Requests implements Serializable {
 
     public void setIdEmployee(Integer idEmployee) {
         this.idEmployee = idEmployee;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     public BigDecimal getTotalExpended() {
@@ -334,6 +324,14 @@ public class Requests implements Serializable {
 
     public void setReasonResponsible(String reasonResponsible) {
         this.reasonResponsible = reasonResponsible;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override
