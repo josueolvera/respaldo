@@ -551,8 +551,8 @@
     </jsp:attribute>
     <jsp:body>
         <div id="content">
-        <div class="loading" v-if="dwEmpleado.length==0">
-        </div>
+        <%--<div class="loading" v-if="dwEmpleado.length==0">--%>
+        <%--</div>--%>
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-5">
@@ -624,15 +624,19 @@
                                 <td class="col-md-2">{{purch.account.bank.acronyms}}</td>
                                 <td class="col-md-3">{{purch.account.accountNumber}}</td>
                                 <td class="col-md-2">{{purch.amountWithIva | currency}}</td>
-                                <td class="col-md-2 text-center" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
+                            <tr>
+                                <td class="col-md-2 text-center" rowspan="2" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
                                     {{files.fileName}}
                                 </td>
-                                <td class="col-md-2 text-center" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
+                            </tr>
+                            <tr>
+                                <td class="col-md-2 text-center" rowspan="2" v-for="files in descargaAr" v-if="this.idPurcha == files.idPurchaseInvoices">
                                     <a class="btn btn-md btn-info" data-toggle="tooltip" data-placement="top" title="Descargar"
                                         :href="fileUrl + files.idPurchaseInvoicesFiles">
                                         <span class="glyphicon glyphicon-download-alt"></span>
                                     </a>
                                 </td>
+                            </tr>
                             </tr>
                         </table>
                     </div>

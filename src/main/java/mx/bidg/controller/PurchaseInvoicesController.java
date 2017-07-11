@@ -380,9 +380,12 @@ public class PurchaseInvoicesController {
                 LocalDateTime requestDate = LocalDateTime.parse(purchaseInvoices.getRequest().getCreationDateFormats().getIso(),
                         DateTimeFormatter.ISO_DATE_TIME);
                 Integer sta = purchaseInvoices.getRequest().getIdRequestStatus();
-                if (idRequ == idReqInv && (sta == 3 || sta == 8)) {
+                if (idRequ == idReqInv && sta == 8) {
                     LocalDateTime limitD = (requestDate.plusDays(limitDay));
                     purchaseInvoices.setCountUpdate(count);
+                    purchaseInvoices.setLimitDay(limitD);
+                }else if(sta == 3){
+                    LocalDateTime limitD = (requestDate.plusDays(limitDay));
                     purchaseInvoices.setLimitDay(limitD);
                 }
             }
