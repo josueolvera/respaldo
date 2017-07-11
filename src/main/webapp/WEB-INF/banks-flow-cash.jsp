@@ -128,7 +128,9 @@
                                   showAlert("El nuevo monto ingresado fue actualizado con éxito");
                                   this.distributorSelected = '';
                                   this.updateAmount = '';
-
+                                  setTimeout(function () {
+                                      location.reload();
+                                  }, 1000)
                               })
                           } else {
                               showAlert("Debes ingresar los datos requeridos: Empresa, Banco, Cantidad ", {type: 3})
@@ -252,6 +254,9 @@
                                           showAlert("La cuenta bancaria ingresada fue registrada exitosamente");
                                           this.distributorSelected = '';
                                           this.updateAmount = '';
+                                          setTimeout(function () {
+                                              location.reload();
+                                          }, 1000)
                                       })
                                   } else {
                                       showAlert("Debes ingresar los datos requeridos: Empresa, Banco, CLABE, Numero de" +
@@ -297,7 +302,7 @@
                                   this.updateAmount = '';
                                   setTimeout(function () {
                                       location.reload();
-                                  }, 3000)
+                                  }, 1000)
                               }).error(function () {
                                   showAlert("Error al generar la solicitud", {type: 3});
                               });
