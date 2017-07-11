@@ -47,8 +47,11 @@ public class PayRequestsHistoryDaoImpl extends AbstractDao<Integer, PayRequestsH
 
     @Override
     public List<PayRequestsHistory> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate){
+
+        LocalDateTime from = fromDate.toLocalDate().atStartOfDay();
+        LocalDateTime to = toDate.toLocalDate().atTime(23, 59, 59);
         Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.between("creationDate",fromDate,toDate));
+        criteria.add(Restrictions.between("creationDate",from,to));
         return criteria.list();
     }
 }
