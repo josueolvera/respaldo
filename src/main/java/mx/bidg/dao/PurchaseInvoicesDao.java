@@ -14,4 +14,5 @@ public interface PurchaseInvoicesDao extends InterfaceDao<PurchaseInvoices> {
     List<PurchaseInvoices> findByRequestTypeAndCatgory(Integer idRequestCategory, Integer idRequestType, Integer idRequestStatus);
     List<PurchaseInvoices> findFolio (String folio);
     List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate, Integer status);
+    List countByDistributor(Integer idDistributor);
 }

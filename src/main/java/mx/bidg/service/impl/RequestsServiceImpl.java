@@ -102,6 +102,9 @@ public class RequestsServiceImpl implements RequestsService {
     @Autowired
     private DistributorsDetailBanksDao distributorsDetailBanksDao;
 
+    @Autowired
+    private PurchaseInvoicesDao purchaseInvoicesDao;
+
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
 
@@ -652,7 +655,7 @@ public class RequestsServiceImpl implements RequestsService {
                 CDistributors cDistributor = cDistributorsDao.findById(idDistributor);
 
                 if (cDistributor != null){
-                    List requests = requestsDao.countByDistributor(cDistributor.getIdDistributor());
+                    List requests = purchaseInvoicesDao.countByDistributor(cDistributor.getIdDistributor());
                     BigDecimal amountBank = distributorsDetailBanksDao.sumByDistributor(cDistributor.getIdDistributor());
                     if (!requests.isEmpty()){
                         Object[] projection = (Object[]) requests.get(0);

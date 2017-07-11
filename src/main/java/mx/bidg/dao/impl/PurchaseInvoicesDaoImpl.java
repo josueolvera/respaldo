@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PurchaseInvoicesDao;
 import mx.bidg.model.PurchaseInvoices;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -70,6 +71,20 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
         criteria.createCriteria("request")
                 .add(Restrictions.eq( "idRequestStatus", status ));
         return criteria.list();
+    }
+
+    @Override
+    public List countByDistributor(Integer idDistributor) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .setProjection(Projections.projectionList()
+                        .add(Projections.countDistinct("r.idRequest"))
+                        .add(Projections.sum("totalAmount")))
+                .createCriteria("request", "r")
+                .add(Restrictions.eq("r.idRequestStatus", 8))
+                .createCriteria("r.distributorCostCenter", "dIS")
+                .add(Restrictions.eq("dIS.idDistributor", idDistributor)).list();
     }
 
 }
