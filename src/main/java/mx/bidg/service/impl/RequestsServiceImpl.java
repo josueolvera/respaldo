@@ -159,7 +159,6 @@ public class RequestsServiceImpl implements RequestsService {
         JsonNode jsonRequest = mapper.readTree(data);
         Requests request = new Requests();
 
-        String justify = (jsonRequest.get("request").get("purpose").asText());
         int idCostCenter = jsonRequest.get("request").get("idCostCenter").asInt();
         int idAccountingAccounts = jsonRequest.get("request").get("idAccountingAccount").asInt();
 
@@ -175,7 +174,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setDistributorCostCenter(distributorCostCenter);
         request.setIdAccessLevel(1);
         request.setTotalExpended(new BigDecimal(0.00));
-        request.setReason(justify);
+        request.setReason(jsonRequest.get("request").get("purpose").asText());
 
         if (user != null){
             request.setUserName(user.getUsername());
