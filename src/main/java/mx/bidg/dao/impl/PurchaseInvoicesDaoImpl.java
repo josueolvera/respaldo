@@ -67,9 +67,12 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
 
     @Override
     public List<PurchaseInvoices> findBetweenDates (LocalDateTime fromDate, LocalDateTime toDate, Integer status){
+        LocalDateTime from = fromDate.toLocalDate().atStartOfDay();
+        LocalDateTime to = toDate.toLocalDate().atTime(23, 59, 59);
         Criteria criteria = createEntityCriteria();
         criteria.createCriteria("request")
-                .add(Restrictions.eq( "idRequestStatus", status ));
+                .add(Restrictions.eq( "idRequestStatus", status ))
+                .add(Restrictions.between("creationDate", from, to));
         return criteria.list();
     }
 
