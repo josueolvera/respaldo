@@ -181,8 +181,8 @@
                         this.arregloPd = data;
                         this.obtainCurrentRequests(this.distributorSelected.idDistributor);
                         this.obtainDetailBanks();
-                        this.pD2.requestsSelected = [];
                         this.obtainDistributorsWithRequests();
+                        this.pD2.requestsSelected = [];
                         showAlert("Se pagaron con éxito las solicitudes!");
                         $("#modalPagar").modal("hide");
                     }).error(function () {
@@ -218,7 +218,7 @@
 
                         if(this.pD2.requestsSelected.length == this.objectBanks.length){
                             this.pD2.requestsSelected.forEach(function (element) {
-                                if(element.bank.amount >= element.purchaseInvoices.amountWithIva){
+                                if(element.bank.amount >= element.purchaseInvoices.totalAmount){
                                     $("#modalPagar").modal("show");
                                 }else{
                                     showAlert("No hay suficiente dinero para pagar", {type: 3});
@@ -598,7 +598,7 @@
                                                 <div class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</div>
-                                                <div class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva | currency}}</div>
+                                                <div class="col-xs-1 text-center">{{pd.purchaseInvoices.totalAmount | currency}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}
                                                 </div>
                                                 <div class="col-xs-2 text-center">
@@ -701,7 +701,7 @@
                                             <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountNumber}}</td>
                                             <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountClabe}}</td>
                                             <td class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</td>
-                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva | currency}}</td>
+                                            <td class="col-xs-1 text-center">{{pd.purchaseInvoices.totalAmount | currency}}</td>
                                             <td class="col-xs-2 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}</td>
                                             <td class="col-xs-1 text-center">{{pd.bank.banks.acronyms}}</td>
                                         </tr>
