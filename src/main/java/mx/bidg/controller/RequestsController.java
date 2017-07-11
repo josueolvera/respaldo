@@ -265,7 +265,7 @@ public class RequestsController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/pay-selected", method = RequestMethod.POST, produces = "application/pdf")
+    @RequestMapping(value = "/pay-selected", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> payRequests(@RequestBody String data, HttpSession session) throws IOException {
         JsonNode node = mapper.readTree(data);
         Users user = (Users) session.getAttribute("user");
@@ -273,7 +273,7 @@ public class RequestsController {
         for(JsonNode jsonNode : node.get("requestsSelected")){
             requestsList.add(requestsService.payRequest(jsonNode.get("idRequest").asInt()));
             DistributorsDetailBanks distributorsDetailBanks = distributorsDetailBanksService.findById(jsonNode.get("bank").get("idDistributorDetailBank").asInt());
-            BigDecimal resta = distributorsDetailBanks.getAmount().subtract(jsonNode.get("purchaseInvoices").get("amountWithIva").decimalValue());
+            BigDecimal resta = distributorsDetailBanks.getAmount().subtract(jsonNode.get("purchaseInvoices").get("totalAmount").decimalValue());
             distributorsDetailBanks.setAmount(resta);
             distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
         }

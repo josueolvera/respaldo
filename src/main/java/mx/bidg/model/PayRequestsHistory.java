@@ -112,9 +112,9 @@ public class PayRequestsHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String purchaseInvoiceFolio;
 
-    @Column(name = "AMOUNT_WITH_IVA", nullable=true)
+    @Column(name = "TOTAL_AMOUNT", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private BigDecimal amountWithIva;
+    private BigDecimal totalAmount;
 
     @Basic(optional = false)
     @NotNull
@@ -143,7 +143,7 @@ public class PayRequestsHistory implements Serializable {
         this.idPayRequestsHistory = idPayRequestsHistory;
     }
 
-    public PayRequestsHistory(Integer idRequest, Integer idCostCenter, Integer idRequestCategory, Integer idDistributor, Integer idAccount, Integer idPurchaseInvoices, Integer idRequestsDates, Integer idDistributorDetailBank, Integer idDistributor1, String folio, String mail, String costCenter, String requestCategory, String provider, String bankProvider, String accountNumber, String accountClabe, String purchaseInvoiceFolio, BigDecimal amountWithIva, LocalDateTime requestDate, String bankDistributor, String username, LocalDateTime creationDate) {
+    public PayRequestsHistory(Integer idRequest, Integer idCostCenter, Integer idRequestCategory, Integer idDistributor, Integer idAccount, Integer idPurchaseInvoices, Integer idRequestsDates, Integer idDistributorDetailBank, Integer idDistributor1, String folio, String mail, String costCenter, String requestCategory, String provider, String bankProvider, String accountNumber, String accountClabe, String purchaseInvoiceFolio, BigDecimal totalAmount, LocalDateTime requestDate, String bankDistributor, String username, LocalDateTime creationDate) {
         this.idRequest = idRequest;
         this.idCostCenter = idCostCenter;
         this.idRequestCategory = idRequestCategory;
@@ -162,7 +162,7 @@ public class PayRequestsHistory implements Serializable {
         this.accountNumber = accountNumber;
         this.accountClabe = accountClabe;
         this.purchaseInvoiceFolio = purchaseInvoiceFolio;
-        this.amountWithIva = amountWithIva;
+        this.totalAmount = totalAmount;
         this.requestDate = requestDate;
         this.bankDistributor = bankDistributor;
         this.username = username;
@@ -321,12 +321,12 @@ public class PayRequestsHistory implements Serializable {
         this.purchaseInvoiceFolio = purchaseInvoiceFolio;
     }
 
-    public BigDecimal getAmountWithIva() {
-        return amountWithIva;
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setAmountWithIva(BigDecimal amountWithIva) {
-        this.amountWithIva = amountWithIva;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public LocalDateTime getRequestDate() {
@@ -408,7 +408,7 @@ public class PayRequestsHistory implements Serializable {
         if (accountClabe != null ? !accountClabe.equals(that.accountClabe) : that.accountClabe != null) return false;
         if (purchaseInvoiceFolio != null ? !purchaseInvoiceFolio.equals(that.purchaseInvoiceFolio) : that.purchaseInvoiceFolio != null)
             return false;
-        if (amountWithIva != null ? !amountWithIva.equals(that.amountWithIva) : that.amountWithIva != null)
+        if (totalAmount != null ? !totalAmount.equals(that.totalAmount) : that.totalAmount != null)
             return false;
         if (requestDate != null ? !requestDate.equals(that.requestDate) : that.requestDate != null) return false;
         if (bankDistributor != null ? !bankDistributor.equals(that.bankDistributor) : that.bankDistributor != null)
@@ -437,7 +437,7 @@ public class PayRequestsHistory implements Serializable {
         result = 31 * result + (accountNumber != null ? accountNumber.hashCode() : 0);
         result = 31 * result + (accountClabe != null ? accountClabe.hashCode() : 0);
         result = 31 * result + (purchaseInvoiceFolio != null ? purchaseInvoiceFolio.hashCode() : 0);
-        result = 31 * result + (amountWithIva != null ? amountWithIva.hashCode() : 0);
+        result = 31 * result + (totalAmount != null ? totalAmount.hashCode() : 0);
         result = 31 * result + (requestDate != null ? requestDate.hashCode() : 0);
         result = 31 * result + (bankDistributor != null ? bankDistributor.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);
@@ -467,7 +467,7 @@ public class PayRequestsHistory implements Serializable {
                 ", accountNumber='" + accountNumber + '\'' +
                 ", accountClabe='" + accountClabe + '\'' +
                 ", purchaseInvoiceFolio='" + purchaseInvoiceFolio + '\'' +
-                ", amountWithIva=" + amountWithIva +
+                ", totalAmount=" + totalAmount +
                 ", requestDate=" + requestDate +
                 ", bankDistributor='" + bankDistributor + '\'' +
                 ", username='" + username + '\'' +

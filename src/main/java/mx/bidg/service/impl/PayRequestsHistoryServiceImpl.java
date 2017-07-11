@@ -66,7 +66,7 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
             payRequestsHistory.setAccountNumber(jsonNode.get("purchaseInvoices").get("account").get("accountNumber").asText());
             payRequestsHistory.setAccountClabe(jsonNode.get("purchaseInvoices").get("account").get("accountClabe").asText());
             payRequestsHistory.setPurchaseInvoiceFolio(jsonNode.get("purchaseInvoices").get("folio").asText());
-            payRequestsHistory.setAmountWithIva(jsonNode.get("purchaseInvoices").get("amountWithIva").decimalValue());
+            payRequestsHistory.setTotalAmount(jsonNode.get("purchaseInvoices").get("totalAmount").decimalValue());
             LocalDateTime requestDate = LocalDateTime.parse(jsonNode.get("requestsDates").get("scheduledDateFormats").get("iso").asText(), DateTimeFormatter.ISO_DATE_TIME);
             payRequestsHistory.setRequestDate(requestDate);
             payRequestsHistory.setBankDistributor(jsonNode.get("bank").get("banks").get("bankName").asText());
@@ -145,7 +145,7 @@ public class PayRequestsHistoryServiceImpl implements PayRequestsHistoryService{
             row.createCell(6).setCellValue(request.getAccountNumber());
             row.createCell(7).setCellValue(request.getAccountClabe());
             row.createCell(8).setCellValue(request.getPurchaseInvoiceFolio());
-            row.createCell(9).setCellValue(request.getAmountWithIva().doubleValue());
+            row.createCell(9).setCellValue(request.getTotalAmount().doubleValue());
             if (request.getCreationDate() != null){
                 Date fecha = Date.from(request.getRequestDate().atZone(ZoneId.systemDefault()).toInstant());
 

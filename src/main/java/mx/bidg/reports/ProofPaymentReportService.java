@@ -64,7 +64,7 @@ public class ProofPaymentReportService {
                 listaCuenta.add(jsonNode.get("purchaseInvoices").get("account").get("accountNumber").asText());
                 listaClabe.add(jsonNode.get("purchaseInvoices").get("account").get("accountClabe").asText());
                 listaFolioFactura.add(jsonNode.get("purchaseInvoices").get("folio").asText());
-                listaMonto.add(jsonNode.get("purchaseInvoices").get("amountWithIva").asText());
+                listaMonto.add(jsonNode.get("purchaseInvoices").get("totalAmount").asText());
                 listaFechaPago.add(jsonNode.get("requestsDates").get("scheduledDateFormats").get("dateNumber").asText());
                 listaBankDistributor.add(jsonNode.get("bank").get("banks").get("acronyms").asText());
             }
