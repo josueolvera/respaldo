@@ -130,7 +130,7 @@
                                   this.updateAmount = '';
                                   setTimeout(function () {
                                       location.reload();
-                                  }, 1000)
+                                  }, 1)
                               })
                           } else {
                               showAlert("Debes ingresar los datos requeridos: Empresa, Banco, Cantidad ", {type: 3})
@@ -256,7 +256,7 @@
                                           this.updateAmount = '';
                                           setTimeout(function () {
                                               location.reload();
-                                          }, 1000)
+                                          }, 1)
                                       })
                                   } else {
                                       showAlert("Debes ingresar los datos requeridos: Empresa, Banco, CLABE, Numero de" +
@@ -302,7 +302,7 @@
                                   this.updateAmount = '';
                                   setTimeout(function () {
                                       location.reload();
-                                  }, 1000)
+                                  }, 1)
                               }).error(function () {
                                   showAlert("Error al generar la solicitud", {type: 3});
                               });
@@ -404,7 +404,7 @@
               y = checkTime(y);
               document.getElementById('reloj').innerHTML = d + "/" + u + "/" + y + "&nbsp;" + "&nbsp;"
                   + "&nbsp;" + "&nbsp;" + "&nbsp;" + h + ":" + m + ":" + s;
-              t = setTimeout('startTime()', 500);
+              t = setTimeout('startTime()', 50);
           }
           function checkTime(i) {
               if (i < 10) {
